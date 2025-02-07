@@ -1,7 +1,0 @@
-#!/bin/bash
-
-if [ "$(pidof waybar)" = "" ]; then
-    exec waybar
-else
-    pkill -f waybar
-fi

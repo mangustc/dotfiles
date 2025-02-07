@@ -1,0 +1,10 @@
+# =x11-terms/ghostty-1.1.0
+# =dev-lang/zig-0.13.0-r2
+gui-wm/river::guru
+app-misc/tealdeer::guru
+=gui-apps/wlr-randr-0.4.1::guru
+www-client/zen-browser::localrepo
+gui-apps/yambar::localrepo
+gui-apps/lswt::localrepo
+dev-vcs/lazygit::localrepo
+app-containers/lazydocker::localrepo

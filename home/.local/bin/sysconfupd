@@ -1,50 +1,44 @@
 #!/bin/bash
 
-which paru >/dev/null
-if [ $? -ne 1 ]; then
-	echo "Saving paru package list"
-	paru -Qeq >"${HOME}/dotfiles/packages"
-else
-	echo "Saving pacman package list"
-	pacman -Qeq >"${HOME}/dotfiles/packages"
+if [ "${MY_DOTFILES_DIR}" = "" ]; then
+	echo "MY_DOTFILES_DIR environment variable should be set to dotfiles directory"
+	exit 1
 fi
 
+cp /var/lib/portage/world ${MY_DOTFILES_DIR}
+ls -lA /etc/runlevels/default >${MY_DOTFILES_DIR}/system-services
+ls -lA ${SVDIR} >${MY_DOTFILES_DIR}/user-services
+
 SOURCE_DIR=""
-DEST_DIR="${HOME}/dotfiles/root"
+DEST_DIR="${MY_DOTFILES_DIR}/root"
 
-rm -rfv "${DEST_DIR}/etc"
-rm -rfv "${DEST_DIR}/boot"
+rm -rfv "${DEST_DIR}"
+mkdir -p "${DEST_DIR}"
 mkdir -p "${DEST_DIR}/etc"
-mkdir -p "${DEST_DIR}/etc/udev"
-mkdir -p "${DEST_DIR}/boot"
-mkdir -p "${DEST_DIR}/boot/loader"
+mkdir -p "${DEST_DIR}/etc/conf.d"
+mkdir -p "${DEST_DIR}/etc/env.d"
+mkdir -p "${DEST_DIR}/etc/init.d"
+mkdir -p "${DEST_DIR}/etc/udev/rules.d"
+mkdir -p "${DEST_DIR}/etc/portage"
+mkdir -p "${DEST_DIR}/var/db/repos"
 
-rm -vrf "${DEST_DIR}/etc/mkinitcpio.conf"
-cp -vr "${SOURCE_DIR}/etc/mkinitcpio.conf" "${DEST_DIR}/etc"
-
-rm -vrf "${DEST_DIR}/etc/mkinitcpio.d"
-cp -vr "${SOURCE_DIR}/etc/mkinitcpio.d" "${DEST_DIR}/etc"
-
-rm -vrf "${DEST_DIR}/etc/fstab"
+cp -vr "${SOURCE_DIR}/etc/rc.conf" "${DEST_DIR}/etc"
+cp -vr "${SOURCE_DIR}/etc/hostname" "${DEST_DIR}/etc"
+cp -vr "${SOURCE_DIR}/etc/locale.gen" "${DEST_DIR}/etc"
 cp -vr "${SOURCE_DIR}/etc/fstab" "${DEST_DIR}/etc"
-
-rm -vrf "${DEST_DIR}/etc/pacman.conf"
-cp -vr "${SOURCE_DIR}/etc/pacman.conf" "${DEST_DIR}/etc"
-
-rm -vrf "${DEST_DIR}/etc/paru.conf"
-cp -vr "${SOURCE_DIR}/etc/paru.conf" "${DEST_DIR}/etc"
-
-rm -vrf "${DEST_DIR}/etc/tlp.conf"
-cp -vr "${SOURCE_DIR}/etc/tlp.conf" "${DEST_DIR}/etc"
-
-rm -vrf "${DEST_DIR}/etc/udev/rules.d"
-cp -vr "${SOURCE_DIR}/etc/udev/rules.d" "${DEST_DIR}/etc/udev"
-
-rm -vrf "${DEST_DIR}/etc/sysctl.d"
+cp -vr "${SOURCE_DIR}/etc/laptop-mode" "${DEST_DIR}/etc"
+cp -vr "${SOURCE_DIR}/etc/modules-load.d" "${DEST_DIR}/etc"
 cp -vr "${SOURCE_DIR}/etc/sysctl.d" "${DEST_DIR}/etc"
-
-rm -vrf "${DEST_DIR}/boot/loader/loader.conf"
-cp -vr "${SOURCE_DIR}/boot/loader/loader.conf" "${DEST_DIR}/boot/loader"
-
-rm -vrf "${DEST_DIR}/boot/loader/entries"
-cp -vr "${SOURCE_DIR}/boot/loader/entries" "${DEST_DIR}/boot/loader"
+cp -vr "${SOURCE_DIR}/etc/local.d" "${DEST_DIR}/etc"
+cp -vr "${SOURCE_DIR}/etc/conf.d/keymaps" "${DEST_DIR}/etc/conf.d"
+cp -vr "${SOURCE_DIR}/etc/conf.d/netmount" "${DEST_DIR}/etc/conf.d"
+cp -vr "${SOURCE_DIR}/etc/conf.d/nftables" "${DEST_DIR}/etc/conf.d"
+cp -vr "${SOURCE_DIR}/etc/env.d/02locale" "${DEST_DIR}/etc/env.d"
+cp -vr "${SOURCE_DIR}/etc/init.d/ivan-runsvdir" "${DEST_DIR}/etc/init.d"
+cp -vr "${SOURCE_DIR}/etc/init.d/nethandler" "${DEST_DIR}/etc/init.d"
+cp -vr "${SOURCE_DIR}/etc/portage/make.conf" "${DEST_DIR}/etc/portage"
+cp -vr "${SOURCE_DIR}/etc/portage/package.use" "${DEST_DIR}/etc/portage"
+cp -vr "${SOURCE_DIR}/etc/portage/package.mask" "${DEST_DIR}/etc/portage"
+cp -vr "${SOURCE_DIR}/etc/portage/package.unmask" "${DEST_DIR}/etc/portage"
+cp -vr "${SOURCE_DIR}/etc/portage/package.accept_keywords" "${DEST_DIR}/etc/portage"
+cp -vr "${SOURCE_DIR}/var/db/repos/localrepo" "${DEST_DIR}/var/db/repos"

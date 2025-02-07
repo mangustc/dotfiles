@@ -1,0 +1,16 @@
+sys-kernel/gentoo-kernel-bin -initramfs
+net-misc/netifrc -dhcp
+x11-terms/ghostty -adwaita -system-ncurses
+app-text/xmlto text
+sys-devel/gcc -lto
+# media-libs/mesa VIDEO_CARDS: radeon nouveau intel
+sys-auth/seatd builtin server
+sys-libs/ncurses -minimal
+media-video/pipewire sound-server pipewire-alsa jack-sdk
+sys-process/runit -*
+sys-apps/openrc -netifrc
+dev-libs/bemenu -ncurses
+gui-apps/yambar -* backlight battery river cpu wayland pulseaudio foreign-toplevel clock
+net-firewall/iptables nftables
+net-libs/nodejs npm
+app-admin/doas persist

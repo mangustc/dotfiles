@@ -1,0 +1,6 @@
+total 0
+lrwxrwxrwx 1 ivan ivan 29 Feb  7 14:49 pipewire -> /home/ivan/.local/sv/pipewire
+lrwxrwxrwx 1 ivan ivan 35 Feb  7 14:49 pipewire-pulse -> /home/ivan/.local/sv/pipewire-pulse
+lrwxrwxrwx 1 ivan ivan 27 Feb  7 14:49 podman -> /home/ivan/.local/sv/podman
+lrwxrwxrwx 1 ivan ivan 30 Feb  7 14:49 ssh-agent -> /home/ivan/.local/sv/ssh-agent
+lrwxrwxrwx 1 ivan ivan 32 Feb  7 14:49 wireplumber -> /home/ivan/.local/sv/wireplumber

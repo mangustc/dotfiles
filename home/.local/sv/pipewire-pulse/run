@@ -1,0 +1,12 @@
+#!/bin/bash
+
+if [ -f ${SESSION_ENV} ]; then
+	. ${SESSION_ENV}
+else
+	return 1
+fi
+export XDG_RUNTIME_DIR
+export SVDIR
+
+sv check wireplumber >/dev/null || exit 1
+exec pipewire-pulse >/dev/null

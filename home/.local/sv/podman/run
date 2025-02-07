@@ -1,0 +1,11 @@
+#!/bin/bash
+
+if [ -f ${SESSION_ENV} ]; then
+	. ${SESSION_ENV}
+else
+	return 1
+fi
+export XDG_RUNTIME_DIR
+export SVDIR
+
+exec podman system service --time 0 unix:///tmp/podman.sock >/dev/null
