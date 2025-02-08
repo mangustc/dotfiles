@@ -1,50 +1,44 @@
 #!/bin/bash
 
+if [ "${MY_DOTFILES_DIR}" = "" ]; then
+	echo "MY_DOTFILES_DIR environment variable should be set to dotfiles directory"
+	exit 1
+fi
+
+packages_file="${MY_DOTFILES_DIR}/packages"
 which paru >/dev/null
 if [ $? -ne 1 ]; then
 	echo "Saving paru package list"
-	paru -Qeq >"${HOME}/dotfiles/packages"
+	paru -Qeq >"${packages_file}"
 else
 	echo "Saving pacman package list"
-	pacman -Qeq >"${HOME}/dotfiles/packages"
+	pacman -Qeq >"${packages_file}"
 fi
+cat "${packages_file}" | grep -v "paru-bin-debug" > "${packages_file}-temp" && mv "${packages_file}-temp" "${packages_file}"
+cat "${packages_file}" | grep -v "paru-debug" > "${packages_file}-temp" && mv "${packages_file}-temp" "${packages_file}"
 
 SOURCE_DIR=""
-DEST_DIR="${HOME}/dotfiles/root"
+DEST_DIR="${MY_DOTFILES_DIR}/root"
 
-rm -rfv "${DEST_DIR}/etc"
-rm -rfv "${DEST_DIR}/boot"
-mkdir -p "${DEST_DIR}/etc"
-mkdir -p "${DEST_DIR}/etc/udev"
-mkdir -p "${DEST_DIR}/boot"
-mkdir -p "${DEST_DIR}/boot/loader"
+rm -rfv "${DEST_DIR}"
+mkdir -pv "${DEST_DIR}"
+mkdir -pv "${DEST_DIR}/etc"
+mkdir -pv "${DEST_DIR}/etc/udev"
+mkdir -pv "${DEST_DIR}/etc/systemd"
+mkdir -pv "${DEST_DIR}/etc/systemd/system"
+mkdir -pv "${DEST_DIR}/etc/systemd/user"
+mkdir -pv "${DEST_DIR}/etc/makepkg.conf.d"
 
-rm -vrf "${DEST_DIR}/etc/mkinitcpio.conf"
+cp -vr "${SOURCE_DIR}/etc/hostname" "${DEST_DIR}/etc"
 cp -vr "${SOURCE_DIR}/etc/mkinitcpio.conf" "${DEST_DIR}/etc"
-
-rm -vrf "${DEST_DIR}/etc/mkinitcpio.d"
 cp -vr "${SOURCE_DIR}/etc/mkinitcpio.d" "${DEST_DIR}/etc"
-
-rm -vrf "${DEST_DIR}/etc/fstab"
 cp -vr "${SOURCE_DIR}/etc/fstab" "${DEST_DIR}/etc"
-
-rm -vrf "${DEST_DIR}/etc/pacman.conf"
 cp -vr "${SOURCE_DIR}/etc/pacman.conf" "${DEST_DIR}/etc"
-
-rm -vrf "${DEST_DIR}/etc/paru.conf"
+cp -vr "${SOURCE_DIR}/etc/makepkg.conf.d/doas.conf" "${DEST_DIR}/etc/makepkg.conf.d"
 cp -vr "${SOURCE_DIR}/etc/paru.conf" "${DEST_DIR}/etc"
-
-rm -vrf "${DEST_DIR}/etc/tlp.conf"
-cp -vr "${SOURCE_DIR}/etc/tlp.conf" "${DEST_DIR}/etc"
-
-rm -vrf "${DEST_DIR}/etc/udev/rules.d"
 cp -vr "${SOURCE_DIR}/etc/udev/rules.d" "${DEST_DIR}/etc/udev"
-
-rm -vrf "${DEST_DIR}/etc/sysctl.d"
-cp -vr "${SOURCE_DIR}/etc/sysctl.d" "${DEST_DIR}/etc"
-
-rm -vrf "${DEST_DIR}/boot/loader/loader.conf"
-cp -vr "${SOURCE_DIR}/boot/loader/loader.conf" "${DEST_DIR}/boot/loader"
-
-rm -vrf "${DEST_DIR}/boot/loader/entries"
-cp -vr "${SOURCE_DIR}/boot/loader/entries" "${DEST_DIR}/boot/loader"
+cp -vr "${SOURCE_DIR}/etc/systemd/network" "${DEST_DIR}/etc/systemd"
+cp -vr "${SOURCE_DIR}/etc/systemd/resolved.conf" "${DEST_DIR}/etc/systemd"
+cp -vr "${SOURCE_DIR}/etc/systemd/resolved.conf" "${DEST_DIR}/etc/systemd"
+cp -vr "${SOURCE_DIR}/etc/systemd/system/nethandler.service" "${DEST_DIR}/etc/systemd/system"
+cp -vr "${SOURCE_DIR}/etc/systemd/user/ssh-agent.service" "${DEST_DIR}/etc/systemd/user"

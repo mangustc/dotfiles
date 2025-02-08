@@ -1,4 +1,7 @@
 #!/bin/bash
 
+export DXVK_FILTER_DEVICE_NAME="NVIDIA"
+export VKD3D_FILTER_DEVICE_NAME="NVIDIA"
+
 cpuperf performance
 exec gamemoderun "$@"

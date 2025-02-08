@@ -1,5 +1,3 @@
-set -gx PATH $PATH ~/.local/bin ~/go/bin
-set -gx PAGER bat
 fish_config theme choose Catppuccin\ Mocha
 set fzf_fd_opts --hidden --no-ignore --max-depth 5
 set fzf_preview_dir_cmd eza --time-style relative -lA
@@ -42,9 +40,13 @@ end
 
 
 alias eza "eza -M --icons=always --no-permissions --group-directories-first --git --color=always"
+alias sudo "doas"
 abbr --position anywhere rm "rm -vrf";
 abbr --position anywhere cp "cp -vr";
 abbr --position anywhere mv "mv -vf";
 abbr --position anywhere t "tldr";
 abbr --position anywhere tree "tree -C";
 abbr --position anywhere ls "eza --time-style relative -lA";
+abbr --position anywhere xi "sudo xbps-install";
+abbr --position anywhere xr "sudo xbps-remove";
+abbr --position anywhere xq "sudo xbps-query";

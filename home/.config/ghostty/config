@@ -1,6 +1,0 @@
-theme = catppuccin-mocha
-# window-decoration = false
-gtk-adwaita = false
-gtk-titlebar = false
-confirm-close-surface = false
-font-family = "JetBrainsMono Nerd Font"
