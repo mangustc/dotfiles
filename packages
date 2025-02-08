@@ -15,6 +15,10 @@ kate
 kitty
 kscreen
 lazygit
+lib32-gamemode
+lib32-libpipewire
+lib32-opencl-nvidia
+lib32-pipewire
 libnetfilter_queue
 linux
 linux-firmware
@@ -30,6 +34,7 @@ noto-fonts-emoji
 nvidia
 nvidia-settings
 nvidia-utils
+nvimpager
 opendoas
 openssh
 paru-bin
@@ -38,7 +43,7 @@ pipewire-alsa
 pipewire-pulse
 plasma-desktop
 qbittorrent
-rate-mirrors-bin
+reflector
 steam
 tealdeer
 ttf-jetbrains-mono-nerd
