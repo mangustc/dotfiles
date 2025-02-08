@@ -1,5 +1,7 @@
 app-admin/doas
 app-admin/sysklogd
+app-arch/unzip
+app-arch/zip
 app-containers/podman
 app-containers/podman-compose
 app-editors/neovim
