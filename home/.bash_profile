@@ -1,6 +1,6 @@
 export SSH_AUTH_SOCK="/tmp/ssh-agent.sock"
 export PATH="${PATH}:${HOME}/.local/bin:${HOME}/go/bin"
-export PAGER="bat"
+export PAGER="nvimpager"
 export MY_DOTFILES_DIR="${HOME}/dotfiles"
 
 # export SESSION_ENV="/tmp/session.env"

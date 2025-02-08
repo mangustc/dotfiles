@@ -40,13 +40,11 @@ end
 
 
 alias eza "eza -M --icons=always --no-permissions --group-directories-first --git --color=always"
-alias sudo "doas"
+abbr --position anywhere cat "nvimpager -c";
+abbr --position anywhere bat "nvimpager -p";
 abbr --position anywhere rm "rm -vrf";
 abbr --position anywhere cp "cp -vr";
 abbr --position anywhere mv "mv -vf";
 abbr --position anywhere t "tldr";
 abbr --position anywhere tree "tree -C";
 abbr --position anywhere ls "eza --time-style relative -lA";
-abbr --position anywhere xi "sudo xbps-install";
-abbr --position anywhere xr "sudo xbps-remove";
-abbr --position anywhere xq "sudo xbps-query";
