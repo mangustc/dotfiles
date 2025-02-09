@@ -16,7 +16,7 @@
 # "x11focus run-application"
 #   Mod4+shift + p
 
-"dmenu_run"
+"BEMENU_BACKEND=x11 bemenu-run"
   Mod4+shift + p
 
 #"xterm -geom 50x20+20+20"

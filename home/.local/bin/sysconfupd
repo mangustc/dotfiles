@@ -14,8 +14,8 @@ else
 	echo "Saving pacman package list"
 	pacman -Qeq >"${packages_file}"
 fi
-cat "${packages_file}" | grep -v "paru-bin-debug" > "${packages_file}-temp" && mv "${packages_file}-temp" "${packages_file}"
-cat "${packages_file}" | grep -v "paru-debug" > "${packages_file}-temp" && mv "${packages_file}-temp" "${packages_file}"
+cat "${packages_file}" | grep -v "paru-bin-debug" >"${packages_file}-temp" && mv "${packages_file}-temp" "${packages_file}"
+cat "${packages_file}" | grep -v "paru-debug" >"${packages_file}-temp" && mv "${packages_file}-temp" "${packages_file}"
 
 SOURCE_DIR=""
 DEST_DIR="${MY_DOTFILES_DIR}/root"
@@ -28,6 +28,7 @@ mkdir -pv "${DEST_DIR}/etc/systemd"
 mkdir -pv "${DEST_DIR}/etc/systemd/system"
 mkdir -pv "${DEST_DIR}/etc/systemd/user"
 mkdir -pv "${DEST_DIR}/etc/makepkg.conf.d"
+mkdir -pv "${DEST_DIR}/etc/X11"
 
 cp -vr "${SOURCE_DIR}/etc/hostname" "${DEST_DIR}/etc"
 cp -vr "${SOURCE_DIR}/etc/mkinitcpio.conf" "${DEST_DIR}/etc"
@@ -42,3 +43,4 @@ cp -vr "${SOURCE_DIR}/etc/systemd/resolved.conf" "${DEST_DIR}/etc/systemd"
 cp -vr "${SOURCE_DIR}/etc/systemd/resolved.conf" "${DEST_DIR}/etc/systemd"
 cp -vr "${SOURCE_DIR}/etc/systemd/system/nethandler.service" "${DEST_DIR}/etc/systemd/system"
 cp -vr "${SOURCE_DIR}/etc/systemd/user/ssh-agent.service" "${DEST_DIR}/etc/systemd/user"
+cp -vr "${SOURCE_DIR}/etc/X11/xorg.conf.d" "${DEST_DIR}/etc/X11"

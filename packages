@@ -1,6 +1,8 @@
 base
 base-devel
 bemenu
+bemenu-wayland
+bemenu-x11
 btop
 dolphin
 efibootmgr
@@ -31,6 +33,7 @@ nftables
 nodejs
 noto-fonts
 noto-fonts-emoji
+npm
 nvidia
 nvidia-settings
 nvidia-utils
