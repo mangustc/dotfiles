@@ -53,6 +53,36 @@ if not vim.loop.fs_stat(lazypath) then
 end ---@diagnostic disable-next-line: undefined-field
 vim.opt.rtp:prepend(lazypath)
 
+local kbds = {
+	filetree_open_close = "<leader>pt",
+	telescope_find_files = "<leader>pf",
+	telescope_builtins = "<leader>pp",
+	telescope_grep = "<leader>pg",
+	telescope_diagnostics = "<leader>pd",
+	telescope_recent = "<leader>g.",
+	telescope_config_dir = "<leader>g$",
+	lsp_definitions = "gd",
+	lsp_references = "gr",
+	lsp_implementations = "gI",
+	lsp_type_definitions = "gt",
+	lsp_symbols = "gs",
+	lsp_workspace_symbols = "<leader>lws",
+	lsp_rename = "<leader>lrn",
+	lsp_code_action = "<leader>lca",
+	lsp_diagnostic = "<leader>ld",
+	lsp_restart = "<leader>lr",
+	lsp_hover = "K",
+	lsp_goto_declaration = "gD",
+	lsp_toggle_inlay_hints = "<leader>th",
+	formatter_format = "<leader>f",
+	cmp_next_item = "<C-j>",
+	cmp_prev_item = "<C-k>",
+	cmp_confirm = "<C-y>",
+	cmp_complete = "<C-Space>",
+}
+
+-- other keybindings at the end of the file
+
 require("lazy").setup({
 	"tpope/vim-sleuth", -- Detect tabstop and shiftwidth automatically
 	-- {
@@ -89,15 +119,20 @@ require("lazy").setup({
 			pcall(require("telescope").load_extension, "ui-select")
 
 			local builtin = require("telescope.builtin")
-			vim.keymap.set("n", "<leader>pf", builtin.find_files, { desc = "[S]earch [F]iles" })
-			vim.keymap.set("n", "<leader>pp", builtin.builtin, { desc = "[S]earch [S]elect Telescope" })
-			vim.keymap.set("n", "<leader>pg", builtin.live_grep, { desc = "[S]earch by [G]rep" })
-			vim.keymap.set("n", "<leader>pd", builtin.diagnostics, { desc = "[S]earch [D]iagnostics" })
-			vim.keymap.set("n", "<leader>g.", builtin.oldfiles, { desc = '[S]earch Recent Files ("." for repeat)' })
+			vim.keymap.set("n", kbds.telescope_find_files, builtin.find_files, { desc = "[S]earch [F]iles" })
+			vim.keymap.set("n", kbds.telescope_builtins, builtin.builtin, { desc = "[S]earch [S]elect Telescope" })
+			vim.keymap.set("n", kbds.telescope_grep, builtin.live_grep, { desc = "[S]earch by [G]rep" })
+			vim.keymap.set("n", kbds.telescope_diagnostics, builtin.diagnostics, { desc = "[S]earch [D]iagnostics" })
+			vim.keymap.set(
+				"n",
+				kbds.telescope_recent,
+				builtin.oldfiles,
+				{ desc = '[S]earch Recent Files ("." for repeat)' }
+			)
 			-- vim.keymap.set('n', '<leader><leader>', builtin.buffers, { desc = '[ ] Find existing buffers' })
 
 			-- NOTE: Shortcut for searching your Neovim configuration files
-			vim.keymap.set("n", "g$", function()
+			vim.keymap.set("n", kbds.telescope_config_dir, function()
 				builtin.find_files({ cwd = vim.fn.stdpath("config") })
 			end, { desc = "[S]earch [N]eovim files" })
 		end,
@@ -131,22 +166,30 @@ require("lazy").setup({
 						vim.keymap.set("n", keys, func, { buffer = event.buf, desc = "LSP: " .. desc })
 					end
 
-					map("gd", require("telescope.builtin").lsp_definitions, "[G]oto [D]efinition")
-					map("gr", require("telescope.builtin").lsp_references, "[G]oto [R]eferences")
-					map("gI", require("telescope.builtin").lsp_implementations, "[G]oto [I]mplementation")
-					map("gt", require("telescope.builtin").lsp_type_definitions, "Type [D]efinition")
-					map("gs", require("telescope.builtin").lsp_document_symbols, "[D]ocument [S]ymbols")
+					map(kbds.lsp_definitions, require("telescope.builtin").lsp_definitions, "[G]oto [D]efinition")
+					map(kbds.lsp_references, require("telescope.builtin").lsp_references, "[G]oto [R]eferences")
 					map(
-						"<leader>lws",
+						kbds.lsp_implementations,
+						require("telescope.builtin").lsp_implementations,
+						"[G]oto [I]mplementation"
+					)
+					map(
+						kbds.lsp_type_definitions,
+						require("telescope.builtin").lsp_type_definitions,
+						"Type [D]efinition"
+					)
+					map(kbds.lsp_symbols, require("telescope.builtin").lsp_document_symbols, "[D]ocument [S]ymbols")
+					map(
+						kbds.lsp_workspace_symbols,
 						require("telescope.builtin").lsp_dynamic_workspace_symbols,
 						"[W]orkspace [S]ymbols"
 					)
-					map("<leader>lrn", vim.lsp.buf.rename, "[R]e[n]ame")
-					map("<leader>lca", vim.lsp.buf.code_action, "[C]ode [A]ction")
-					map("<leader>ld", vim.diagnostic.open_float, "Open float diagnostic")
-					map("<leader>lr", "<cmd>LspRestart<CR>", "Restart LSP Servers")
-					map("K", vim.lsp.buf.hover, "Hover Documentation")
-					map("gD", vim.lsp.buf.declaration, "[G]oto [D]eclaration")
+					map(kbds.lsp_rename, vim.lsp.buf.rename, "[R]e[n]ame")
+					map(kbds.lsp_code_action, vim.lsp.buf.code_action, "[C]ode [A]ction")
+					map(kbds.lsp_diagnostic, vim.diagnostic.open_float, "Open float diagnostic")
+					map(kbds.lsp_restart, "<cmd>LspRestart<CR>", "Restart LSP Servers")
+					map(kbds.lsp_hover, vim.lsp.buf.hover, "Hover Documentation")
+					map(kbds.lsp_goto_declaration, vim.lsp.buf.declaration, "[G]oto [D]eclaration")
 
 					local client = vim.lsp.get_client_by_id(event.data.client_id)
 					if client and client.server_capabilities.documentHighlightProvider then
@@ -171,7 +214,7 @@ require("lazy").setup({
 					end
 
 					if client and client.server_capabilities.inlayHintProvider and vim.lsp.inlay_hint then
-						map("<leader>th", function()
+						map(kbds.lsp_toggle_inlay_hints, function()
 							vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())
 						end, "[T]oggle Inlay [H]ints")
 					end
@@ -220,7 +263,7 @@ require("lazy").setup({
 		lazy = false,
 		keys = {
 			{
-				"<leader>f",
+				kbds.formatter_format,
 				function()
 					require("conform").format({ async = true, lsp_fallback = true })
 				end,
@@ -284,14 +327,11 @@ require("lazy").setup({
 				mapping = cmp.mapping.preset.insert({
 					-- ['<C-n>'] = cmp.mapping.select_next_item(),
 					-- ['<C-p>'] = cmp.mapping.select_prev_item(),
-					["<C-j>"] = cmp.mapping.select_next_item(),
-					["<C-k>"] = cmp.mapping.select_prev_item(),
+					[kbds.cmp_next_item] = cmp.mapping.select_next_item(),
+					[kbds.cmp_prev_item] = cmp.mapping.select_prev_item(),
 
-					["<C-b>"] = cmp.mapping.scroll_docs(-4),
-					["<C-f>"] = cmp.mapping.scroll_docs(4),
-
-					["<C-y>"] = cmp.mapping.confirm({ select = true }),
-					["<C-Space>"] = cmp.mapping.complete({}),
+					[kbds.cmp_confirm] = cmp.mapping.confirm({ select = true }),
+					[kbds.cmp_complete] = cmp.mapping.complete({}),
 
 					-- ['<C-l>'] = cmp.mapping(function()
 					--   if luasnip.expand_or_locally_jumpable() then
@@ -348,23 +388,13 @@ require("lazy").setup({
 				"vim",
 				"vimdoc",
 			},
-			-- Autoinstall languages that are not installed
 			auto_install = true,
 			highlight = {
 				enable = true,
-				-- Some languages depend on vim's regex highlighting system (such as Ruby) for indent rules.
-				--  If you are experiencing weird indenting issues, add the language to
-				--  the list of additional_vim_regex_highlighting and disabled languages for indent.
 				additional_vim_regex_highlighting = { "ruby" },
 			},
 			indent = { enable = true, disable = { "ruby" } },
 		},
-		-- There are additional nvim-treesitter modules that you can use to interact
-		-- with nvim-treesitter. You should go explore a few and see what interests you:
-		--
-		--    - Incremental selection: Included, see `:help nvim-treesitter-incremental-selection-mod`
-		--    - Show your current context: https://github.com/nvim-treesitter/nvim-treesitter-context
-		--    - Treesitter + textobjects: https://github.com/nvim-treesitter/nvim-treesitter-textobjects
 	},
 
 	{
@@ -377,13 +407,13 @@ require("lazy").setup({
 		},
 		cmd = "Neotree",
 		keys = {
-			{ "<leader>pt", ":Neotree reveal<CR>", { desc = "NeoTree reveal", silent = true } },
+			{ kbds.filetree_open_close, ":Neotree reveal<CR>", { desc = "NeoTree reveal", silent = true } },
 		},
 		opts = {
 			filesystem = {
 				window = {
 					mappings = {
-						["<leader>pt"] = "close_window",
+						[kbds.filetree_open_close] = "close_window",
 					},
 				},
 			},
@@ -408,41 +438,18 @@ require("lazy").setup({
 			-- indent = { char = '»' },
 		},
 	},
-	{ -- Collection of various small independent plugins/modules
+	{
 		"echasnovski/mini.nvim",
 		config = function()
-			-- Better Around/Inside textobjects
-			--
-			-- Examples:
-			--  - va)  - [V]isually select [A]round [)]paren
-			--  - yinq - [Y]ank [I]nside [N]ext [Q]uote
-			--  - ci'  - [C]hange [I]nside [']quote
-			require("mini.ai").setup({ n_lines = 500 })
+			-- require("mini.ai").setup({ n_lines = 500 })
+			-- require("mini.surround").setup()
 
-			-- Add/delete/replace surroundings (brackets, quotes, etc.)
-			--
-			-- - saiw) - [S]urround [A]dd [I]nner [W]ord [)]Paren
-			-- - sd'   - [S]urround [D]elete [']quotes
-			-- - sr)'  - [S]urround [R]eplace [)] [']
-			require("mini.surround").setup()
-
-			-- Simple and easy statusline.
-			--  You could remove this setup call if you don't like it,
-			--  and try some other statusline plugin
 			local statusline = require("mini.statusline")
-			-- set use_icons to true if you have a Nerd Font
 			statusline.setup({ use_icons = vim.g.have_nerd_font })
-
-			-- You can configure sections in the statusline by overriding their
-			-- default behavior. For example, here we set the section for
-			-- cursor location to LINE:COLUMN
 			---@diagnostic disable-next-line: duplicate-set-field
 			statusline.section_location = function()
 				return "%2l:%-2v"
 			end
-
-			-- ... and there is more!
-			--  Check out: https://github.com/echasnovski/mini.nvim
 		end,
 	},
 }, {
@@ -465,70 +472,26 @@ require("lazy").setup({
 	},
 })
 
-local function bind(m, k, v)
-	vim.keymap.set(m, k, v, {})
-end
-local function sbind(m, k, v)
-	vim.keymap.set(m, k, v, { silent = true })
-end
+-- system clipboard stuff
+vim.keymap.set({ "n", "v" }, "<leader>y", [["+y]], {})
+vim.keymap.set("n", "<leader>Y", [["+Y]], {})
+vim.keymap.set("n", "<leader>yy", [["+yy]], {})
+vim.keymap.set({ "n", "v" }, "<leader>d", [["_d]], {})
 
-bind({ "n", "v" }, "<leader>y", [["+y]])
-bind("n", "<leader>Y", [["+Y]])
-bind("n", "<leader>yy", [["+yy]])
-bind({ "n", "v" }, "<leader>d", [["_d]])
+vim.keymap.set("n", "<leader>p", '"_dp', {})
+vim.keymap.set("x", "<leader>p", [["_dP]], {})
 
-bind("n", "<leader>p", '"_dp')
--- map("n", "<leader>P", '"+P')
--- map("v", "<leader>p", '"+p')
--- map("v", "<leader>P", '"+P')
+-- remove useless binds
+vim.keymap.set("", "gu", "<nop>", {})
+vim.keymap.set("", "gU", "<nop>", {})
+vim.keymap.set("", "<F1>", "<nop>", {})
+vim.keymap.set("n", "Q", "<nop>", {})
 
-bind("n", "U", "<C-r>")
--- map("v", "U", "<nop>")
--- map("v", "u", "<nop>")
-bind("", "gu", "<nop>")
-bind("", "gU", "<nop>")
+-- Center on some movements
+vim.keymap.set("n", "<C-d>", "<C-d>zz", {})
+vim.keymap.set("n", "<C-u>", "<C-u>zz", {})
+vim.keymap.set("n", "n", "nzzzv", {})
+vim.keymap.set("n", "N", "Nzzzv", {})
 
-bind("", "<F1>", "<nop>")
-bind("n", "Q", "<nop>")
-
-bind("n", "<C-d>", "<C-d>zz")
-bind("n", "<C-u>", "<C-u>zz")
-bind("n", "n", "nzzzv")
-bind("n", "N", "Nzzzv")
-
-bind("x", "<leader>p", [["_dP]])
-
-sbind("n", "<leader>k", "<cmd>lnext<CR>zz")
-sbind("n", "<leader>j", "<cmd>lprev<CR>zz")
-
--- local function sudo_write_file()
--- 	local current_file = vim.fn.expand("%:p")
--- 	local command = string.format("sudo tee %s > /dev/null", current_file)
--- 	vim.cmd(string.format("silent! execute 'w !%s'", command))
--- 	vim.cmd("edit!")
--- 	vim.cmd([[set noro]])
--- 	vim.opt_local.modifiable = true
--- end
---
--- vim.api.nvim_create_user_command("SudoWrite", function()
--- 	sudo_write_file()
--- end, {})
--- vim.api.nvim_create_user_command("SudoWriteQuit", function()
--- 	sudo_write_file()
--- 	vim.cmd("q")
--- end, {})
--- vim.api.nvim_create_user_command("SudoWriteQuitAll", function()
--- 	sudo_write_file()
--- 	vim.cmd("qa")
--- end, {})
--- vim.cmd([[cnoreabbrev sudow SudoWrite]])
--- vim.cmd([[cnoreabbrev sudowq SudoWriteQuit]])
--- vim.cmd([[cnoreabbrev sudowqa SudoWriteQuitAll]])
-vim.cmd([[autocmd BufEnter * setlocal noro]])
-vim.opt.autoread = true
-
-if vim.g.neovide then
-	bind("n", "<C-S-V>", '"+P')
-	bind("v", "<C-S-V>", '"+P')
-	bind("i", "<C-S-V>", '<C-\\><C-o>"+P')
-end
+vim.keymap.set("n", "<leader>k", "<cmd>lnext<CR>zz", { silent = true })
+vim.keymap.set("n", "<leader>j", "<cmd>lprev<CR>zz", { silent = true })

@@ -8,6 +8,7 @@ export PATH="${PATH}:${HOME}/.local/bin:${HOME}/go/bin"
 export PAGER="bat"
 export MY_DOTFILES_DIR="${HOME}/dotfiles"
 export SVDIR="${HOME}/.local/runsvdir"
+export DOCKER_HOST="unix://${XDG_RUNTIME_DIR}/podman/podman.sock"
 
 export SESSION_ENV="/tmp/session.env"
 if [ ! -f ${SESSION_ENV} ]; then

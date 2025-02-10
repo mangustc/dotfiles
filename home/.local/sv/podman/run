@@ -8,4 +8,4 @@ fi
 export XDG_RUNTIME_DIR
 export SVDIR
 
-exec podman system service --time 0 unix:///tmp/podman.sock >/dev/null
+exec podman system service --time 0 >/dev/null

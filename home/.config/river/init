@@ -1,14 +1,24 @@
 #!/bin/bash
 
-width=2240
-height=1400
+config_dir="$(dirname "$0")"
 
-wlr-randr --output 'eDP-1' --mode "${width}x${height}" --pos '0,0' --transform 'normal' --scale '1.5' --preferred
-echo 180 > /sys/class/backlight/amdgpu_bl0/brightness
+wlr-randr --output 'HDMI-A-1'
+if [ "$?" = "0" ]; then
+    main_display="HDMI-A-1"
+    wlr-randr --output 'eDP-1' --off
+    wlr-randr --output 'HDMI-A-1' --mode "1920x1080" --pos '0,0' --transform 'normal' --scale '1' --preferred --on
+else
+    main_display="eDP-1"
+    wlr-randr --output 'HDMI-A-1' -off
+    wlr-randr --output 'eDP-1' --mode "2240x1400" --pos '0,0' --transform 'normal' --scale '1.5' --preferred --on
+fi
+echo 180 >/sys/class/backlight/amdgpu_bl0/brightness
 
 riverctl keyboard-layout -options "grp:caps_toggle" 'us(dvorak),ru'
 riverctl set-repeat 50 300
 riverctl input pointer-1739-52781-MSFT0003:00_06CB:CE2D_Touchpad tap enabled
+riverctl input pointer-9639-64124-Compx_2.4G_Wireless_Receiver accel-profile flat
+riverctl input pointer-9639-64124-Compx_2.4G_Wireless_Receiver pointer-accel -0.8
 
 # riverctl rule-add -app-id 'float*' -title 'foo' float
 riverctl rule-add -app-id "zen" ssd
@@ -21,7 +31,7 @@ riverctl border-width 1
 riverctl border-color-focused 0xf5e0dc
 riverctl border-color-unfocused 0x1e1e2e
 
-riverctl map normal Super+Shift Return spawn "KITTY_ENABLE_WAYLAND=1 kitty"
+riverctl map normal Super+Shift T spawn "KITTY_ENABLE_WAYLAND=1 kitty"
 riverctl map normal Super P spawn "BEMENU_BACKEND=wayland BEMENU_OPTS='--fb \"#1e1e2e\" --ff \"#cdd6f4\" --nb \"#1e1e2e\" --nf \"#cdd6f4\" --tb \"#1e1e2e\" --hb \"#1e1e2e\" --tf \"#f38ba8\" --hf \"#f9e2af\" --af \"#cdd6f4\" --ab \"#1e1e2e\" -H 20 -i' bemenu-run"
 riverctl map normal Super+Shift C close
 riverctl map normal Control+Alt Backspace exit
@@ -53,8 +63,7 @@ riverctl map-pointer normal Super BTN_LEFT move-view
 riverctl map-pointer normal Super BTN_RIGHT resize-view
 riverctl map-pointer normal Super BTN_MIDDLE toggle-float
 
-for i in $(seq 1 9)
-do
+for i in $(seq 1 9); do
     tags=$((1 << ($i - 1)))
 
     # Super+[1-9] to focus tag [0-8]
@@ -64,8 +73,8 @@ do
     riverctl map normal Super+Shift $i set-view-tags $tags
 done
 
-printenv > ${SESSION_ENV}
+printenv >${SESSION_ENV}
 
 /usr/libexec/xdg-desktop-portal-wlr &
-yambar &
+yambar --config="${config_dir}/yambar-${main_display}.yml" &
 rivertile -view-padding 0 -outer-padding 0 &

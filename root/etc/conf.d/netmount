@@ -37,7 +37,7 @@
 # current setup, but you are highly discouraged from using this. In
 # other words, please change it to be more suited to your system.
 #
-rc_need="iwd"
+rc_need="net"
 #
 # Mark certain mount points as critical.
 # This contains aspace separated list of mount points which should be

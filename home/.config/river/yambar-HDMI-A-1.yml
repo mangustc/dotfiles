@@ -1,0 +1,101 @@
+font_default: &font_default JetBrainsMono Nerd Font:pixelsize=12
+color_text: &color_text cdd6f4ff
+color_base: &color_base 1e1e2eff
+color_mauve: &color_mauve cba6f7ff
+color_crust: &color_crust 11111bff
+color_blue: &color_blue 89b4faff
+bg_default: &bg_default {stack: [{background: {color: *color_crust}}, {underline: {size: 4, color: *color_blue}}]}
+bar:
+  height: 20
+  location: top
+  font: *font_default
+  spacing: 0
+  # margin: 0
+  # right-margin: 24
+  layer: bottom
+  foreground: *color_text
+  background: *color_base
+
+  left:
+    - river:
+        anchors:
+          - base: &river_base
+              left-margin: 12
+              right-margin: 12
+              default: {string: {text: "{id}", font: *font_default}}
+              conditions:
+                id == 2: {string: {text: "2", font: *font_default}}
+
+        content:
+          map:
+            conditions:
+              state == urgent:
+                map:
+                  <<: *river_base
+                  deco: {background: {color: D08770ff}}
+              state == focused:
+                map:
+                  <<: *river_base
+                  deco: *bg_default
+              state == visible && ~occupied:
+                map:
+                  <<: *river_base
+              state == visible && occupied:
+                map:
+                  <<: *river_base
+                  deco: *bg_default
+              state == unfocused:
+                map:
+                  <<: *river_base
+              state == invisible && ~occupied: {empty: {}}
+              state == invisible && occupied:
+                map:
+                  <<: *river_base
+                  deco: {underline: {size: 3, color: *color_mauve}}
+  # center:
+    - foreign-toplevel:
+        content:
+          map:
+            conditions:
+              ~activated: {empty: {}}
+              activated:
+                - string: {text: "{app-id}", foreground: *color_blue, left-margin: 32}
+                - string: {text: ": {title}"}
+  right:
+    - pulse:
+        content:
+          map:
+            conditions:
+              sink_muted:
+                - string: {text: "VOL", foreground: *color_mauve}
+                - string: {text: " {sink_percent}% ({sink_port}) M", right-margin: 32}
+              ~sink_muted: {string: {text: "VOL {sink_percent}% ({sink_port})", right-margin: 32}}
+    - backlight:
+        name: amdgpu_bl0
+        content: 
+          - string: {text: "L", foreground: *color_mauve}
+          - string: {text: " {percent}%", right-margin: 32}
+    - battery:
+        name: BAT1
+        poll-interval: 30000
+        anchors:
+          bat_cap: &bat_cap
+            list:
+              items:
+                - string: {text: "BAT", foreground: *color_mauve}
+                - string: {text: " {capacity}%", right-margin: 32}
+        content:
+          map:
+            default:
+                <<: *bat_cap
+            conditions:
+              state == unknown:
+                <<: *bat_cap
+    - clock:
+        date-format: "%b %d"
+        time-format: "%H:%M"
+        content:
+          - string: {text: "DATE", foreground: *color_mauve}
+          - string: {text: " {date}", right-margin: 32}
+          - string: {text: "TIME", foreground: *color_mauve}
+          - string: {text: " {time}", right-margin: 32}
