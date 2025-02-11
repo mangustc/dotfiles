@@ -1,0 +1,55 @@
+{
+      "layer": "top",
+      "position": "top",
+      "height": 20,
+      "modules-left": ["custom/launcher", "hyprland/workspaces", "temperature", "custom/wall"],
+      "modules-center": [
+        "clock"
+      ],
+      "modules-right": [
+        "wireplumber",
+        "backlight",
+        "battery",
+        "tray"
+      ],
+      "hyprland/workspaces": {
+        "format": "{name}",
+        "on-click": "activate"
+      },
+      "idle_inhibitor": {
+        "format": "{icon}",
+        "format-icons": {
+          "activated": "",
+          "deactivated": "",
+        },
+        "tooltip": false
+      },
+      "backlight": {
+        "device": "amdgpu_bl0",
+        "format": "L {percent}%",
+      },
+      "wireplumber": {
+        "scroll-step": 1,
+        "format": "VOL {volume}%",
+        "format-muted": "VOL {volume}% M",
+        "tooltip": false
+      },
+      "battery": {
+        "interval": 60,
+        "states": {
+          "warning": 20,
+          "critical": 10
+        },
+        "format": "BAT {capacity}%",
+        "tooltip": false
+      },
+      "clock": {
+        "interval": 60,
+        "format": "{:%I:%M %p  %A %b %d}",
+        "tooltip": false,
+      },
+      "temperature": {
+        "tooltip": false,
+        "format": "TEMP {temperatureC}°C"
+      },
+}
