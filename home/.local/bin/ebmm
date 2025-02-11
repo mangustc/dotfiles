@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 img_path="\EFI\Gentoo"
 echo "This script is used to manage EXISTING efi stubs using efibootmgr"

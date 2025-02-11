@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 SOURCE_DIR="${HOME}/dotfiles/home/.config"
 DEST_DIR="${HOME}/.config"

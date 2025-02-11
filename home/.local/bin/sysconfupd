@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 if [ "${MY_DOTFILES_DIR}" = "" ]; then
 	echo "MY_DOTFILES_DIR environment variable should be set to dotfiles directory"
