@@ -31,11 +31,13 @@ media-gfx/imagemagick
 media-sound/pavucontrol
 media-video/pipewire
 media-video/wireplumber
+net-dns/bind-tools
 net-dns/openresolv
 net-libs/libnetfilter_queue
 net-libs/nodejs
 net-misc/chrony
 net-misc/netifrc
+net-p2p/qbittorrent
 net-wireless/iwd
 sys-apps/bat
 sys-apps/dbus
@@ -50,5 +52,6 @@ sys-power/acpi
 sys-process/btop
 sys-process/runit
 virtual/udev
+www-client/brave-bin
 www-client/zen-browser
 x11-terms/kitty
