@@ -15,3 +15,5 @@ net-libs/nodejs npm
 app-admin/doas persist
 # gui-wm/hyprland -qtutils
 gui-apps/waybar -* pipewire
+net-print/cups -X -acl -dbus -pam -usb
+www-client/brave-bin L10N: -* en-US
