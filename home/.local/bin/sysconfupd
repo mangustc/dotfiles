@@ -23,6 +23,7 @@ mkdir -p "${DEST_DIR}/etc/portage"
 mkdir -p "${DEST_DIR}/var/db/repos"
 
 cp -vr "${SOURCE_DIR}/etc/rc.conf" "${DEST_DIR}/etc"
+cp -vr "${SOURCE_DIR}/etc/resolvconf.conf" "${DEST_DIR}/etc"
 cp -vr "${SOURCE_DIR}/etc/hostname" "${DEST_DIR}/etc"
 cp -vr "${SOURCE_DIR}/etc/locale.gen" "${DEST_DIR}/etc"
 cp -vr "${SOURCE_DIR}/etc/fstab" "${DEST_DIR}/etc"
