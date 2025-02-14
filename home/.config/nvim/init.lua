@@ -55,6 +55,8 @@ vim.opt.rtp:prepend(lazypath)
 
 local kbds = {
 	filetree_open_close = "<leader>pt",
+	filetree_open_cwd_current_buffer_dir = "<leader>pT",
+	filetree_cwd_current_buffer_dir = "<leader>pc",
 	telescope_find_files = "<leader>pf",
 	telescope_builtins = "<leader>pp",
 	telescope_grep = "<leader>pg",
@@ -543,3 +545,13 @@ vim.keymap.set("n", "N", "Nzzzv", {})
 
 vim.keymap.set("n", "<leader>k", "<cmd>lnext<CR>zz", { silent = true })
 vim.keymap.set("n", "<leader>j", "<cmd>lprev<CR>zz", { silent = true })
+
+vim.keymap.set("n", kbds.filetree_cwd_current_buffer_dir, function()
+	vim.cmd("Neotree close")
+	vim.cmd("cd %:p:h")
+end, {})
+vim.keymap.set("n", kbds.filetree_open_cwd_current_buffer_dir, function()
+	vim.cmd("Neotree close")
+	vim.cmd("cd %:p:h")
+	vim.cmd("Neotree reveal")
+end, {})
