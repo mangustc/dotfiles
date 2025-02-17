@@ -1,5 +1,3 @@
-dev-lang/zig-bin::gentoo ~amd64
-app-eselect/eselect-zig::gentoo ~amd64
 app-containers/podman-compose::gentoo ~amd64
 dev-cpp/sdbus-c++::gentoo ~amd64
 gui-wm/hyprland::gentoo ~amd64

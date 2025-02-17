@@ -1,6 +1,8 @@
+*/* CPU_FLAGS_X86: aes avx avx2 f16c fma3 mmx mmxext pclmul popcnt rdrand sha sse sse2 sse3 sse4_1 sse4_2 sse4a ssse3 vpclmulqdq
+*/* VIDEO_CARDS: amdgpu radeonsi
+
 sys-kernel/gentoo-kernel-bin -initramfs
 net-misc/netifrc -dhcp
-x11-terms/ghostty -adwaita -system-ncurses
 app-text/xmlto text
 sys-devel/gcc -lto
 # media-libs/mesa VIDEO_CARDS: radeon nouveau intel
@@ -17,3 +19,4 @@ app-admin/doas persist
 gui-apps/waybar -* pipewire
 net-print/cups -X -acl -dbus -pam -usb
 www-client/brave-bin L10N: -* en-US
+app-editors/neovim -nvimpager
