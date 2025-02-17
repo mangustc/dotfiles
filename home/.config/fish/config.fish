@@ -1,3 +1,9 @@
+if set -q KITTY_INSTALLATION_DIR
+    set --global KITTY_SHELL_INTEGRATION enabled no-cursor
+    source "$KITTY_INSTALLATION_DIR/shell-integration/fish/vendor_conf.d/kitty-shell-integration.fish"
+    set --prepend fish_complete_path "$KITTY_INSTALLATION_DIR/shell-integration/fish/vendor_completions.d"
+end
+
 fish_config theme choose Catppuccin\ Mocha
 set fzf_fd_opts --hidden --no-ignore --max-depth 5
 set fzf_preview_dir_cmd eza --time-style relative -lA
