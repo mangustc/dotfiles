@@ -406,11 +406,11 @@ require("lazy").setup({
 		end,
 	},
 	{
-		"catppuccin/nvim",
-		name = "catppuccin",
+		"RRethy/base16-nvim",
+		lazy = false,
 		priority = 1000,
 		config = function()
-			vim.cmd.colorscheme("catppuccin-mocha")
+			vim.cmd.colorscheme("base16-gruvbox-dark-pale")
 		end,
 	},
 	{
