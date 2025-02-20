@@ -4,9 +4,10 @@
 # gui-apps/yambar::localrepo
 # =gui-apps/wlr-randr-0.4.1::guru
 app-misc/tealdeer::guru
+app-office/obsidian::guru
+gui-libs/xdg-desktop-portal-hyprland::guru
 www-client/zen-browser::localrepo
 www-client/brave-bin::localrepo
 gui-apps/lswt::localrepo
 dev-vcs/lazygit::localrepo
 app-containers/lazydocker::localrepo
-gui-libs/xdg-desktop-portal-hyprland::guru

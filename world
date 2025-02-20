@@ -11,6 +11,7 @@ app-laptop/laptop-mode-tools
 app-misc/jq
 app-misc/tealdeer
 app-misc/tmux
+app-office/obsidian
 app-shells/bash-completion
 app-shells/fish
 app-shells/fzf
@@ -28,6 +29,7 @@ media-fonts/noto
 media-fonts/noto-emoji
 media-gfx/imagemagick
 media-sound/pavucontrol
+media-video/mpv
 media-video/pipewire
 media-video/wireplumber
 net-dns/bind-tools
@@ -36,6 +38,7 @@ net-libs/libnetfilter_queue
 net-libs/nodejs
 net-misc/chrony
 net-misc/netifrc
+net-misc/yt-dlp
 net-p2p/qbittorrent
 net-wireless/iwd
 sys-apps/bat

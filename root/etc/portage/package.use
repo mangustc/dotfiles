@@ -20,3 +20,5 @@ gui-apps/waybar -* pipewire
 net-print/cups -X -acl -dbus -pam -usb
 www-client/brave-bin L10N: -* en-US
 app-editors/neovim -nvimpager
+app-office/obsidian L10N: -* en-US
+media-libs/libsdl2 gles2
