@@ -1,0 +1,9 @@
+#!/bin/sh
+
+vault_dir="${HOME}/storage/obsidian/main-vault"
+
+cd "${vault_dir}"
+if [ "$?" -ne "0" ] ; then
+	exit 1
+fi
+lazygit
