@@ -20,12 +20,23 @@ for FILEPATH in ${SOURCE_DIR}/*; do
     echo -e "Linked ${SOURCE_DIR}/${FILENAME} to ${DEST_DIR}/${FILENAME}\n"
 done
 
+
+SOURCE_DIR="${HOME}/dotfiles/home/.shortcuts"
+DEST_DIR="${HOME}/.shortcuts"
+mkdir -p ${DEST_DIR}
+for FILEPATH in ${SOURCE_DIR}/*; do
+    FILENAME=$(basename ${FILEPATH})
+    rm -rfv "${DEST_DIR}/${FILENAME}"
+    cp -rfv "${SOURCE_DIR}/${FILENAME}" "${DEST_DIR}/${FILENAME}"
+    echo -e "Replaced ${SOURCE_DIR}/${FILENAME} to ${DEST_DIR}/${FILENAME}\n"
+done
+
 SOURCE_DIR="${HOME}/dotfiles/home"
 DEST_DIR="${HOME}"
 
 for FILEPATH in ${SOURCE_DIR}/.*; do
     FILENAME=$(basename ${FILEPATH})
-    if [ ${FILENAME} = ".local" ] || [ ${FILENAME} = ".config" ]|| [ ${FILENAME} = "." ]|| [ ${FILENAME} = ".." ]; then
+    if [ ${FILENAME} = ".shortcuts" ] || [ ${FILENAME} = ".local" ] || [ ${FILENAME} = ".config" ]|| [ ${FILENAME} = "." ]|| [ ${FILENAME} = ".." ]; then
         continue
     fi
     if [ -f "${DEST_DIR}/${FILENAME}" ]; then

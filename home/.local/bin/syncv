@@ -1,8 +1,13 @@
 #!/bin/sh
 
-vault_dir="${HOME}/storage/obsidian/main-vault"
+ssh-add -l
+if [ "$?" = "1" ]; then
+	ssh-add
+fi
 
-cd "${vault_dir}"
+git_dir="$1"
+
+cd "${git_dir}"
 if [ "$?" -ne "0" ] ; then
 	exit 1
 fi
