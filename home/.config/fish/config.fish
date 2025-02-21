@@ -3,6 +3,7 @@ set fzf_fd_opts --hidden --no-ignore --max-depth 5
 set fzf_preview_dir_cmd eza --time-style relative -lA
 
 function fish_greeting
+    clear
     printf "\e[31m●\e[0m \e[33m●\e[0m \e[32m●\e[0m \e[36m●\e[0m \e[34m●\e[0m \e[35m●\e[0m \n"
 end
 
