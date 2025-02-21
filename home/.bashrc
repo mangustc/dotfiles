@@ -1,4 +1,4 @@
-export XDG_RUNTIME_DIR="${HOME}/.local/runtime"
+export XDG_RUNTIME_DIR="${TMPDIR}/xdg-runtime"
 mkdir -p "${XDG_RUNTIME_DIR}"
 chmod 0700 "${XDG_RUNTIME_DIR}"
 export XDG_CACHE_HOME="${HOME}/.cache"
