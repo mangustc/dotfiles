@@ -228,24 +228,11 @@ require("lazy").setup({
 
 			local servers = {
 				bashls = {},
-				lua_ls = {
-					-- cmd = {...},
-					-- filetypes = { ...},
-					-- capabilities = {},
-					settings = {
-						Lua = {
-							completion = {
-								callSnippet = "Replace",
-							},
-						},
-					},
-				},
 			}
 			require("mason").setup()
 
 			local ensure_installed = vim.tbl_keys(servers or {})
 			vim.list_extend(ensure_installed, {
-				"stylua",
 				"shfmt",
 			})
 			require("mason-tool-installer").setup({ ensure_installed = ensure_installed })
@@ -300,8 +287,6 @@ require("lazy").setup({
 				}
 			end,
 			formatters_by_ft = {
-				lua = { "stylua" },
-				-- jsx = { "prettier" },
 				typescript = { "prettierd", "prettier", stop_after_first = true },
 				typescriptreact = { "prettierd", "prettier", stop_after_first = true },
 				javascript = { "prettierd", "prettier", stop_after_first = true },
@@ -406,11 +391,11 @@ require("lazy").setup({
 		end,
 	},
 	{
-		"catppuccin/nvim",
-		name = "catppuccin",
+		"RRethy/base16-nvim",
+		lazy = false,
 		priority = 1000,
 		config = function()
-			vim.cmd.colorscheme("catppuccin-mocha")
+			vim.cmd.colorscheme("base16-gruvbox-dark-pale")
 		end,
 	},
 	{
