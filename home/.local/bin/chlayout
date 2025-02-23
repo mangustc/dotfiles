@@ -1,0 +1,9 @@
+#!/bin/sh
+
+if [ "$1" = "default" ]; then
+	setxkbmap -layout us,ru -variant dvorak, -option "grp:caps_toggle" -option "terminate:ctrl_alt_bksp"
+elif [ "$1" = "gaming" ]; then
+	setxkbmap -layout us -option "terminate:ctrl_alt_bksp"
+else
+	echo "Unknown option: \"$1\""
+fi
