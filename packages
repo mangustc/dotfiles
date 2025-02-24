@@ -4,6 +4,7 @@ bemenu
 bemenu-wayland
 bemenu-x11
 btop
+discord
 dolphin
 efibootmgr
 eza
@@ -11,6 +12,7 @@ fd
 fish
 fzf
 gamemode
+go
 intel-ucode
 iptables-nft
 kate
