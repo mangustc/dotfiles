@@ -1,6 +1,6 @@
 #!/bin/sh
 
-img_path='\'
+img_path=''
 echo "This script is used to manage EXISTING efi stubs using efibootmgr"
 echo "This script uses ${img_path} as default path where images are located"
 echo ""

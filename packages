@@ -5,7 +5,9 @@ bemenu-wayland
 bemenu-x11
 btop
 discord
+dnsmasq
 dolphin
+edk2-ovmf
 efibootmgr
 eza
 fd
@@ -15,6 +17,7 @@ gamemode
 go
 intel-ucode
 iptables-nft
+jq
 kate
 kitty
 kscreen
@@ -24,12 +27,14 @@ lib32-libpipewire
 lib32-opencl-nvidia
 lib32-pipewire
 libnetfilter_queue
+libvirt
 linux
 linux-firmware
 linux-headers
 lutris
 man-db
 man-pages
+mpv
 neovim
 nftables
 nodejs
@@ -40,6 +45,7 @@ nvidia
 nvidia-settings
 nvidia-utils
 nvimpager
+okteta
 opendoas
 openssh
 paru-bin
@@ -48,10 +54,12 @@ pipewire-alsa
 pipewire-pulse
 plasma-desktop
 qbittorrent
+qemu-desktop
 reflector
 steam
 tealdeer
 ttf-jetbrains-mono-nerd
+virt-manager
 vulkan-tools
 winetricks
 wl-clipboard
@@ -61,4 +69,5 @@ xdotool
 xorg-server
 xorg-xinit
 xorg-xinput
+yt-dlp
 zen-browser-bin
