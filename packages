@@ -14,6 +14,7 @@ fd
 fish
 fzf
 gamemode
+git
 go
 intel-ucode
 iptables-nft
@@ -45,6 +46,7 @@ nvidia
 nvidia-settings
 nvidia-utils
 nvimpager
+obsidian
 okteta
 opendoas
 openssh

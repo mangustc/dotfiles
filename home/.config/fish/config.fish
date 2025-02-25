@@ -48,3 +48,8 @@ abbr --position anywhere mv "mv -vf";
 abbr --position anywhere t "tldr";
 abbr --position anywhere tree "tree -C";
 abbr --position anywhere ls "eza --time-style relative -lA";
+abbr --position anywhere lst "eza --time-style relative -lA -T";
+abbr --position anywhere lss "eza --time-style relative -lA --total-size";
+abbr --position anywhere lsst "eza --time-style relative -lA -T --total-size";
+abbr --position anywhere lsts "eza --time-style relative -lA -T --total-size";
+abbr --position anywhere pgen "pgen | xclip -sel clip";

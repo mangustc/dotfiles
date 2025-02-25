@@ -1,8 +1,0 @@
-[Unit]
-Description=SSH Agent
-
-[Service]
-ExecStart=/usr/bin/ssh-agent -D -a /tmp/ssh-agent.sock
-
-[Install]
-WantedBy=default.target
