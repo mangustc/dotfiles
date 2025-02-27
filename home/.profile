@@ -23,8 +23,12 @@ export MY_DOTFILES_DIR="${HOME}/dotfiles"
 export PATH="${PATH}:${HOME}/.local/bin:${GOPATH}/bin"
 
 ssh-add -l 2>/dev/null >/dev/null
-if [ $? -ge 2 ]; then
+if [ $? -ge 1 ]; then
 	ssh-agent -a "$SSH_AUTH_SOCK" >/dev/null
+	if [ $? -ge 1 ]; then
+		rm "${SSH_AUTH_SOCK}"
+		ssh-agent -a "$SSH_AUTH_SOCK" >/dev/null
+	fi
 fi
 if [ -n "$PS1" ]; then
 	exec fish
