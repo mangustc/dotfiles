@@ -1,0 +1,13 @@
+#!/bin/sh
+
+if [ "$1" != "win10-ltsb" ] && [ "$1" != "win11" ]; then
+    echo "No virt named $1 was found"
+    exit 1
+fi
+
+if [ "$2" != "safe" ] && [ "$2" != "unsafe" ]; then
+    echo "No virt with type $2 was found"
+    exit 1
+fi
+
+exec virsh --connect qemu:///system start "$1-$2"
