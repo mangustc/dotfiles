@@ -13,11 +13,12 @@ export NPM_CONFIG_CACHE="${XDG_CACHE_HOME}/npm"
 export NPM_CONFIG_TMP="${XDG_RUNTIME_DIR}/npm"
 export XAUTHORITY="$XDG_RUNTIME_DIR"/Xauthority
 
-export PAGER="/usr/bin/bat -p"
-export MANPAGER="/usr/bin/bat -p"
+export PAGER="/usr/bin/nvimpager -p"
+export MANPAGER="/usr/bin/nvimpager -p"
 export EDITOR="/usr/bin/nvim"
 export VISUAL="/usr/bin/nvim"
 export MY_DOTFILES_DIR="${HOME}/dotfiles"
 export PATH="${PATH}:${HOME}/.local/bin:${HOME}/go/bin"
+export LIBVIRT_DEFAULT_URI=qemu:///system
 
 [[ -f ~/.bashrc ]] && . ~/.bashrc

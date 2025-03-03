@@ -1,13 +1,65 @@
 #!/bin/sh
 
-if [ "$1" != "win10-ltsb" ] && [ "$1" != "win11" ]; then
-    echo "No virt named $1 was found"
+# NOTE: This script assumes:
+# - you have a "storage" pool in virt which has a path WITHOUT spaces
+# - you have a base domain "win-passthrough" which has a <source file="${storage_pool}/... .qcow2" /> tag
+# - you have set LIBVIRT_DEFAULT_URI environment variable to "qemu:///system"
+# - you have an Arch Linux based system (others may work, but have not been tried)
+
+base_domain="win-passthrough"
+while getopts "d:" opt; do
+  case $opt in
+    d)
+      base_domain="$OPTARG"
+      ;;
+    \?)
+      echo "invalid option: -$OPTARG" >&2
+      exit 1
+      ;;
+    :)
+      echo "option -$OPTARG requires an argument"
+      exit 1
+      ;;
+  esac
+done
+
+virsh dominfo "${base_domain}"
+if [ $? -ge 1 ]; then
+  exit 1
+fi
+
+
+remaining_args=("${@:$OPTIND}")
+if [ ${#remaining_args[@]} -lt 1 ]; then
+  echo "qcow image name is required"
+  exit 1
+fi
+qcow_name="${remaining_args[0]}"
+
+storage_pool="$(virsh pool-dumpxml storage | grep "path" | sed "s/..path.//g" | xargs)"
+qcow_path="${storage_pool}/${qcow_name}.qcow2"
+
+echo "qcow image path: ${qcow_path}"
+if [ ! -f "${qcow_path}" ]; then
+    echo "No qcow image in ${qcow_path} was found"
     exit 1
 fi
 
-if [ "$2" != "safe" ] && [ "$2" != "unsafe" ]; then
-    echo "No virt with type $2 was found"
+tmp_xml="/tmp/${base_domain}.xml"
+virsh dumpxml "${base_domain}" > "${tmp_xml}"
+if [ $? -ge 1 ]; then
     exit 1
 fi
 
-exec virsh --connect qemu:///system start "$1-$2"
+cat "${tmp_xml}" | sed "s|${storage_pool}/.*\.qcow2|${qcow_path}|g" | sed "s|/var/lib/libvirt/qemu/nvram/.*_VARS\.fd|/var/lib/libvirt/qemu/nvram/${qcow_name}_VARS\.fd|g" > "${tmp_xml}.new"
+if [ $? -ge 1 ]; then
+    exit 1
+fi
+mv "${tmp_xml}.new" "${tmp_xml}"
+
+virsh define "${tmp_xml}"
+if [ $? -ge 1 ]; then
+    exit 1
+fi
+
+exec virsh start "${base_domain}"
