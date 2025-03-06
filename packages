@@ -3,6 +3,7 @@ base-devel
 bemenu
 bemenu-wayland
 bemenu-x11
+brave-bin
 btop
 discord
 dnsmasq
@@ -16,6 +17,7 @@ fzf
 gamemode
 git
 go
+gparted
 intel-ucode
 iptables-nft
 jq
@@ -42,6 +44,7 @@ nodejs
 noto-fonts
 noto-fonts-emoji
 npm
+ntfs-3g
 nvidia
 nvidia-settings
 nvidia-utils

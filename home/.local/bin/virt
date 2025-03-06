@@ -1,0 +1,96 @@
+#!/bin/sh
+
+# NOTE: This script assumes:
+# - you have set VIRT_BASE_DOMAIN environment variable set to a valid domain name
+# - you have set NVRAM path to CONFIG_NVRAM_PATH
+# - if you want to add an additional image (cdrom) you have to have at least one available of each: device(sda, sdb, sdc, sdd) and unit(0, 1, 2, 3)
+# - if you want to pass a disk file you have to have CONFIG_DISK_PATH string in base domain xml file
+
+virt_start () {
+  base_domain="${VIRT_BASE_DOMAIN}"
+  cdrom_path="${VIRT_CDROM_PATH}"
+
+  virsh dominfo "${base_domain}"
+  if [ $? -ge 1 ]; then
+    exit 1
+  fi
+
+
+  image_path="$1"
+  echo "image path: ${image_path}"
+  if [ ! -f "${image_path}" ]; then
+      echo "No image in ${image_path} was found"
+      exit 1
+  fi
+  image_path="$(readlink -f "${image_path}")"
+  image_name="$(basename "${image_path}")"
+
+  tmp_domain="tmp-${base_domain}"
+  tmp_xml="/tmp/${tmp_domain}.xml"
+  virsh dumpxml "${base_domain}" > "${tmp_xml}"
+  if [ $? -ge 1 ]; then
+      exit 1
+  fi
+
+  if [ ! "${cdrom_path}" == "" ]; then
+    if [ ! -f "${cdrom_path}" ]; then
+        echo "No cdrom in ${cdrom_path} was found"
+        exit 1
+    fi
+    cdrom_path="$(readlink -f "${cdrom_path}")"
+
+    cdrom_dev="sda"
+    if [ ! "$(grep "dev='${cdrom_dev}'" "${tmp_xml}")" == "" ]; then
+      cdrom_dev="sdb"
+      if [ ! "$(grep "dev='${cdrom_dev}'" "${tmp_xml}")" == "" ]; then
+        cdrom_dev="sdc"
+        if [ ! "$(grep "dev='${cdrom_dev}'" "${tmp_xml}")" == "" ]; then
+          cdrom_dev="sdd"
+        fi
+      fi
+    fi
+
+    cdrom_unit="0"
+    if [ ! "$(grep "type='drive' controller='0' bus='0' target='0' unit='${cdrom_unit}'" "${tmp_xml}")" == "" ]; then
+      cdrom_unit="1"
+      if [ ! "$(grep "type='drive' controller='0' bus='0' target='0' unit='${cdrom_unit}'" "${tmp_xml}")" == "" ]; then
+        cdrom_unit="2"
+        if [ ! "$(grep "type='drive' controller='0' bus='0' target='0' unit='${cdrom_unit}'" "${tmp_xml}")" == "" ]; then
+          cdrom_unit="3"
+        fi
+      fi
+    fi
+    cdrom_xml="$(virsh attach-disk --print-xml --domain "${base_domain}" --source "${cdrom_path}" --target "${cdrom_dev}" --type "cdrom" --targetbus "sata" --sourcetype "file" --mode "readonly" --driver "qemu" --subdriver "raw" --address "sata:0.0.${cdrom_unit}" | tr -d '\n')"
+  fi
+
+
+  sed -i "s|<name>${base_domain}</name>|<name>${tmp_domain}</name>|g" "${tmp_xml}"
+  sed -i "s|<uuid>.*</uuid>||g" "${tmp_xml}"
+  sed -i "s|<devices>|<devices>${cdrom_xml}|g" "${tmp_xml}"
+  sed -i "s|CONFIG_DISK_PATH|${image_path}|g" "${tmp_xml}"
+  sed -i "s|CONFIG_NVRAM_PATH|/var/lib/libvirt/qemu/nvram/${image_name}_VARS.fd|g" "${tmp_xml}"
+  virsh create "${tmp_xml}"
+}
+
+virt_xml_save() {
+  output_dir="$1"
+  if [ "${output_dir}" == "" ]; then
+    echo "output dir is empty, provide a path"
+    exit 1
+  fi
+  if [ ! -d "${output_dir}" ]; then
+    echo "output dir is not a valid directory"
+    exit 1
+  fi
+
+  virsh list --all | tail -n 3 | head -n -1 | cut -d " " -f 6 | xargs -I {} sh -c "virsh dumpxml {} > ${output_dir}/{}.xml; echo '{} -> ${output_dir}/{}.xml'"
+}
+
+if [ "$1" == "start" ]; then
+	virt_start "${@:2}"
+elif [ "$1" == "xmlsave" ]; then
+	virt_xml_save "${@:2}"
+else
+	echo "no such command"
+	exit 1
+fi
