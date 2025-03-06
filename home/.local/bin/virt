@@ -69,7 +69,7 @@ virt_start () {
   sed -i "s|<devices>|<devices>${cdrom_xml}|g" "${tmp_xml}"
   sed -i "s|CONFIG_DISK_PATH|${image_path}|g" "${tmp_xml}"
   sed -i "s|CONFIG_NVRAM_PATH|/var/lib/libvirt/qemu/nvram/${image_name}_VARS.fd|g" "${tmp_xml}"
-  virsh create "${tmp_xml}"
+  exec virsh create "${tmp_xml}"
 }
 
 virt_xml_save() {
