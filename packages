@@ -13,6 +13,7 @@ efibootmgr
 eza
 fd
 fish
+flameshot
 fzf
 gamemode
 git
@@ -41,6 +42,7 @@ mpv
 neovim
 nftables
 nodejs
+noisetorch
 noto-fonts
 noto-fonts-emoji
 npm
@@ -58,6 +60,7 @@ pavucontrol
 pipewire-alsa
 pipewire-pulse
 plasma-desktop
+protonup-qt-bin
 qbittorrent
 qemu-desktop
 reflector

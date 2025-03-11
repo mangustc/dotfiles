@@ -19,6 +19,7 @@ export EDITOR="/usr/bin/nvim"
 export VISUAL="/usr/bin/nvim"
 export MY_DOTFILES_DIR="${HOME}/dotfiles"
 export VIRT_BASE_DOMAIN="win-passthrough"
+export VIRT_USB_DEVICES="~/virt/usb.json"
 export PATH="${PATH}:${HOME}/.local/bin:${HOME}/go/bin"
 export LIBVIRT_DEFAULT_URI=qemu:///system
 

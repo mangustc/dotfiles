@@ -6,15 +6,15 @@
 # - if you want to add an additional image (cdrom) you have to have at least one available of each: device(sda, sdb, sdc, sdd) and unit(0, 1, 2, 3)
 # - if you want to pass a disk file you have to have CONFIG_DISK_PATH string in base domain xml file
 
-virt_start () {
-  base_domain="${VIRT_BASE_DOMAIN}"
-  cdrom_path="${VIRT_CDROM_PATH}"
+base_domain="${VIRT_BASE_DOMAIN}"
+cdrom_path="${VIRT_CDROM_PATH/#\~/${HOME}}"
+usb_devices="${VIRT_USB_DEVICES/#\~/${HOME}}"
 
+virt_start() {
   virsh dominfo "${base_domain}"
   if [ $? -ge 1 ]; then
     exit 1
   fi
-
 
   image_path="$1"
   echo "image path: ${image_path}"
@@ -63,10 +63,37 @@ virt_start () {
     cdrom_xml="$(virsh attach-disk --print-xml --domain "${base_domain}" --source "${cdrom_path}" --target "${cdrom_dev}" --type "cdrom" --targetbus "sata" --sourcetype "file" --mode "readonly" --driver "qemu" --subdriver "raw" --address "sata:0.0.${cdrom_unit}" | tr -d '\n')"
   fi
 
+  # only 9 ports max for now
+  used_usb_ports=""
+  usb_xml=""
+  if [ ! "${usb_devices}" == "" ]; then
+    usb_xml="$(jq -r '.[] | select(.active==true) | .vendor_id + " " + .product_id + " " + .skip_if_detached' "${usb_devices}" | while read line; do
+      vendor_id="$(echo "${line}" | cut -d ' ' -f 1)"
+      product_id="$(echo "${line}" | cut -d ' ' -f 2)"
+      skip_if_detached="$(echo "${line}" | cut -d ' ' -f 3)"
+      if [ "$(lsusb | grep "${vendor_id}:${product_id}")" == "" ] && [ "${skip_if_detached}" == "true" ]; then
+        continue
+      fi
+      usb_port="0"
+      ([ ! "$(grep "address" "${tmp_xml}" | grep "type='usb'" "${tmp_xml}" | grep "port='${usb_port}'" "${tmp_xml}")" == "" ] || [ ! "$(echo "${used_usb_ports}" | grep "${usb_port}")" == "" ]) && usb_port="1"
+      ([ ! "$(grep "address" "${tmp_xml}" | grep "type='usb'" "${tmp_xml}" | grep "port='${usb_port}'" "${tmp_xml}")" == "" ] || [ ! "$(echo "${used_usb_ports}" | grep "${usb_port}")" == "" ]) && usb_port="2"
+      ([ ! "$(grep "address" "${tmp_xml}" | grep "type='usb'" "${tmp_xml}" | grep "port='${usb_port}'" "${tmp_xml}")" == "" ] || [ ! "$(echo "${used_usb_ports}" | grep "${usb_port}")" == "" ]) && usb_port="3"
+      ([ ! "$(grep "address" "${tmp_xml}" | grep "type='usb'" "${tmp_xml}" | grep "port='${usb_port}'" "${tmp_xml}")" == "" ] || [ ! "$(echo "${used_usb_ports}" | grep "${usb_port}")" == "" ]) && usb_port="4"
+      ([ ! "$(grep "address" "${tmp_xml}" | grep "type='usb'" "${tmp_xml}" | grep "port='${usb_port}'" "${tmp_xml}")" == "" ] || [ ! "$(echo "${used_usb_ports}" | grep "${usb_port}")" == "" ]) && usb_port="5"
+      ([ ! "$(grep "address" "${tmp_xml}" | grep "type='usb'" "${tmp_xml}" | grep "port='${usb_port}'" "${tmp_xml}")" == "" ] || [ ! "$(echo "${used_usb_ports}" | grep "${usb_port}")" == "" ]) && usb_port="6"
+      ([ ! "$(grep "address" "${tmp_xml}" | grep "type='usb'" "${tmp_xml}" | grep "port='${usb_port}'" "${tmp_xml}")" == "" ] || [ ! "$(echo "${used_usb_ports}" | grep "${usb_port}")" == "" ]) && usb_port="7"
+      ([ ! "$(grep "address" "${tmp_xml}" | grep "type='usb'" "${tmp_xml}" | grep "port='${usb_port}'" "${tmp_xml}")" == "" ] || [ ! "$(echo "${used_usb_ports}" | grep "${usb_port}")" == "" ]) && usb_port="8"
+      ([ ! "$(grep "address" "${tmp_xml}" | grep "type='usb'" "${tmp_xml}" | grep "port='${usb_port}'" "${tmp_xml}")" == "" ] || [ ! "$(echo "${used_usb_ports}" | grep "${usb_port}")" == "" ]) && usb_port="9"
+      ([ ! "$(grep "address" "${tmp_xml}" | grep "type='usb'" "${tmp_xml}" | grep "port='${usb_port}'" "${tmp_xml}")" == "" ] || [ ! "$(echo "${used_usb_ports}" | grep "${usb_port}")" == "" ]) && exit 1
+      used_usb_ports="${used_usb_ports}${usb_port}"
+      echo -n "<hostdev mode='subsystem' type='usb' managed='yes'><source><vendor id='0x${vendor_id}'/><product id='0x${product_id}'/></source><address type='usb' bus='0' port='${usb_port}'/></hostdev>"
+    done)"
+  fi
 
   sed -i "s|<name>${base_domain}</name>|<name>${tmp_domain}</name>|g" "${tmp_xml}"
   sed -i "s|<uuid>.*</uuid>||g" "${tmp_xml}"
   sed -i "s|<devices>|<devices>${cdrom_xml}|g" "${tmp_xml}"
+  sed -i "s|<devices>|<devices>${usb_xml}|g" "${tmp_xml}"
   sed -i "s|CONFIG_DISK_PATH|${image_path}|g" "${tmp_xml}"
   sed -i "s|CONFIG_NVRAM_PATH|/var/lib/libvirt/qemu/nvram/${image_name}_VARS.fd|g" "${tmp_xml}"
   exec virsh create "${tmp_xml}"
@@ -86,10 +113,34 @@ virt_xml_save() {
   virsh list --all | tail -n 3 | head -n -1 | cut -d " " -f 6 | xargs -I {} sh -c "virsh dumpxml {} > ${output_dir}/{}.xml; echo '{} -> ${output_dir}/{}.xml'"
 }
 
+virt_usb_dump() {
+  usb_devices="$(lsusb | cut -d " " -f 6-)"
+  output_file="${1/#\~/${HOME}}"
+  if [ "${output_file}" == "" ]; then
+    echo "output file is empty, provide a path"
+    exit 1
+  fi
+
+  echo "[" > "${output_file}"
+  echo "${usb_devices}" | xargs -I {} sh -c "
+    echo '{' >> '${output_file}';
+    echo \"\\\"vendor_id\\\": \\\"\$(echo '{}' | cut -d ' ' -f 1 | cut -d ':' -f 1)\\\",\" >> '${output_file}'
+    echo \"\\\"product_id\\\": \\\"\$(echo '{}' | cut -d ' ' -f 1 | cut -d ':' -f 2)\\\",\" >> '${output_file}'
+    echo \"\\\"comment\\\": \\\"\$(echo '{}' | cut -d ' ' -f 2-)\\\",\" >> '${output_file}'
+    echo \"\\\"active\\\": false\" >> '${output_file}'
+    echo '},' >> '${output_file}'
+  "
+  sed -i '$ s/,//g' "${output_file}"
+  echo "]" >> "${output_file}"
+  jq "." "${output_file}" > "${output_file}.new" && mv "${output_file}.new" "${output_file}"
+}
+
 if [ "$1" == "start" ]; then
 	virt_start "${@:2}"
 elif [ "$1" == "xmlsave" ]; then
 	virt_xml_save "${@:2}"
+elif [ "$1" == "usbdump" ]; then
+	virt_usb_dump "${@:2}"
 else
 	echo "no such command"
 	exit 1
