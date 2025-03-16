@@ -10,7 +10,7 @@ This dotfiles repository branch is specificaly for:
 - Can change, but Arch Linux for now.
 - Obviously me.
 
-Dotfiles structure below is the simplest and most flexible style of managing dotfiles I could find after using linux for many years.
+Dotfiles structure below is the simplest and most flexible style of managing dotfiles I could find after many years of using linux.
 
 ## Basic usage
 
@@ -29,7 +29,7 @@ There is no help page in these scripts. You should read them before executing.
 
 ### dotfiles root
 
-You have to manualy copy all the file from `MY_DOTFILES_DIR/root` to respective files in root directory.
+You have to manualy copy all the files from `MY_DOTFILES_DIR/root` to respective files in root directory.
 
 ### systemd services
 
