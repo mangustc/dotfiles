@@ -4,6 +4,7 @@ base-devel
 bat
 bemenu
 bemenu-wayland
+dolphin
 efibootmgr
 eza
 fd
@@ -22,6 +23,7 @@ linux
 linux-firmware
 man-db
 man-pages
+mpv
 neovim
 noto-fonts
 noto-fonts-emoji
@@ -32,11 +34,13 @@ pipewire
 pipewire-alsa
 pipewire-jack
 pipewire-pulse
+plasma-desktop
 podman
 podman-docker
 tealdeer
 tlp
 ttf-jetbrains-mono-nerd
+unzip
 waybar
 wireplumber
 wl-clipboard
