@@ -7,6 +7,7 @@ This dotfiles repository branch is specificaly for:
 - Laptops.
 - Programming work.
 - Partition labels should be as follows: `root` for root part, `boot` for boot part, `swap` for swap part, `home` for home part.
+- Can change, but Arch Linux for now.
 - Obviously me.
 
 Dotfiles structure below is the simplest and most flexible style of managing dotfiles I could find after using linux for many years.
