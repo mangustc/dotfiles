@@ -30,6 +30,7 @@ wm_start() {
 }
 
 if [ "$1" == "start" ]; then
+	cd ~
 	wm_start "${@:2}"
 else
 	echo "no such command: $1"
