@@ -137,7 +137,6 @@ set fzf_fd_opts --hidden --no-ignore --max-depth 5
 set fzf_preview_dir_cmd eza --time-style relative -lA
 
 function fish_greeting
-    clear
     printf "\e[31m●\e[0m \e[33m●\e[0m \e[32m●\e[0m \e[36m●\e[0m \e[34m●\e[0m \e[35m●\e[0m \n"
 end
 
@@ -175,11 +174,13 @@ end
 
 
 alias eza "eza -M --icons=always --no-permissions --group-directories-first --git --color=always"
-alias sudo "doas"
 abbr --position anywhere rm "rm -vrf";
 abbr --position anywhere cp "cp -vr";
 abbr --position anywhere mv "mv -vf";
 abbr --position anywhere t "tldr";
-abbr --position anywhere tree "tree -C";
-abbr --position anywhere ls "eza --time-style relative -lA";
 abbr --position anywhere pgen "pgen | wl-copy";
+abbr --position anywhere ls "eza --time-style relative -lA";
+abbr --position anywhere lst "eza --time-style relative -lA -T";
+abbr --position anywhere lss "eza --time-style relative -lA --total-size";
+abbr --position anywhere lsst "eza --time-style relative -lA -T --total-size";
+abbr --position anywhere lsts "eza --time-style relative -lA -T --total-size";

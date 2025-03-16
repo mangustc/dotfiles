@@ -1,41 +1,67 @@
 #!/bin/sh
 
-SOURCE_DIR="${HOME}/dotfiles/home/.config"
-DEST_DIR="${HOME}/.config"
-mkdir -p ${DEST_DIR}
-for FILEPATH in ${SOURCE_DIR}/*; do
-    FILENAME=$(basename ${FILEPATH})
-    rm -rfv "${DEST_DIR}/${FILENAME}"
-    ln -sv "${SOURCE_DIR}/${FILENAME}" "${DEST_DIR}/${FILENAME}"
-    echo -e "Linked ${SOURCE_DIR}/${FILENAME} to ${DEST_DIR}/${FILENAME}\n"
+link () {
+    if [ "${filename}" == "*" ]; then
+        return 1
+    fi
+    ln -sv "${source_dir}/${filename}" "${dest_dir}/${filename}"
+    echo -e "Linked ${source_dir}/${filename} to ${dest_dir}/${filename}\n"
+}
+
+link_rm () {
+    if [ "${filename}" == "*" ]; then
+        return 1
+    fi
+    rm -rfv "${dest_dir}/${filename}"
+    link
+}
+
+source_dir="${MY_DOTFILES_DIR}/home/.config"
+dest_dir="${HOME}/.config"
+mkdir -p ${dest_dir}
+mkdir -p ${source_dir}
+for filepath in ${source_dir}/*; do
+    filename=$(basename ${filepath})
+    link_rm
 done
 
-SOURCE_DIR="${HOME}/dotfiles/home/.local"
-DEST_DIR="${HOME}/.local"
-mkdir -p ${DEST_DIR}
-for FILEPATH in ${SOURCE_DIR}/*; do
-    FILENAME=$(basename ${FILEPATH})
-    rm -rfv "${DEST_DIR}/${FILENAME}"
-    ln -sv "${SOURCE_DIR}/${FILENAME}" "${DEST_DIR}/${FILENAME}"
-    echo -e "Linked ${SOURCE_DIR}/${FILENAME} to ${DEST_DIR}/${FILENAME}\n"
+source_dir="${MY_DOTFILES_DIR}/home/.local"
+dest_dir="${HOME}/.local"
+mkdir -p ${dest_dir}
+mkdir -p ${source_dir}
+for filepath in ${source_dir}/*; do
+    filename=$(basename ${filepath})
+    if [ ${filename} = "share" ] || [ ${filename} = "state" ]; then
+        continue
+    fi
+    link_rm
 done
 
-SOURCE_DIR="${HOME}/dotfiles/home"
-DEST_DIR="${HOME}"
+source_dir="${MY_DOTFILES_DIR}/home/.local/share"
+dest_dir="${HOME}/.local/share"
+mkdir -p ${dest_dir}
+mkdir -p ${source_dir}
+for filepath in ${source_dir}/*; do
+    filename=$(basename ${filepath})
+    link_rm
+done
 
-for FILEPATH in ${SOURCE_DIR}/.*; do
-    FILENAME=$(basename ${FILEPATH})
-    if [ ${FILENAME} = ".local" ] || [ ${FILENAME} = ".config" ]; then
+source_dir="${MY_DOTFILES_DIR}/home"
+dest_dir="${HOME}"
+mkdir -p ${dest_dir}
+mkdir -p ${source_dir}
+for filepath in ${source_dir}/.*; do
+    filename=$(basename ${filepath})
+    if [ ${filename} = ".local" ] || [ ${filename} = ".config" ]; then
         continue
     fi
-    if [ -f "${DEST_DIR}/${FILENAME}" ]; then
-        echo -e "File ${DEST_DIR}/${FILENAME} already exists\n"
+    if [ -f "${dest_dir}/${filename}" ]; then
+        echo -e "File ${dest_dir}/${filename} already exists\n"
         continue
     fi
-    if [ -d "${DEST_DIR}/${FILENAME}" ]; then
-        echo -e "Directory ${DEST_DIR}/${FILENAME} already exists\n"
+    if [ -d "${dest_dir}/${filename}" ]; then
+        echo -e "Directory ${dest_dir}/${filename} already exists\n"
         continue
     fi
-    ln -sv "${SOURCE_DIR}/${FILENAME}" "${DEST_DIR}/${FILENAME}"
-    echo -e "Linked ${SOURCE_DIR}/${FILENAME} to ${DEST_DIR}/${FILENAME}\n"
+    link
 done
