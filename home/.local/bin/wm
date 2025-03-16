@@ -13,9 +13,15 @@ wm_kde_start() {
 	
 }
 
+wm_hyprland_start() {
+	exec /usr/bin/dbus-run-session /usr/bin/Hyprland
+}
+
 wm_start() {
 	if [ "${wm_name}" = "kde" ]; then
 		wm_kde_start ${@:2}
+	elif [ "${wm_name}" = "hyprland" ]; then
+		wm_hyprland_start ${@:2}
 	else
 		echo "no such wm ${wm_name}"
 		exit 1
