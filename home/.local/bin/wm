@@ -19,7 +19,7 @@ wm_hyprland_start() {
 
 wm_start() {
 	if [ "${wm_name}" = "kde" ]; then
-		wm_kde_start $"{@:2}"
+		wm_kde_start "${@:2}"
 	elif [ "${wm_name}" = "hyprland" ]; then
 		wm_hyprland_start "${@:2}"
 	else
