@@ -29,7 +29,7 @@ There is no help page in these scripts. You should read them before executing.
 
 ### dotfiles root
 
-You have to manualy copy all the files from `MY_DOTFILES_DIR/root` to respective files in root directory.
+You have to manualy copy all the files from `MY_DOTFILES_DIR/root` to their respective files in the root directory.
 
 ### systemd services
 
