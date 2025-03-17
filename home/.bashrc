@@ -19,8 +19,9 @@ export EDITOR="/usr/bin/nvim"
 export VISUAL="/usr/bin/nvim"
 export MY_DOTFILES_DIR="${HOME}/dotfiles"
 export VIRT_BASE_DOMAIN="win-passthrough"
-export VIRT_USB_DEVICES="~/virt/usb.json"
+export VIRT_USB_DEVICES="${HOME}/virt/usb.json"
 export WM_NAME="kde"
+export WM_ARGS="wayland"
 export PATH="${PATH}:${HOME}/.local/bin:${HOME}/go/bin"
 export LIBVIRT_DEFAULT_URI=qemu:///system
 

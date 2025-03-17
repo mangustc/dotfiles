@@ -1,14 +1,19 @@
 #!/bin/sh
 
 wm_name="${WM_NAME}"
+wm_args="${WM_ARGS}"
 
 wm_kde_start() {
-	if [ "$1" = "wayland" ]; then
+	wm_kde_args="${wm_args}"
+	if [ ! "$1" == "" ]; then
+		wm_kde_args="$1"
+	fi
+	if [ "${wm_kde_args}" = "wayland" ]; then
 		exec /usr/lib/plasma-dbus-run-session-if-needed /usr/bin/startplasma-wayland
-	elif [ "$1" = "x11" ] || [ "$1" = "" ]; then
+	elif [ "${wm_kde_args}" = "x11" ]; then
 		exec startx ~/.local/lib/x11/xinitrc-plasma
 	else
-		echo "no such session type: $1"
+		echo "no such session type: ${wm_kde_args}"
 	fi
 	
 }
