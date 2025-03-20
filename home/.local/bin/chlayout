@@ -6,7 +6,7 @@ if [ "$1" = "default" ]; then
 		kwriteconfig6 --file ~/.config/kxkbrc --group Layout --key VariantList "dvorak,"
 		dbus-send --session --type=signal --dest=org.kde.keyboard /Layouts org.kde.keyboard.reloadConfig
 	else
-		setxkbmap -layout us,ru -variant dvorak, -option "grp:caps_toggle" -option "terminate:ctrl_alt_bksp"
+		setxkbmap -layout us,ru -variant dvorak, -option "grp:ctrl_space_toggle" -option "terminate:ctrl_alt_bksp"
 	fi
 
 elif [ "$1" = "gaming" ]; then
