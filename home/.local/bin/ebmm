@@ -1,22 +1,29 @@
 #!/bin/sh
 
-img_path=''
-echo "This script is used to manage EXISTING efi stubs using efibootmgr"
-echo "This script uses ${img_path} as default path where images are located"
+config_file="/etc/ebmm.conf"
+if [ "${EBMM_CONFIG_PATH}" != "" ]; then
+	config_file="${EBMM_CONFIG_PATH}"
+fi
+
+source "${config_file}"
+img_path="${EBMM_IMG}"
+kernel_name="${EBMM_KERNEL}" # should be same as boot label
+kernel_options="${EBMM_OPTS}"
+boot_partition_label="${EBMM_BOOT_PARTITION_LABEL}"
+
+echo -e "Currently set variables:\n\tEBMM_KERNEL=\"${kernel_name}\" # Should be same as efi entry label\n\tEBMM_IMG=\"${img_path}\"\n\tEBMM_OPTS=\"${kernel_options}\"\n\tEBMM_BOOT_PARTITION_LABEL=\"${boot_partition_label}\""
 echo ""
 
 ebm_query() {
-	kernel_name="$1"
 	label="${kernel_name}"
 	existing_entry="$(efibootmgr -u | grep " ${label}")"
 	if [ "${existing_entry}" == "" ]; then
 		echo "Error: No entry with name \"${label}\""
 		exit 1
 	fi
-	options="$(echo "${existing_entry}" | sed 's/.*vmlinuz-linux//')"
-	options="$(echo "${options}" | sed 's/ initrd.*//')"
+	options="$(echo "${existing_entry}" | sed "s/.*vmlinuz-${label}//" | sed 's/ initrd.*//')"
 	hexnum="$(echo "${existing_entry}" | cut -c "5-8")"
-	partition="$(lsblk --json -o path,label | jq -r '.blockdevices[] | select(.label == "boot") | .path')"
+	partition="$(lsblk --json -o path,label | jq -r '.blockdevices[] | select(.label == $boot) | .path' --arg boot ${boot_partition_label})"
 	disk_json="$(lsblk --json -o name,path,type,label,partn | jq -r '.blockdevices[] | select(.children[] | .path == $partition)' --arg partition ${partition})"
 	disk="$(echo "${disk_json}" | jq -r '.path')"
 	part="$(echo "${disk_json}" | jq -r '.children[] | select(.path == $partition) | .partn' --arg partition ${partition})"
@@ -28,10 +35,20 @@ ebm_query() {
 	echo "options: ${options}"
 }
 
+ebm_create() {
+	partition="$(lsblk --json -o path,label | jq -r '.blockdevices[] | select(.label == $boot) | .path' --arg boot ${boot_partition_label})"
+	disk_json="$(lsblk --json -o name,path,type,label,partn | jq -r '.blockdevices[] | select(.children[] | .path == $partition)' --arg partition ${partition})"
+	disk="$(echo "${disk_json}" | jq -r '.path')"
+	part="$(echo "${disk_json}" | jq -r '.children[] | select(.path == $partition) | .partn' --arg partition ${partition})"
+
+	set -x
+	efibootmgr --quiet --create --disk "${disk}" --part "${part}" --label "${kernel_name}" --loader "${img_path}\vmlinuz-${kernel_name}" --unicode "${kernel_options} initrd=${img_path}\initramfs-${kernel_name}.img"
+}
+
 ebm_update() {
 	ebm_query "$@"
 	if [ "$2" != "" ]; then
-		options="${@:2}"
+		options="${kernel_options}"
 	fi
 
 	echo -e "\nNew Options:"
@@ -52,30 +69,24 @@ ebm_update() {
 		exit 1
 	fi
 
-	set -x
 	bootorder=$(efibootmgr | grep "BootOrder: " | cut -c 12-)
 	efibootmgr -Bq -b ${hexnum}
+	set -x
 	efibootmgr --quiet --create --disk "${disk}" --part "${part}" --label "${label}" --loader "${img_path}\vmlinuz-${kernel_name}" --unicode "${options} initrd=${img_path}\initramfs-${kernel_name}.img"
+	set +x
 	efibootmgr -qo ${bootorder}
 }
 
 if [ "$1" == "query" ]; then
-	if [ "$2" == "" ]; then
-		echo "No kernel name provided"
-		exit 1
-	fi
-
 	ebm_query "${@:2}"
 elif [ "$1" == "update" ]; then
-	if [ "$2" == "" ]; then
-		echo "No kernel name provided"
-		exit 1
-	fi
-
 	ebm_update "${@:2}"
+elif [ "$1" == "create" ]; then
+	ebm_create "${@:2}"
 elif [ "$1" == "help" ]; then
-	echo -e "Usage:\n\t$(basename $0) query *kernel\n\t$(basename $0) update *kernel [options]"
+	echo -e "Usage:\n\tSet variables EBMM_KERNEL,EBMM_OPTS,EBMM_IMG,EBMM_BOOT_PARTITION_LABEL in config file ${config_file}\n\n\tquery - get current kernel boot info\n\tupdate - update current kernel boot to EBMM_OPTS kernel parameters"
 else
+	echo "Check help option before using the script"
 	echo "No such command. Available: query, update, help"
 	exit 1
 fi
