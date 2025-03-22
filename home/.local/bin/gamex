@@ -1,3 +1,0 @@
-#!/bin/bash
-
-exec startx ~/.local/lib/x11/xinitrc-gamex
