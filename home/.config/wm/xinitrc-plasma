@@ -1,9 +1,9 @@
 export XDG_SESSION_TYPE=x11
 export DESKTOP_SESSION=plasma
 
-X11_CONFIG_DIR=~/.local/lib/x11
+X11_CONFIG_DIR=~/.config/wm
 
 nvidia-settings --config=${X11_CONFIG_DIR}/nvidia-settings-rc -l
-setxkbmap -layout us -option terminate:ctrl_alt_bksp
+chlayout default
 
 exec startplasma-x11
