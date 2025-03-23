@@ -187,4 +187,5 @@ abbr --position anywhere lst "eza --time-style relative -lA -T";
 abbr --position anywhere lss "eza --time-style relative -lA --total-size";
 abbr --position anywhere lsst "eza --time-style relative -lA -T --total-size";
 abbr --position anywhere lsts "eza --time-style relative -lA -T --total-size";
-abbr --position anywhere pgen "pgen | xclip -sel clip";
+abbr --position anywhere pgenx "pgen | xclip -sel clip";
+abbr --position anywhere pgenw "pgen | wl-copy";
