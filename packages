@@ -8,6 +8,7 @@ btop
 discord
 dnsmasq
 dolphin
+drawio-desktop
 edk2-ovmf
 efibootmgr
 eza
@@ -60,6 +61,7 @@ pavucontrol
 pipewire-alsa
 pipewire-pulse
 plasma-desktop
+prismlauncher
 protonup-qt-bin
 qbittorrent
 qemu-desktop
