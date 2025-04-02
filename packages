@@ -12,7 +12,9 @@ fish
 fzf
 git
 go
+grim
 hyprland
+imagemagick
 iptables-nft
 iwd
 kitty
@@ -28,8 +30,10 @@ neovim
 noto-fonts
 noto-fonts-emoji
 npm
+obsidian
 openssh
 paru-bin
+pavucontrol
 pipewire
 pipewire-alsa
 pipewire-jack
@@ -37,6 +41,8 @@ pipewire-pulse
 plasma-desktop
 podman
 podman-docker
+qbittorrent
+slurp
 tealdeer
 tlp
 ttf-jetbrains-mono-nerd
