@@ -47,22 +47,15 @@ ebm_create() {
 
 ebm_update() {
 	ebm_query "$@"
-	if [ "$2" != "" ]; then
-		options="${kernel_options}"
-	fi
+	options="${kernel_options}"
 
 	echo -e "\nNew Options:"
 	echo "label: ${label}"
 	echo "disk: ${disk}"
 	echo "part: ${part}"
 	echo "hexnum: ${hexnum}"
-	echo -e "options: ${options}\n"
-
-	# read -p "Accept update to proceed [y/N]: " -n 1 -r
-	# if [[ ! $REPLY =~ ^[Yy]$ ]]; then
-	# 	echo "Exiting..."
-	# 	exit 0
-	# fi
+	echo "options: ${options}"
+	echo ""
 
 	if [ "$EUID" -ne 0 ]; then
 		echo "Please run as root"
