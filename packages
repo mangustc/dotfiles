@@ -5,6 +5,7 @@ bat
 bemenu
 bemenu-wayland
 dolphin
+drawio-desktop
 efibootmgr
 eza
 fd
@@ -42,10 +43,12 @@ plasma-desktop
 podman
 podman-docker
 qbittorrent
+sbctl
 slurp
 tealdeer
 tlp
 ttf-jetbrains-mono-nerd
+ttf-times-new-roman
 unzip
 waybar
 wireplumber
