@@ -1,8 +1,6 @@
 #!/usr/bin/env sh
 
-dotsln_config="${XDG_CONFIG_HOME}/dotfiles/dotsln.conf"
-eval "$(cat "${dotsln_config}")"
-home_dirs="${HOME_DIRS}"
+home_dirs="${MY_DOTFILES_HOME_DIRS}"
 
 link() {
     file_source="$1"

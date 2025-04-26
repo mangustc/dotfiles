@@ -19,6 +19,8 @@ export EDITOR="/usr/bin/nvim"
 export VISUAL="/usr/bin/nvim"
 export MY_DOTFILES_DIR="${HOME}/dotfiles"
 export MY_DOTFILES_DEVICE="main"
+export MY_DOTFILES_HOME_DIRS="home-shared
+home-main"
 export WM_NAME="hyprland"
 export PATH="${PATH}:${HOME}/.local/bin:${GOPATH}/bin"
 export DOCKER_HOST="unix://${XDG_RUNTIME_DIR}/podman/podman.sock"

@@ -19,6 +19,8 @@ export EDITOR="/usr/bin/nvim"
 export VISUAL="/usr/bin/nvim"
 export MY_DOTFILES_DIR="${HOME}/dotfiles"
 export MY_DOTFILES_DEVICE="gaming"
+export MY_DOTFILES_HOME_DIRS="home-shared
+home-gaimng"
 export VIRT_BASE_DOMAIN="win-passthrough"
 export VIRT_USB_DEVICES="${HOME}/virt/usb.json"
 export WM_NAME="kde"
