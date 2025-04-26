@@ -7,6 +7,10 @@ link() {
     file_dest="$2"
     file_source_name="$(basename "${file_source}")"
 
+    if [ -f "${file_source}" ]; then
+        return 1
+    fi
+
     if [ "${file_source_name}" = "*" ]; then
         return 1
     fi
@@ -19,33 +23,26 @@ link() {
     ln -sv "${file_source}" "${file_dest}"
 }
 
+link_dir() {
+    for filepath in "$1/$2/*"; do
+        filename="$(basename "${filepath}")"
+
+        link "${filepath}" "${HOME}/$2/${filename}"
+    done
+}
+
 link_home() {
     source_dir="$1"
-    for filepath in ${source_dir}/.*; do
+
+    link_dir "${source_dir}" ".config"
+    link_dir "${source_dir}" ".local/bin"
+    link "${source_dir}/.bashrc" "${HOME}/.bashrc"
+    link "${source_dir}/.bash_profile" "${HOME}/.bash_profile"
+
+    for filepath in "${source_dir}/usc/local/bin/*"; do
         filename="$(basename "${filepath}")"
-        if [ "${filename}" = ".config" ]; then
-            for filepath1 in ${source_dir}/.config/*; do
-                filename1="$(basename "${filepath1}")"
 
-                link "${filepath1}" "${HOME}/.config/${filename1}"
-            done
-        elif [ "${filename}" = ".local" ]; then
-            for filepath2 in ${source_dir}/.local/*; do
-                filename2="$(basename "${filepath2}")"
-
-                if [ "${filename2}" = "bin" ]; then
-                    for filepath1 in ${source_dir}/.local/bin/*; do
-                        filename1="$(basename "${filepath1}")"
-
-                        link "${filepath1}" "${HOME}/.local/bin/${filename1}"
-                    done
-                fi
-            done
-        elif [ "${filename}" = ".bashrc" ]; then
-            link "${filepath}" "${HOME}/${filename}"
-        elif [ "${filename}" = ".bash_profile" ]; then
-            link "${filepath}" "${HOME}/${filename}"
-        fi
+        sudo cp -vr "${filepath}" "/usr/local/bin/"
     done
 }
 
