@@ -1,0 +1,39 @@
+"x11focus focus-prev"
+  Mod4+shift + h
+
+"x11focus focus-next"
+  Mod4+shift + l
+
+"x11focus choose-focus"
+  Mod4+shift + k
+
+"x11focus close-focused"
+  Mod4+shift + c
+
+"x11focus fake-fullscreen"
+  Mod4+shift + f
+
+# "x11focus run-application"
+#   Mod4+shift + p
+
+"BEMENU_BACKEND=x11 bemenu-run"
+  Mod4+shift + p
+
+#"xterm -geom 50x20+20+20"
+#   Shift+Mod2+alt + s
+#
+## set directly keycode (here control+alt+mod2 + f with my keyboard)
+#"xterm"
+#  alt + c:0x29 + m:4 + mod2
+#
+## Control+Shift+a  release event starts rxvt
+#"rxvt"
+#  release+control+shift + a
+#
+## Control + mouse button 2 release event starts rxvt
+#"rxvt"
+#  Control + b:2 + Release
+
+##################################
+# End of xbindkeys configuration #
+##################################

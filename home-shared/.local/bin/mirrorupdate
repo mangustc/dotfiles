@@ -1,0 +1,4 @@
+#!/bin/bash
+
+echo "Mirrors are now being sorted. Please wait..."
+reflector --save /etc/pacman.d/mirrorlist --protocol https --latest 5 --sort score

@@ -1,0 +1,50 @@
+#!/bin/sh
+
+wm_name="${WM_NAME}"
+wm_args="${WM_ARGS}"
+wm_config_path="${XDG_CONFIG_HOME}/wm"
+
+wm_kde_start() {
+	wm_kde_args="${wm_args}"
+	if [ ! "$1" == "" ]; then
+		wm_kde_args="$1"
+	fi
+	if [ "${wm_kde_args}" = "wayland" ]; then
+		exec /usr/lib/plasma-dbus-run-session-if-needed /usr/bin/startplasma-wayland
+	elif [ "${wm_kde_args}" = "x11" ]; then
+		exec startx "${wm_config_path}/xinitrc-plasma"
+	else
+		echo "no such session type: ${wm_kde_args}"
+	fi
+	
+}
+
+wm_hyprland_start() {
+	exec /usr/bin/dbus-run-session /usr/bin/Hyprland
+}
+
+wm_gamex_start() {
+	exec startx "${wm_config_path}/xinitrc-gamex"
+}
+
+wm_start() {
+	if [ "${wm_name}" = "kde" ]; then
+		wm_kde_start "${@:1}"
+	elif [ "${wm_name}" = "hyprland" ]; then
+		wm_hyprland_start "${@:1}"
+	elif [ "${wm_name}" = "gamex" ]; then
+		wm_gamex_start "${@:1}"
+	else
+		echo "no such wm ${wm_name}"
+		exit 1
+	fi
+
+}
+
+if [ "$1" == "start" ]; then
+	cd ~
+	wm_start "${@:2}"
+else
+	echo "no such command: $1"
+	exit 1
+fi

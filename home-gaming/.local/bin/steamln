@@ -1,0 +1,18 @@
+#!/bin/sh
+
+STEAMAPPS_COMPATDATA_DIR="${HOME}/games/.steam/steamapps/compatdata"
+
+for GAME_DIR in ${STEAMAPPS_COMPATDATA_DIR}/*; do
+    USERS_DIR="${GAME_DIR}/pfx/drive_c/users"
+    if [ ! -d "${USERS_DIR}" ]; then
+        echo "${GAME_DIR} does not have ${USERS_DIR}. Skipping..."
+        continue
+    fi
+    NEW_SYMLINK_DIR="${USERS_DIR}/${USER}"
+    if [ ! -L "${NEW_SYMLINK_DIR}" ] && [ -d "${NEW_SYMLINK_DIR}" ]; then
+        echo "${GAME_DIR} already has ${NEW_SYMLINK_DIR} which is a directory, and not a symlink. Skipping..."
+        continue
+    fi
+    rm -vf ${NEW_SYMLINK_DIR}
+    ln -sfv "./steamuser" "${USERS_DIR}/${USER}"
+done

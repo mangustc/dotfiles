@@ -1,0 +1,56 @@
+#!/usr/bin/env sh
+
+dotsln_config="${XDG_CONFIG_HOME}/dotfiles/dotsln.conf"
+eval "$(cat "${dotsln_config}")"
+home_dirs="${HOME_DIRS}"
+
+link() {
+    file_source="$1"
+    file_dest="$2"
+    file_source_name="$(basename "${file_source}")"
+
+    if [ "${file_source_name}" = "*" ]; then
+        return 1
+    fi
+
+    if [ -L "${file_dest}" ]; then
+        rm -f "${file_dest}"
+    else
+        rm -rf "${file_dest}"
+    fi
+    ln -sv "${file_source}" "${file_dest}"
+}
+
+link_home() {
+    source_dir="$1"
+    for filepath in ${source_dir}/.*; do
+        filename="$(basename "${filepath}")"
+        if [ "${filename}" = ".config" ]; then
+            for filepath1 in ${source_dir}/.config/*; do
+                filename1="$(basename "${filepath1}")"
+
+                link "${filepath1}" "${HOME}/.config/${filename1}"
+            done
+        elif [ "${filename}" = ".local" ]; then
+            for filepath2 in ${source_dir}/.local/*; do
+                filename2="$(basename "${filepath2}")"
+
+                if [ "${filename2}" = "bin" ]; then
+                    for filepath1 in ${source_dir}/.local/bin/*; do
+                        filename1="$(basename "${filepath1}")"
+
+                        link "${filepath1}" "${HOME}/.local/bin/${filename1}"
+                    done
+                fi
+            done
+        elif [ "${filename}" = ".bashrc" ]; then
+            link "${filepath}" "${HOME}/${filename}"
+        elif [ "${filename}" = ".bash_profile" ]; then
+            link "${filepath}" "${HOME}/${filename}"
+        fi
+    done
+}
+
+echo "${home_dirs}" | while IFS= read -r line; do
+    link_home "${MY_DOTFILES_DIR}/${line}"
+done
