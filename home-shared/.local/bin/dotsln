@@ -2,6 +2,10 @@
 
 home_dirs="${MY_DOTFILES_HOME_DIRS}"
 
+clear_broken_symlinks() {
+    find "$1" -maxdepth 1 -mindepth 1 -type l -xtype l -delete
+}
+
 link() {
     file_source="$1"
     file_dest="$2"
@@ -28,6 +32,10 @@ link_dir() {
 
 link_home() {
     source_dir="$1"
+
+    clear_broken_symlinks "${HOME}/.config"
+    clear_broken_symlinks "${HOME}/.local/bin"
+    clear_broken_symlinks "${HOME}"
 
     link_dir "${source_dir}" ".config"
     link_dir "${source_dir}" ".local/bin"
