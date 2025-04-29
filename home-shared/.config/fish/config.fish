@@ -175,8 +175,6 @@ end
 
 
 alias eza "eza -M --icons=always --no-permissions --group-directories-first --git --color=always"
-abbr --position anywhere cat "nvimpager -c";
-abbr --position anywhere bat "nvimpager -p";
 abbr --position anywhere rm "rm -vrf";
 abbr --position anywhere cp "cp -vr";
 abbr --position anywhere mv "mv -vf";
