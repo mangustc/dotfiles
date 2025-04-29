@@ -1,85 +1,77 @@
-#!/bin/sh
+#!/usr/bin/env python
 
-config_file="/etc/ebmm.conf"
-if [ "${EBMM_CONFIG_PATH}" != "" ]; then
-	config_file="${EBMM_CONFIG_PATH}"
-fi
+import subprocess
+import json
+import sys
 
-source "${config_file}"
-img_path="${EBMM_IMG}"
-kernel_name="${EBMM_KERNEL}" # should be same as boot label
-kernel_options="${EBMM_OPTS}"
-boot_partition_label="${EBMM_BOOT_PARTITION_LABEL}"
 
-echo -e "Currently set variables:\n\tEBMM_KERNEL=\"${kernel_name}\" # Should be same as efi entry label\n\tEBMM_IMG=\"${img_path}\"\n\tEBMM_OPTS=\"${kernel_options}\"\n\tEBMM_BOOT_PARTITION_LABEL=\"${boot_partition_label}\""
-echo ""
+# Should be formatted as JSON
+CONFIG_FILE = "/etc/ebmm.conf"
+LABEL_PREFIX = "BOOT-"
+LABEL_POSTFIX = "-END"
 
-ebm_query() {
-	label="${kernel_name}"
-	existing_entry="$(efibootmgr -u | grep " ${label}")"
-	if [ "${existing_entry}" == "" ]; then
-		echo "Error: No entry with name \"${label}\""
-		exit 1
-	fi
-	options="$(echo "${existing_entry}" | sed "s/.*vmlinuz-${label}//" | sed 's/ initrd.*//')"
-	hexnum="$(echo "${existing_entry}" | cut -c "5-8")"
-	partition="$(lsblk --json -o path,label | jq -r '.blockdevices[] | select(.label == $boot) | .path' --arg boot ${boot_partition_label})"
-	disk_json="$(lsblk --json -o name,path,type,label,partn | jq -r '.blockdevices[] | select(.children[] | .path == $partition)' --arg partition ${partition})"
-	disk="$(echo "${disk_json}" | jq -r '.path')"
-	part="$(echo "${disk_json}" | jq -r '.children[] | select(.path == $partition) | .partn' --arg partition ${partition})"
 
-	echo "label: ${label}"
-	echo "disk: ${disk}"
-	echo "part: ${part}"
-	echo "hexnum: ${hexnum}"
-	echo "options: ${options}"
-}
+def run_command(cmd: str) -> (str, int):
+    result = subprocess.run(cmd, shell=True, capture_output=True, text=True)
+    return result.stdout.strip(), result.returncode
 
-ebm_create() {
-	partition="$(lsblk --json -o path,label | jq -r '.blockdevices[] | select(.label == $boot) | .path' --arg boot ${boot_partition_label})"
-	disk_json="$(lsblk --json -o name,path,type,label,partn | jq -r '.blockdevices[] | select(.children[] | .path == $partition)' --arg partition ${partition})"
-	disk="$(echo "${disk_json}" | jq -r '.path')"
-	part="$(echo "${disk_json}" | jq -r '.children[] | select(.path == $partition) | .partn' --arg partition ${partition})"
 
-	set -x
-	efibootmgr --quiet --create --disk "${disk}" --part "${part}" --label "${kernel_name}" --loader "${img_path}\vmlinuz-${kernel_name}" --unicode "${kernel_options} initrd=${img_path}\initramfs-${kernel_name}.img"
-}
+def get_partition_disk_and_num_by_label(boot_partition_label: str) -> (str | None, str | None):
+    _output, _ = run_command("lsblk --json -o path,label")
+    path = ""
+    for device in json.loads(_output).get("blockdevices", []):
+        if device.get("label") == boot_partition_label:
+            path = device["path"]
+            break
 
-ebm_update() {
-	ebm_query "$@"
-	options="${kernel_options}"
+    _output, _ = run_command("lsblk --json -o name,path,type,label,partn")
+    for disk in json.loads(_output).get("blockdevices", []):
+        for child in disk.get("children", []):
+            if child.get("path") == path:
+                return (disk["path"], child.get("partn"))
 
-	echo -e "\nNew Options:"
-	echo "label: ${label}"
-	echo "disk: ${disk}"
-	echo "part: ${part}"
-	echo "hexnum: ${hexnum}"
-	echo "options: ${options}"
-	echo ""
+    return (None, None)
 
-	if [ "$EUID" -ne 0 ]; then
-		echo "Please run as root"
-		exit 1
-	fi
 
-	bootorder=$(efibootmgr | grep "BootOrder: " | cut -c 12-)
-	efibootmgr -Bq -b ${hexnum}
-	set -x
-	efibootmgr --quiet --create --disk "${disk}" --part "${part}" --label "${label}" --loader "${img_path}\vmlinuz-${kernel_name}" --unicode "${options} initrd=${img_path}\initramfs-${kernel_name}.img"
-	set +x
-	efibootmgr -qo ${bootorder}
-}
+class BootRecord(object):
+    def __init__(self, obj: object):
+        self.name = obj['name']
+        self.params = obj['params']
+        self.initrd = obj['initrd']
+        self.loader = obj['loader']
 
-if [ "$1" == "query" ]; then
-	ebm_query "${@:2}"
-elif [ "$1" == "update" ]; then
-	ebm_update "${@:2}"
-elif [ "$1" == "create" ]; then
-	ebm_create "${@:2}"
-elif [ "$1" == "help" ]; then
-	echo -e "Usage:\n\tSet variables EBMM_KERNEL,EBMM_OPTS,EBMM_IMG,EBMM_BOOT_PARTITION_LABEL in config file ${config_file}\n\n\tquery - get current kernel boot info\n\tupdate - update current kernel boot to EBMM_OPTS kernel parameters"
-else
-	echo "Check help option before using the script"
-	echo "No such command. Available: query, update, help"
-	exit 1
-fi
+        efi_disk, efi_part = get_partition_disk_and_num_by_label(obj['partition_label'])
+        if (efi_part is None) or (efi_disk is None):
+            print("No such boot device with label:", self.partition_label)
+            sys.exit(1)
+
+        self.efi_disk = efi_disk
+        self.efi_part = efi_part
+
+    def create(self):
+        result, _ = run_command(f'''sudo efibootmgr --quiet --create --disk "{self.efi_disk}" --part "{self.efi_part}" --label "{LABEL_PREFIX}{self.name}{LABEL_POSTFIX}" --loader "{self.loader}" --unicode "{self.params} initrd={self.initrd}"''')
+
+
+if __name__ == "__main__":
+    contents = ""
+    with open(CONFIG_FILE) as f:
+        contents = f.read()
+
+    objs = json.loads(contents)
+
+    boots: list[BootRecord] = []
+    for obj in objs:
+        boots.append(BootRecord(obj))
+
+    efi_bootorder, _ = run_command('''efibootmgr | grep "BootOrder: " | cut -c "12-"''')
+    while True:
+        existing_entry, _ = run_command(f'''efibootmgr -u | grep -e "{LABEL_PREFIX}" | grep -e "{LABEL_POSTFIX}"''')
+        if existing_entry == "":
+            break
+        efi_hexnum = existing_entry[4:8]
+        _, _ = run_command(f'''sudo efibootmgr -B -b {efi_hexnum}''')
+
+    for boot in boots:
+        boot.create()
+
+    _, _ = run_command(f'''sudo efibootmgr -qo ${efi_bootorder}''')
