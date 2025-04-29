@@ -57,7 +57,10 @@ if __name__ == "__main__":
     with open(CONFIG_FILE) as f:
         contents = f.read()
 
-    objs = json.loads(contents)
+    try:
+        objs = json.loads(contents)
+    except:
+        print("Failed to load config at", CONFIG_FILE)
 
     boots: list[BootRecord] = []
     for obj in objs:
@@ -69,9 +72,12 @@ if __name__ == "__main__":
         if existing_entry == "":
             break
         efi_hexnum = existing_entry[4:8]
+        print("Deleting", efi_hexnum, "entry...")
         _, _ = run_command(f'''sudo efibootmgr -B -b {efi_hexnum}''')
 
     for boot in boots:
+        print("Creating", boot.name, "entry...")
         boot.create()
 
     _, _ = run_command(f'''sudo efibootmgr -qo ${efi_bootorder}''')
+    print("Boot order restored")
