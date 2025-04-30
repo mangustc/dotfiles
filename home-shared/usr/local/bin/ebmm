@@ -2,11 +2,12 @@
 
 import subprocess
 import json
+import tomllib
 import sys
 
 
 # Should be formatted as JSON
-CONFIG_FILE = "/etc/ebmm.conf"
+CONFIG_FILE = "/etc/ebmm.toml"
 LABEL_PREFIX = "BOOT-"
 LABEL_POSTFIX = "-END"
 
@@ -53,14 +54,12 @@ class BootRecord(object):
 
 
 if __name__ == "__main__":
-    contents = ""
-    with open(CONFIG_FILE) as f:
-        contents = f.read()
-
     try:
-        objs = json.loads(contents)
+        with open(CONFIG_FILE, 'rb') as f:
+            objs = tomllib.load(f)['boots']
     except:
         print("Failed to load config at", CONFIG_FILE)
+        exit(1)
 
     boots: list[BootRecord] = []
     for obj in objs:
