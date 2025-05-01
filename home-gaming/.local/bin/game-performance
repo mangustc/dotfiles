@@ -5,4 +5,6 @@ export VKD3D_FILTER_DEVICE_NAME="NVIDIA"
 
 sudo systemctl start scx.service
 cpuperf performance
-exec gamemoderun "$@"
+gamemoderun "$@"
+cpuperf powersave
+sudo systemctl stop scx.service

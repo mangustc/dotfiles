@@ -1,149 +1,161 @@
-#!/bin/sh
+#!/usr/bin/env python
 
-# NOTE: This script assumes:
-# - you have set VIRT_BASE_DOMAIN environment variable set to a valid domain name
-# - you have set NVRAM path to CONFIG_NVRAM_PATH
-# - if you want to add an additional image (cdrom) you have to have at least one available of each: device(sda, sdb, sdc, sdd) and unit(0, 1, 2, 3)
-# - if you want to pass a disk file you have to have CONFIG_DISK_PATH string in base domain xml file
+import subprocess
+import os
+import sys
+import json
+from pathlib import Path
+import xml.etree.ElementTree as ET
 
-base_domain="${VIRT_BASE_DOMAIN}"
-cdrom_path="${VIRT_CDROM_PATH/#\~/${HOME}}"
-usb_devices="${VIRT_USB_DEVICES/#\~/${HOME}}"
 
-virt_start() {
-  sudo systemctl stop scx.service
+def run_command(cmd: str) -> tuple[str, int]:
+    result = subprocess.run(cmd, shell=True, capture_output=True, text=True)
+    if result.returncode == 1:
+        print(f'''Warning: command [{cmd}] failed to run.''')
+    return result.stdout.strip(), result.returncode
 
-  virsh dominfo "${base_domain}"
-  if [ $? -ge 1 ]; then
-    exit 1
-  fi
 
-  image_path="$1"
-  echo "image path: ${image_path}"
-  if [ ! -f "${image_path}" ]; then
-      echo "No image in ${image_path} was found"
-      exit 1
-  fi
-  image_path="$(readlink -f "${image_path}")"
-  image_name="$(basename "${image_path}")"
+class VirtManager():
+    def start(self, base_domain: str, _cdrom_path: str, _usb_devices: str, _image_path: str) -> None:
+        cdrom_path = os.path.expanduser(_cdrom_path)
+        usb_devices = os.path.expanduser(_usb_devices)
+        image_path = os.path.expanduser(_image_path)
 
-  tmp_domain="tmp-${base_domain}"
-  tmp_xml="/tmp/${tmp_domain}.xml"
-  virsh dumpxml "${base_domain}" > "${tmp_xml}"
-  if [ $? -ge 1 ]; then
-      exit 1
-  fi
+        print(f"domain: {base_domain}\ncdrom_path: {cdrom_path}\nusb_devices: {usb_devices}\nimage_path: {image_path}")
 
-  if [ ! "${cdrom_path}" == "" ]; then
-    if [ ! -f "${cdrom_path}" ]; then
-        echo "No cdrom in ${cdrom_path} was found"
-        exit 1
-    fi
-    cdrom_path="$(readlink -f "${cdrom_path}")"
+        _out, _code = run_command(f'''virsh dominfo "{base_domain}"''')
+        if _code == 1:
+            raise Exception()
+        if cdrom_path != "":
+            if not os.path.isfile(cdrom_path):
+                raise Exception()
+        if usb_devices != "":
+            if not os.path.isfile(usb_devices):
+                raise Exception()
+        if not os.path.isfile(image_path):
+            raise Exception()
 
-    cdrom_dev="sda"
-    if [ ! "$(grep "dev='${cdrom_dev}'" "${tmp_xml}")" == "" ]; then
-      cdrom_dev="sdb"
-      if [ ! "$(grep "dev='${cdrom_dev}'" "${tmp_xml}")" == "" ]; then
-        cdrom_dev="sdc"
-        if [ ! "$(grep "dev='${cdrom_dev}'" "${tmp_xml}")" == "" ]; then
-          cdrom_dev="sdd"
-        fi
-      fi
-    fi
+        run_command("sudo systemctl stop scx.service")
+        run_command("cpuperf performance")
 
-    cdrom_unit="0"
-    if [ ! "$(grep "type='drive' controller='0' bus='0' target='0' unit='${cdrom_unit}'" "${tmp_xml}")" == "" ]; then
-      cdrom_unit="1"
-      if [ ! "$(grep "type='drive' controller='0' bus='0' target='0' unit='${cdrom_unit}'" "${tmp_xml}")" == "" ]; then
-        cdrom_unit="2"
-        if [ ! "$(grep "type='drive' controller='0' bus='0' target='0' unit='${cdrom_unit}'" "${tmp_xml}")" == "" ]; then
-          cdrom_unit="3"
-        fi
-      fi
-    fi
-    cdrom_xml="$(virsh attach-disk --print-xml --domain "${base_domain}" --source "${cdrom_path}" --target "${cdrom_dev}" --type "cdrom" --targetbus "sata" --sourcetype "file" --mode "readonly" --driver "qemu" --subdriver "raw" --address "sata:0.0.${cdrom_unit}" | tr -d '\n')"
-  fi
+        tmp_domain = f"tmp-{base_domain}"
+        tmp_xml_path = f"/tmp/{tmp_domain}.xml"
+        _, _code = run_command(f'''virsh dumpxml "{base_domain}" > "{tmp_xml_path}"''')
+        if _code == 1:
+            raise Exception()
+        tmp_xml = Path(tmp_xml_path)
 
-  # only 9 ports max for now
-  used_usb_ports=""
-  usb_xml=""
-  if [ ! "${usb_devices}" == "" ]; then
-    usb_xml="$(jq -r '.[] | select(.active==true) | .vendor_id + " " + .product_id + " " + .skip_if_detached' "${usb_devices}" | while read line; do
-      vendor_id="$(echo "${line}" | cut -d ' ' -f 1)"
-      product_id="$(echo "${line}" | cut -d ' ' -f 2)"
-      skip_if_detached="$(echo "${line}" | cut -d ' ' -f 3)"
-      if [ "$(lsusb | grep "${vendor_id}:${product_id}")" == "" ] && [ "${skip_if_detached}" == "true" ]; then
-        continue
-      fi
-      usb_port="0"
-      ([ ! "$(grep "address" "${tmp_xml}" | grep "type='usb'" "${tmp_xml}" | grep "port='${usb_port}'" "${tmp_xml}")" == "" ] || [ ! "$(echo "${used_usb_ports}" | grep "${usb_port}")" == "" ]) && usb_port="1"
-      ([ ! "$(grep "address" "${tmp_xml}" | grep "type='usb'" "${tmp_xml}" | grep "port='${usb_port}'" "${tmp_xml}")" == "" ] || [ ! "$(echo "${used_usb_ports}" | grep "${usb_port}")" == "" ]) && usb_port="2"
-      ([ ! "$(grep "address" "${tmp_xml}" | grep "type='usb'" "${tmp_xml}" | grep "port='${usb_port}'" "${tmp_xml}")" == "" ] || [ ! "$(echo "${used_usb_ports}" | grep "${usb_port}")" == "" ]) && usb_port="3"
-      ([ ! "$(grep "address" "${tmp_xml}" | grep "type='usb'" "${tmp_xml}" | grep "port='${usb_port}'" "${tmp_xml}")" == "" ] || [ ! "$(echo "${used_usb_ports}" | grep "${usb_port}")" == "" ]) && usb_port="4"
-      ([ ! "$(grep "address" "${tmp_xml}" | grep "type='usb'" "${tmp_xml}" | grep "port='${usb_port}'" "${tmp_xml}")" == "" ] || [ ! "$(echo "${used_usb_ports}" | grep "${usb_port}")" == "" ]) && usb_port="5"
-      ([ ! "$(grep "address" "${tmp_xml}" | grep "type='usb'" "${tmp_xml}" | grep "port='${usb_port}'" "${tmp_xml}")" == "" ] || [ ! "$(echo "${used_usb_ports}" | grep "${usb_port}")" == "" ]) && usb_port="6"
-      ([ ! "$(grep "address" "${tmp_xml}" | grep "type='usb'" "${tmp_xml}" | grep "port='${usb_port}'" "${tmp_xml}")" == "" ] || [ ! "$(echo "${used_usb_ports}" | grep "${usb_port}")" == "" ]) && usb_port="7"
-      ([ ! "$(grep "address" "${tmp_xml}" | grep "type='usb'" "${tmp_xml}" | grep "port='${usb_port}'" "${tmp_xml}")" == "" ] || [ ! "$(echo "${used_usb_ports}" | grep "${usb_port}")" == "" ]) && usb_port="8"
-      ([ ! "$(grep "address" "${tmp_xml}" | grep "type='usb'" "${tmp_xml}" | grep "port='${usb_port}'" "${tmp_xml}")" == "" ] || [ ! "$(echo "${used_usb_ports}" | grep "${usb_port}")" == "" ]) && usb_port="9"
-      ([ ! "$(grep "address" "${tmp_xml}" | grep "type='usb'" "${tmp_xml}" | grep "port='${usb_port}'" "${tmp_xml}")" == "" ] || [ ! "$(echo "${used_usb_ports}" | grep "${usb_port}")" == "" ]) && exit 1
-      used_usb_ports="${used_usb_ports}${usb_port}"
-      echo -n "<hostdev mode='subsystem' type='usb' managed='yes'><source><vendor id='0x${vendor_id}'/><product id='0x${product_id}'/></source><address type='usb' bus='0' port='${usb_port}'/></hostdev>"
-    done)"
-  fi
+        root = ET.fromstring(tmp_xml.read_text())
+        devs_free: set[str] = { "sda", "sdb", "sdc", "sdd" }
+        units_free: set[str] = { "0", "1", "2", "3" }
+        for disk in root.findall(".//devices/disk"):
+            target = disk.find("target")
+            if target is None:
+                devs_free.discard(target.get("dev"))
+            address = disk.find("address")
+            if address is not None:
+                if address.get("type") == "drive":
+                    units_free.discard(address.get("unit"))
+        usb_ports_free: set[str] = { "0", "1", "2", "3", "4", "5", "6", "7", "8", "9" }
+        for hostdev in root.findall(".//devices/hostdev"):
+            if hostdev.get("type") != "usb":
+                continue
+            address = disk.find("address")
+            if address is None:
+                continue
+            usb_ports_free.discard(target.get("port"))
 
-  sed -i "s|<name>${base_domain}</name>|<name>${tmp_domain}</name>|g" "${tmp_xml}"
-  sed -i "s|<uuid>.*</uuid>||g" "${tmp_xml}"
-  sed -i "s|<devices>|<devices>${cdrom_xml}|g" "${tmp_xml}"
-  sed -i "s|<devices>|<devices>${usb_xml}|g" "${tmp_xml}"
-  sed -i "s|CONFIG_DISK_PATH|${image_path}|g" "${tmp_xml}"
-  sed -i "s|CONFIG_NVRAM_PATH|/var/lib/libvirt/qemu/nvram/${image_name}_VARS.fd|g" "${tmp_xml}"
-  exec virsh create "${tmp_xml}"
-}
 
-virt_xml_save() {
-  output_dir="$1"
-  if [ "${output_dir}" == "" ]; then
-    echo "output dir is empty, provide a path"
-    exit 1
-  fi
-  if [ ! -d "${output_dir}" ]; then
-    echo "output dir is not a valid directory"
-    exit 1
-  fi
+        devices_tag = root.find("devices")
+        if cdrom_path != "":
+            if (len(devs_free) == 0) or (len(units_free) == 0):
+                raise Exception(f"No available devs and units left:\n\tdevs: {devs_free}\n\tunits: {units_free}")
+            cdrom_dev = devs_free.pop()
+            cdrom_unit = units_free.pop()
+            cdrom_xml, _ = run_command(f'''virsh attach-disk --print-xml --domain "{base_domain}" --source "{cdrom_path}" --target "{cdrom_dev}" --type "cdrom" --targetbus "sata" --sourcetype "file" --mode "readonly" --driver "qemu" --subdriver "raw" --address "sata:0.0.{cdrom_unit}" | tr -d "\n"''')
 
-  virsh list --all | tail -n 3 | head -n -1 | cut -d " " -f 6 | xargs -I {} sh -c "virsh dumpxml {} > ${output_dir}/{}.xml; echo '{} -> ${output_dir}/{}.xml'"
-}
+            devices_tag.append(ET.fromstring(cdrom_xml))
 
-virt_usb_dump() {
-  usb_devices="$(lsusb | cut -d " " -f 6-)"
-  output_file="${1/#\~/${HOME}}"
-  if [ "${output_file}" == "" ]; then
-    echo "output file is empty, provide a path"
-    exit 1
-  fi
 
-  echo "[" > "${output_file}"
-  echo "${usb_devices}" | xargs -I {} sh -c "
-    echo '{' >> '${output_file}';
-    echo \"\\\"vendor_id\\\": \\\"\$(echo '{}' | cut -d ' ' -f 1 | cut -d ':' -f 1)\\\",\" >> '${output_file}'
-    echo \"\\\"product_id\\\": \\\"\$(echo '{}' | cut -d ' ' -f 1 | cut -d ':' -f 2)\\\",\" >> '${output_file}'
-    echo \"\\\"comment\\\": \\\"\$(echo '{}' | cut -d ' ' -f 2-)\\\",\" >> '${output_file}'
-    echo \"\\\"active\\\": false\" >> '${output_file}'
-    echo '},' >> '${output_file}'
-  "
-  sed -i '$ s/,//g' "${output_file}"
-  echo "]" >> "${output_file}"
-  jq "." "${output_file}" > "${output_file}.new" && mv "${output_file}.new" "${output_file}"
-}
+        if usb_devices != "":
+            with open(usb_devices, 'rb') as f:
+                usbs = json.load(f)
+            for usb in usbs:
+                if not usb['active']:
+                    continue
+                devices_tag.append(ET.fromstring(f'''<hostdev mode='subsystem' type='usb' managed='yes'><source><vendor id='0x{usb['vendor_id']}'/><product id='0x{usb['product_id']}'/></source><address type='usb' bus='0' port='{usb_ports_free.pop()}'/></hostdev>'''))
 
-if [ "$1" == "start" ]; then
-	virt_start "${@:2}"
-elif [ "$1" == "xmlsave" ]; then
-	virt_xml_save "${@:2}"
-elif [ "$1" == "usbdump" ]; then
-	virt_usb_dump "${@:2}"
-else
-	echo "no such command"
-	exit 1
-fi
+        name = root.find("name")
+        if name is None:
+            raise Exception("Cannot find name tag on domain xml")
+        name.text = tmp_domain
+
+        uuid = root.find("uuid")
+        if uuid is not None:
+            root.remove(uuid)
+
+        tmp_xml.write_text(
+            ET.tostring(root, encoding='unicode')
+               .replace("CONFIG_DISK_PATH", image_path)
+               .replace("CONFIG_NVRAM_PATH", f"/var/lib/libvirt/qemu/nvram/{os.path.basename(image_path)}_VARS.fd")
+        )
+
+        run_command(f"virsh create {tmp_xml.absolute()}")
+
+    def xmlsave(self, _output_dir: str):
+        output_dir = Path(_output_dir)
+        if not output_dir.is_dir():
+            raise Exception()
+
+        _out, _ = run_command('''virsh list --all | tail -n 3 | head -n -1 | cut -d " " -f 6''')
+        domains = _out.split('\n')
+
+        for domain in domains:
+            output_file = output_dir / f"{domain}.xml"
+            run_command(f'''virsh dumpxml '{domain}' > '{output_file}' ''')
+            print(f"{domain} -> {output_file}")
+
+    def usbdump(self, _output_file: str):
+        output_file = Path(_output_file)
+
+        _out, _ = run_command('''lsusb | cut -d " " -f 6-''')
+        usbs_str = _out.split('\n')
+        usbs = []
+        for usb_str in usbs_str:
+            usbs.append({
+                "vendor_id": usb_str.split(' ')[0].split(':')[0],
+                "product_id": usb_str.split(' ')[0].split(':')[1],
+                "comment": " ".join(usb_str.split(' ')[1:]),
+                "active": False,
+            })
+
+        output_file.write_text(json.dumps(usbs, indent=4))
+
+
+if __name__ == "__main__":
+    virt_manager = VirtManager()
+
+    command = sys.argv[1]
+    if command == "start":
+        if len(sys.argv) < 3:
+            raise Exception()
+        virt_manager.start(
+            os.getenv("VIRT_BASE_DOMAIN") or "",
+            os.getenv("VIRT_CDROM_PATH") or "",
+            os.getenv("VIRT_USB_DEVICES") or "",
+            sys.argv[2],
+        )
+    elif command == "xmlsave":
+        if len(sys.argv) < 3:
+            raise Exception()
+        virt_manager.xmlsave(
+            sys.argv[2],
+        )
+    elif command == "usbdump":
+        if len(sys.argv) < 3:
+            raise Exception()
+        virt_manager.usbdump(
+            sys.argv[2],
+        )
+    else:
+        raise Exception("No such command. Available: start, xmlsave, usbdump")
