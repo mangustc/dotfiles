@@ -5,6 +5,7 @@ bemenu-wayland
 bemenu-x11
 brave-bin
 btop
+discord
 dnsmasq
 dolphin
 drawio-desktop
@@ -24,6 +25,7 @@ iptables-nft
 jq
 kate
 kitty
+konsole
 kscreen
 lazygit
 lib32-gamemode
@@ -34,6 +36,7 @@ libnetfilter_queue
 libreoffice-still
 libvirt
 linux
+linux-bazzite-bin
 linux-firmware
 linux-headers
 lutris
@@ -48,7 +51,7 @@ noto-fonts
 noto-fonts-emoji
 npm
 ntfs-3g
-nvidia
+nvidia-dkms
 nvidia-settings
 nvidia-utils
 nvimpager
@@ -72,7 +75,6 @@ steam
 tealdeer
 ttf-jetbrains-mono-nerd
 ttf-times-new-roman
-vesktop-bin
 virt-manager
 vulkan-tools
 winetricks
