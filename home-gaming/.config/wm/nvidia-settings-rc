@@ -2,7 +2,7 @@
 # /home/ivan/.config/wm/nvidia-settings-rc
 #
 # Configuration file for nvidia-settings - the NVIDIA Settings utility
-# Generated on Sat Mar 22 18:24:01 2025
+# Generated on Wed May  7 23:43:22 2025
 #
 
 # ConfigProperties:
@@ -12,9 +12,9 @@ DisplayStatusBar = Yes
 SliderTextEntries = Yes
 IncludeDisplayNameInConfigFile = No
 UpdateRulesOnProfileNameChange = Yes
-Timer = PowerMizer_Monitor_(GPU_0),Yes,1000
-Timer = Thermal_Monitor_(GPU_0),Yes,1000
 Timer = Memory_Used_(GPU_0),Yes,3000
+Timer = Thermal_Monitor_(GPU_0),Yes,1000
+Timer = PowerMizer_Monitor_(GPU_0),Yes,1000
 
 # Attributes:
 
@@ -35,13 +35,13 @@ Timer = Memory_Used_(GPU_0),Yes,3000
 [DPY:DVI-D-0]/RedContrast=0.000000
 [DPY:DVI-D-0]/GreenContrast=0.000000
 [DPY:DVI-D-0]/BlueContrast=0.000000
-[DPY:DVI-D-0]/RedGamma=1.000000
-[DPY:DVI-D-0]/GreenGamma=1.000000
-[DPY:DVI-D-0]/BlueGamma=1.000000
-[DPY:DVI-D-0]/Dithering=0
+[DPY:DVI-D-0]/RedGamma=0.980000
+[DPY:DVI-D-0]/GreenGamma=0.980000
+[DPY:DVI-D-0]/BlueGamma=0.980000
+[DPY:DVI-D-0]/Dithering=1
 [DPY:DVI-D-0]/DitheringMode=0
-[DPY:DVI-D-0]/DitheringDepth=0
-[DPY:DVI-D-0]/DigitalVibrance=163
+[DPY:DVI-D-0]/DitheringDepth=2
+[DPY:DVI-D-0]/DigitalVibrance=150
 [DPY:DVI-D-0]/ColorSpace=0
 [DPY:DVI-D-0]/ColorRange=0
 [DPY:DVI-D-0]/SynchronousPaletteUpdates=0
