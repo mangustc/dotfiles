@@ -30,6 +30,7 @@ kscreen
 lazygit
 lib32-gamemode
 lib32-libpipewire
+lib32-nvidia-utils
 lib32-opencl-nvidia
 lib32-pipewire
 libnetfilter_queue
