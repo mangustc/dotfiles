@@ -7,3 +7,4 @@
 **/laptop-mode/conf.d/board-specific/README*
 **/.keep_sys-kernel_installkernel-0
 **/hardware-configuration.nix
+**/flake.lock
