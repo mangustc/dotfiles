@@ -1,5 +1,0 @@
-SUBSYSTEM=="cpu", ACTION=="add", \
-	RUN+="/bin/chgrp video /sys/devices/system/cpu/%k/cpufreq/scaling_governor", \
-	RUN+="/bin/chgrp video /sys/devices/system/cpu/%k/cpufreq/energy_performance_preference", \
-	RUN+="/bin/chmod g+w /sys/devices/system/cpu/%k/cpufreq/scaling_governor", \
-	RUN+="/bin/chmod g+w /sys/devices/system/cpu/%k/cpufreq/energy_performance_preference"

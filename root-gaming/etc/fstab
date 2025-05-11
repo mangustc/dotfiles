@@ -1,7 +1,0 @@
-# Static information about the filesystems.
-# See fstab(5) for details.
-
-LABEL=swap          	none      	swap      	defaults  	0 0
-LABEL=root          	/         	ext4      	rw,relatime	0 1
-LABEL=home          	/home         	ext4      	rw,relatime	0 2
-LABEL=boot          	/boot     	vfat      	rw,relatime,fmask=0022,dmask=0022,codepage=437,iocharset=ascii,shortname=mixed,utf8,errors=remount-ro	0 2
