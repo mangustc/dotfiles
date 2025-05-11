@@ -1,6 +1,13 @@
 { config, lib, pkgs, ... }:
 
-{
+let
+	 wm = pkgs.writeShellScriptBin "wm" (builtins.readFile ./scripts/wm);
+	 gitsshsetup = pkgs.writeShellScriptBin "gitsshsetup" (builtins.readFile ./scripts/gitsshsetup);
+	 chlayout = pkgs.writeShellScriptBin "chlayout" (builtins.readFile ./scripts/chlayout);
+	 cpuperf = pkgs.writeShellScriptBin "cpuperf" (builtins.readFile ./scripts/cpuperf);
+	 game-performance = pkgs.writeShellScriptBin "game-performance" (builtins.readFile ./scripts/game-performance);
+	 virt = pkgs.writeScriptBin "virt" (builtins.readFile ./scripts/virt);
+in {
 	nix.settings.experimental-features = [ "nix-command" "flakes" ];
 	nixpkgs.config.allowUnfree = true;
 
@@ -107,6 +114,10 @@ table ip nethandler {
 	programs = {
 		firefox.enable = true;
 		steam.enable = true;
+		neovim = {
+			enable = true;
+			defaultEditor = true;
+		};
 	};
 
 	environment.systemPackages = with pkgs; [
@@ -114,7 +125,6 @@ table ip nethandler {
 		git
 		fish
 		kitty
-		neovim
 		eza
 		vesktop
 		obsidian
@@ -131,13 +141,25 @@ table ip nethandler {
 		jq
 		pciutils
 		tealdeer
-		# libcap
-		# zlib
-		# libnetfilter_queue
-		# libnfnetlink
-		# gnumake
-		# gcc
 		discord
+		wm
+		chlayout
+		gitsshsetup
+		cpuperf
+		game-performance
+		virt
+		kdePackages.kconfig
+		gcc
+		unzip
+		cargo
+		nodejs_latest
+		nil
+		lua-language-server
+		gamemode
+		python3Minimal
+		usbutils
+		pciutils
+		lazygit
 	];
 	fonts.packages = with pkgs; [
 		noto-fonts
@@ -238,6 +260,50 @@ group = "1000"
 			ExecStart = pkgs.writeShellScript "nethandler" (builtins.readFile ./nethandler);
 		};
 	};
+
+	services.udev.extraRules = ''
+SUBSYSTEM=="cpu", ACTION=="add", \
+	RUN+="${pkgs.coreutils}/bin/chgrp video /sys/devices/system/cpu/%k/cpufreq/scaling_governor", \
+	RUN+="${pkgs.coreutils}/bin/chgrp video /sys/devices/system/cpu/%k/cpufreq/energy_performance_preference", \
+	RUN+="${pkgs.coreutils}/bin/chmod g+w /sys/devices/system/cpu/%k/cpufreq/scaling_governor", \
+	RUN+="${pkgs.coreutils}/bin/chmod g+w /sys/devices/system/cpu/%k/cpufreq/energy_performance_preference"
+
+# Disable DS4 touchpad acting as mouse
+# USB
+ATTRS{name}=="Sony Interactive Entertainment Wireless Controller Touchpad", ENV{LIBINPUT_IGNORE_DEVICE}="1"
+# Bluetooth
+ATTRS{name}=="Wireless Controller Touchpad", ENV{LIBINPUT_IGNORE_DEVICE}="1"
+
+# USB
+ATTRS{name}=="Sony Interactive Entertainment DualSense Wireless Controller Touchpad", ENV{LIBINPUT_IGNORE_DEVICE}="1"
+# Bluetooth
+ATTRS{name}=="DualSense Wireless Controller Touchpad", ENV{LIBINPUT_IGNORE_DEVICE}="1"
+	'';
+
+	security.polkit.extraConfig = ''
+  polkit.addRule(function(action, subject) {
+    if (action.id == "org.freedesktop.systemd1.manage-units" &&
+        (action.lookup("unit") == "nethandler.service") &&
+        subject.user == "ivan") {
+      return polkit.Result.YES;
+    }
+  });
+  polkit.addRule(function(action, subject) {
+    if (action.id == "org.freedesktop.systemd1.manage-units" &&
+        (action.lookup("unit") == "scx.service") &&
+        subject.user == "ivan") {
+      return polkit.Result.YES;
+    }
+  });
+'';
+	services.scx = {
+		enable = true;
+		scheduler = "scx_lavd";
+		extraArgs = [ "--performance" ];
+
+	};
+	systemd.services.scx.wantedBy = lib.mkForce [];
+	# programs.gamemode.enable = true;
 
 	# system.copySystemConfiguration = true;
 	system.stateVersion = "24.11"; # Did you read the comment?
