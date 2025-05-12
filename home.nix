@@ -16,6 +16,11 @@
 		force = true;
 		text = '''';
 	};
+	xdg.configFile."pipewire" = {
+		source = ./pipewire;
+		recursive = true;
+		force = true;
+	};
   xdg.configFile."nvim/init.lua" = {
 	force = true;
 	text = ''
