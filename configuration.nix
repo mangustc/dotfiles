@@ -386,9 +386,7 @@ abbr --position anywhere pgenw "pgen | wl-copy";
 		];
 		WM_NAME = getByHost "hyprland" "kde";
 		WM_ARGS = getByHost "" "wayland";
-	} // (getByHost
-	{
-	}
+	} // (getByHost {}
 	{
 		VIRT_BASE_DOMAIN = "win-passthrough";
 		VIRT_USB_DEVICES = "$HOME/virt/usb.json";
