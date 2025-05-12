@@ -1,6 +1,10 @@
 { config, lib, pkgs, host, ... }:
 
 let
+	getByHost = first: second:
+		if host.name == "main" then first
+		else if host.name == "gaming" then second
+		else throw "Unsupported host: ${host.name}";
 	wm = (import ./scripts/wm.nix pkgs);
 	gitsshsetup = (import ./scripts/gitsshsetup.nix pkgs);
 	chlayout = (import ./scripts/chlayout.nix pkgs);
@@ -8,8 +12,10 @@ let
 	game-performance = (import ./scripts/game-performance.nix pkgs);
 	virt = (import ./scripts/virt.nix pkgs);
 	desiredFlatpaks = [
-		"com.usebottles.bottles"
 		"app.zen_browser.zen"
+	] ++ getByHost [
+	] [
+		"com.usebottles.bottles"
 	];
 in {
 	nix = {
@@ -378,12 +384,17 @@ abbr --position anywhere pgenw "pgen | wl-copy";
 		PATH = [
 			"$HOME/.local/bin"
 		];
+		WM_NAME = getByHost "hyprland" "kde";
+		WM_ARGS = getByHost "" "wayland";
+	} // (getByHost
+	{
+	}
+	{
 		VIRT_BASE_DOMAIN = "win-passthrough";
 		VIRT_USB_DEVICES = "$HOME/virt/usb.json";
-		WM_NAME = "kde";
-		WM_ARGS = "wayland";
 		LIBVIRT_DEFAULT_URI = "qemu:///system";
-	};
+	}
+	);
 
 	environment.systemPackages = with pkgs; [
 		vim
@@ -442,7 +453,7 @@ if [ -f "$HOOKPATH" ]; then
 	eval \""$HOOKPATH"\" "$@"
 elif [ -d "$HOOKPATH" ]; then
 	while read file; do
-	  eval \""$file"\" "$@"
+		eval \""$file"\" "$@"
 	done <<< "$(find -L "$HOOKPATH" -maxdepth 1 -type f -executable -print;)"
 fi
 ' > /var/lib/libvirt/hooks/qemu
