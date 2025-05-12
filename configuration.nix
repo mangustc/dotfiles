@@ -378,7 +378,7 @@ abbr --position anywhere pgenw "pgen | wl-copy";
 			"$HOME/.local/bin"
 		];
 		VIRT_BASE_DOMAIN = "win-passthrough";
-		VIRT_USB_DEVICES = "''$HOME/virt/usb.json";
+		VIRT_USB_DEVICES = "$HOME/virt/usb.json";
 		WM_NAME = "kde";
 		WM_ARGS = "wayland";
 		LIBVIRT_DEFAULT_URI = "qemu:///system";
