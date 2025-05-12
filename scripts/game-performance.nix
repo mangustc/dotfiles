@@ -1,6 +1,7 @@
-#!/usr/bin/env sh
+{ pkgs, ... }:
 
-# export LD_PRELOAD=""
+let
+	script = pkgs.writeScriptBin "game-performance" ''
 export DXVK_FILTER_DEVICE_NAME="NVIDIA"
 export VKD3D_FILTER_DEVICE_NAME="NVIDIA"
 
@@ -9,3 +10,8 @@ cpuperf performance
 gamemoderun "$@"
 cpuperf powersave
 systemctl stop scx.service
+'';
+in {
+	pkg = [ script pkgs.gamemode ];
+}
+

@@ -1,12 +1,12 @@
 { config, lib, pkgs, ... }:
 
 let
-	 wm = pkgs.writeShellScriptBin "wm" (builtins.readFile ./scripts/wm);
-	 gitsshsetup = pkgs.writeShellScriptBin "gitsshsetup" (builtins.readFile ./scripts/gitsshsetup);
-	 chlayout = pkgs.writeShellScriptBin "chlayout" (builtins.readFile ./scripts/chlayout);
-	 cpuperf = pkgs.writeShellScriptBin "cpuperf" (builtins.readFile ./scripts/cpuperf);
-	 game-performance = pkgs.writeShellScriptBin "game-performance" (builtins.readFile ./scripts/game-performance);
-	 virt = pkgs.writeScriptBin "virt" (builtins.readFile ./scripts/virt);
+	 wm = (import ./scripts/wm.nix pkgs);
+	 gitsshsetup = (import ./scripts/gitsshsetup.nix pkgs);
+	 chlayout = (import ./scripts/chlayout.nix pkgs);
+	 cpuperf = (import ./scripts/cpuperf.nix pkgs);
+	 game-performance = (import ./scripts/game-performance.nix pkgs);
+	 virt = (import ./scripts/virt.nix pkgs);
 in {
 	nix.settings.experimental-features = [ "nix-command" "flakes" ];
 	nixpkgs.config.allowUnfree = true;
@@ -67,20 +67,11 @@ table ip nethandler {
 
 	hardware.graphics.enable = true;
 	hardware.nvidia = {
-		# modesetting.enable = true;
-
-		# Nvidia power management. Experimental, and can cause sleep/suspend to fail.
-		# Enable this if you have graphical corruption issues or application crashes after waking
-		# up from sleep. This fixes it by saving the entire VRAM memory to /tmp/ instead 
-		# of just the bare essentials.
 		powerManagement.enable = false;
-
 		powerManagement.finegrained = false;
 		open = false;
-
 		nvidiaSettings = true;
-
-		package = config.boot.kernelPackages.nvidiaPackages.stable;
+		package = config.boot.kernelPackages.nvidiaPackages.latest;
 	};
 
 	services.xserver = {
@@ -142,25 +133,21 @@ table ip nethandler {
 		pciutils
 		tealdeer
 		discord
-		wm
-		chlayout
-		gitsshsetup
-		cpuperf
-		game-performance
-		virt
-		kdePackages.kconfig
 		gcc
 		unzip
 		cargo
 		nodejs_latest
 		nil
 		lua-language-server
-		gamemode
-		python3Minimal
-		usbutils
-		pciutils
 		lazygit
-	];
+	]
+		++ game-performance.pkg
+		++ chlayout.pkg
+		++ cpuperf.pkg
+		++ gitsshsetup.pkg
+		++ virt.pkg
+		++ wm.pkg
+		;
 	fonts.packages = with pkgs; [
 		noto-fonts
 		noto-fonts-emoji
@@ -169,9 +156,10 @@ table ip nethandler {
 
 	systemd.services.libvirtd = {
 		preStart = ''
+rm -rf /var/lib/libvirt/hooks
 mkdir -p /var/lib/libvirt/hooks
-mkdir -p /var/lib/libvirt/hooks/qemu.d/win10/prepare/begin
-mkdir -p /var/lib/libvirt/hooks/qemu.d/win10/release/end
+mkdir -p /var/lib/libvirt/hooks/qemu.d/win-passthrough/prepare/begin
+mkdir -p /var/lib/libvirt/hooks/qemu.d/win-passthrough/release/end
 
 echo '#!/run/current-system/sw/bin/bash
 
@@ -206,7 +194,7 @@ systemctl set-property --runtime -- user.slice AllowedCPUs=5
 systemctl set-property --runtime -- init.scope AllowedCPUs=5
 echo performance | tee /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor
 echo performance | tee /sys/devices/system/cpu/cpu*/cpufreq/energy_performance_preference
-' > /var/lib/libvirt/hooks/qemu.d/win10/prepare/begin/start.sh
+' > /var/lib/libvirt/hooks/qemu.d/win-passthrough/prepare/begin/start.sh
 echo '#!/run/current-system/sw/bin/bash
 set -x
 
@@ -222,11 +210,11 @@ modprobe nvidia_modeset
 modprobe nvidia_uvm
 modprobe nvidia
 modprobe snd_hda_intel
-' > /var/lib/libvirt/hooks/qemu.d/win10/release/end/stop.sh
+' > /var/lib/libvirt/hooks/qemu.d/win-passthrough/release/end/stop.sh
 
 chmod +x /var/lib/libvirt/hooks/qemu
-chmod +x /var/lib/libvirt/hooks/qemu.d/win10/prepare/begin/start.sh
-chmod +x /var/lib/libvirt/hooks/qemu.d/win10/release/end/stop.sh
+chmod +x /var/lib/libvirt/hooks/qemu.d/win-passthrough/prepare/begin/start.sh
+chmod +x /var/lib/libvirt/hooks/qemu.d/win-passthrough/release/end/stop.sh
 		'';
 	};
 	virtualisation.libvirtd = {

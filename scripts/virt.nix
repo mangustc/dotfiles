@@ -1,3 +1,7 @@
+{ pkgs, ... }:
+
+let
+	script = pkgs.writeScriptBin "virt" ''
 #!/usr/bin/env python
 
 import subprocess
@@ -11,7 +15,7 @@ import xml.etree.ElementTree as ET
 def run_command(cmd: str) -> tuple[str, int]:
     result = subprocess.run(cmd, shell=True, capture_output=True, text=True)
     if result.returncode == 1:
-        print(f'''Warning: command [{cmd}] failed to run.''')
+        print(f${"'''"}Warning: command [{cmd}] failed to run.${"'''"})
     return result.stdout.strip(), result.returncode
 
 
@@ -23,7 +27,7 @@ class VirtManager():
 
         print(f"domain: {base_domain}\ncdrom_path: {cdrom_path}\nusb_devices: {usb_devices}\nimage_path: {image_path}")
 
-        _out, _code = run_command(f'''virsh dominfo "{base_domain}"''')
+        _out, _code = run_command(f${"'''"}virsh dominfo "{base_domain}"${"'''"})
         if _code == 1:
             raise Exception()
         if cdrom_path != "":
@@ -35,12 +39,12 @@ class VirtManager():
         if not os.path.isfile(image_path):
             raise Exception()
 
-        run_command("sudo systemctl stop scx.service")
+        run_command("systemctl stop scx.service")
         run_command("cpuperf performance")
 
         tmp_domain = f"tmp-{base_domain}"
         tmp_xml_path = f"/tmp/{tmp_domain}.xml"
-        _, _code = run_command(f'''virsh dumpxml "{base_domain}" > "{tmp_xml_path}"''')
+        _, _code = run_command(f${"'''"}virsh dumpxml "{base_domain}" > "{tmp_xml_path}"${"'''"})
         if _code == 1:
             raise Exception()
         tmp_xml = Path(tmp_xml_path)
@@ -72,7 +76,7 @@ class VirtManager():
                 raise Exception(f"No available devs and units left:\n\tdevs: {devs_free}\n\tunits: {units_free}")
             cdrom_dev = devs_free.pop()
             cdrom_unit = units_free.pop()
-            cdrom_xml, _ = run_command(f'''virsh attach-disk --print-xml --domain "{base_domain}" --source "{cdrom_path}" --target "{cdrom_dev}" --type "cdrom" --targetbus "sata" --sourcetype "file" --mode "readonly" --driver "qemu" --subdriver "raw" --address "sata:0.0.{cdrom_unit}" | tr -d "\n"''')
+            cdrom_xml, _ = run_command(f${"'''"}virsh attach-disk --print-xml --domain "{base_domain}" --source "{cdrom_path}" --target "{cdrom_dev}" --type "cdrom" --targetbus "sata" --sourcetype "file" --mode "readonly" --driver "qemu" --subdriver "raw" --address "sata:0.0.{cdrom_unit}" | tr -d "\n"${"'''"})
 
             devices_tag.append(ET.fromstring(cdrom_xml))
 
@@ -83,7 +87,7 @@ class VirtManager():
             for usb in usbs:
                 if not usb['active']:
                     continue
-                devices_tag.append(ET.fromstring(f'''<hostdev mode='subsystem' type='usb' managed='yes'><source><vendor id='0x{usb['vendor_id']}'/><product id='0x{usb['product_id']}'/></source><address type='usb' bus='0' port='{usb_ports_free.pop()}'/></hostdev>'''))
+                devices_tag.append(ET.fromstring(f${"'''"}<hostdev mode='subsystem' type='usb' managed='yes'><source><vendor id='0x{usb['vendor_id']}'/><product id='0x{usb['product_id']}'/></source><address type='usb' bus='0' port='{usb_ports_free.pop()}'/></hostdev>${"'''"}))
 
         name = root.find("name")
         if name is None:
@@ -107,18 +111,18 @@ class VirtManager():
         if not output_dir.is_dir():
             raise Exception()
 
-        _out, _ = run_command('''virsh list --all | tail -n 3 | head -n -1 | cut -d " " -f 6''')
+        _out, _ = run_command(${"'''"}virsh list --all | tail -n 3 | head -n -1 | cut -d " " -f 6${"'''"})
         domains = _out.split('\n')
 
         for domain in domains:
             output_file = output_dir / f"{domain}.xml"
-            run_command(f'''virsh dumpxml '{domain}' > '{output_file}' ''')
+            run_command(f${"'''"}virsh dumpxml '{domain}' > '{output_file}' ${"'''"})
             print(f"{domain} -> {output_file}")
 
     def usbdump(self, _output_file: str):
         output_file = Path(_output_file)
 
-        _out, _ = run_command('''lsusb | cut -d " " -f 6-''')
+        _out, _ = run_command(${"'''"}lsusb | cut -d " " -f 6-${"'''"})
         usbs_str = _out.split('\n')
         usbs = []
         for usb_str in usbs_str:
@@ -159,3 +163,8 @@ if __name__ == "__main__":
         )
     else:
         raise Exception("No such command. Available: start, xmlsave, usbdump")
+'';
+in {
+	pkg = [ script pkgs.usbutils pkgs.python3Minimal ];
+}
+

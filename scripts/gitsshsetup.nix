@@ -1,3 +1,7 @@
+{ pkgs, ... }:
+
+let
+	script = pkgs.writeScriptBin "game-performance" ''
 #!/usr/bin/env sh
 
 AUTHOR="mangustc"
@@ -15,3 +19,8 @@ fi
 
 echo "git remote set-url origin git@github.com:$AUTHOR/$REPOSITORY_NAME.git"
 git remote set-url origin git@github.com:"$AUTHOR"/"$REPOSITORY_NAME".git
+'';
+in {
+	pkg = [ script ];
+}
+

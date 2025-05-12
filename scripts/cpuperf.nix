@@ -1,3 +1,7 @@
+{ pkgs, ... }:
+
+let
+	script = pkgs.writeScriptBin "cpuperf" ''
 #!/usr/bin/env sh
 
 if [ "$1" = "performance" ]; then
@@ -10,4 +14,8 @@ elif [ "$1" = "powersave" ]; then
     echo balance_performance | tee /sys/devices/system/cpu/cpu*/cpufreq/energy_performance_preference
 else
     echo "Usage: $0 {perforamnce|powersave}"
-fi
+fi'';
+in {
+	pkg = [ script ];
+}
+
