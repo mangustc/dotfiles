@@ -1,4 +1,4 @@
-{ config, lib, pkgs, ... }:
+{ config, lib, pkgs, host, ... }:
 
 let
 	wm = (import ./scripts/wm.nix pkgs);
@@ -37,14 +37,15 @@ in {
 		blacklistedKernelModules = [ "nouveau" "iTCO_wdt" "i915" ];
 		kernelModules = [ "nvidia" "nvidia_drm" "nvidia_uvm" "nvidia_modeset" ];
 		kernelParams = [
+			"nowatchdog"
 			"intel_iommu=on"
 			"nvidia_drm.modeset=1"
 			"nvidia_drm.fbdev=1"
 			"nouveau.modeset=0"
 			"i915.modeset=0"
 			"nvidia.NVreg_UsePageAttributeTable=1"
-			"nvidia.NVreg_EnablePCIeGen3=1"
 			"nvidia.NVreg_DynamicPowerManagement=0"
+			"nvidia.Nvreg_PreserveVideoMemoryAllocations=1"
 		];
 	};
 
@@ -345,7 +346,7 @@ function nixupd
     if test -d "$dotsdir/.git"
         mv "$dotsdir/.git" "$dotsdir/.git.no"
     end
-    sudo nixos-rebuild --flake $dotsdir/#main switch
+    sudo nixos-rebuild --flake $dotsdir/#${host.name} switch
     if test -d "$dotsdir/.git.no"
         mv "$dotsdir/.git.no" "$dotsdir/.git"
     end
