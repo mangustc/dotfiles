@@ -413,16 +413,29 @@ abbr --position anywhere pgenw "pgen | wl-copy";
 			'';
 		};
 	};
-	environment.variables = {
-		XDG_CACHE_HOME  = "$HOME/.cache";
-		XDG_CONFIG_HOME = "$HOME/.config";
-		XDG_DATA_HOME   = "$HOME/.local/share";
-		XDG_STATE_HOME  = "$HOME/.local/state";
+	environment.variables = let
+			xdg-cache-home = "$HOME/.cache";
+			xdg-config-home = "$HOME/.config";
+			xdg-data-home = "$HOME/.local/share";
+			xdg-state-home = "$HOME/.local/state";
+	in {
+		XDG_CACHE_HOME  = xdg-cache-home;
+		XDG_CONFIG_HOME = xdg-config-home;
+		XDG_DATA_HOME   = xdg-data-home;
+		XDG_STATE_HOME  = xdg-state-home;
 		PATH = [
 			"$HOME/.local/bin"
 		];
 		WM_NAME = getByHost "hyprland" "kde";
 		WM_ARGS = getByHost "" "wayland";
+		HISTFILE = "${xdg-state-home}/bash/history";
+		CUDA_CACHE_PATH = "${xdg-cache-home}/nv";
+		CARGO_HOME = "${xdg-data-home}/cargo";
+		GOPATH = "${xdg-data-home}/go";
+		NPM_CONFIG_INIT_MODULE = "${xdg-config-home}/npm/config/npm-init.js";
+		NPM_CONFIG_CACHE = "${xdg-cache-home}/npm";
+		NPM_CONFIG_TMP = "$XDG_RUNTIME_DIR/npm";
+		XAUTHORITY = "$XDG_RUNTIME_DIR/Xauthority";
 	} // getByHost {
 	} {
 		VIRT_BASE_DOMAIN = "win-passthrough";
@@ -565,7 +578,11 @@ group = "1000"
 		};
 	};
 
-	services.udev.extraRules = ''
+	services.udev.extraRules = getByHost ''
+SUBSYSTEM=="backlight", ACTION=="add", \
+	RUN+="${pkgs.coreutils}/bin/chgrp video /sys/class/backlight/%k/brightness", \
+	RUN+="${pkgs.coreutils}/bin/chmod g+w /sys/class/backlight/%k/brightness"
+	'' ''
 SUBSYSTEM=="cpu", ACTION=="add", \
 	RUN+="${pkgs.coreutils}/bin/chgrp video /sys/devices/system/cpu/%k/cpufreq/scaling_governor", \
 	RUN+="${pkgs.coreutils}/bin/chgrp video /sys/devices/system/cpu/%k/cpufreq/energy_performance_preference", \
