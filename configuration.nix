@@ -33,16 +33,28 @@ in {
 
 	imports =
 	[
-		./hardware-configuration.nix
+		./hardware-configuration-${host.name}.nix
 	];
 
 	boot = {
 		loader.systemd-boot.enable = true;
 		loader.efi.canTouchEfiVariables = true;
 		kernelPackages = pkgs.linuxPackages_latest;
-		blacklistedKernelModules = [ "nouveau" "iTCO_wdt" "i915" ];
-		kernelModules = [ "nvidia" "nvidia_drm" "nvidia_uvm" "nvidia_modeset" ];
-		kernelParams = [
+		blacklistedKernelModules = getByHost [
+		] [
+			"nouveau"
+			"iTCO_wdt"
+			"i915"
+		];
+		kernelModules = getByHost [
+		] [
+			"nvidia"
+			"nvidia_drm"
+			"nvidia_uvm"
+			"nvidia_modeset"
+		];
+		kernelParams = getByHost [
+		] [
 			"nowatchdog"
 			"intel_iommu=on"
 			"nvidia_drm.modeset=1"
@@ -88,7 +100,8 @@ table ip nethandler {
 
 	hardware = {
 		graphics.enable = true;
-		nvidia = {
+		nvidia = getByHost {
+		} {
 			powerManagement.enable = false;
 			powerManagement.finegrained = false;
 			open = false;
@@ -110,7 +123,7 @@ table ip nethandler {
 			displayManager.lightdm.enable = lib.mkForce false;
 		};
 		desktopManager = {
-			plasma6.enable = true;
+			plasma6.enable = getByHost false true;
 		};
 		pipewire = {
 			enable = true;
@@ -126,13 +139,11 @@ installedFlatpaks=$(${pkgs.flatpak}/bin/flatpak list --app --columns=application
 
 for installed in $installedFlatpaks; do
 	if ! echo ${toString desiredFlatpaks} | ${pkgs.gnugrep}/bin/grep -q $installed; then
-		echo "Removing $installed because it's not in the desiredFlatpaks list."
 		${pkgs.flatpak}/bin/flatpak uninstall -y --noninteractive $installed
 	fi
 done
 
 for app in ${toString desiredFlatpaks}; do
-	echo "Ensuring $app is installed."
 	${pkgs.flatpak}/bin/flatpak install -y flathub $app
 done
 
@@ -141,22 +152,29 @@ ${pkgs.flatpak}/bin/flatpak update -y
 		'';
 	};
 
-
-
 	users.defaultUserShell = pkgs.bash;
 	users.users.ivan = {
 		isNormalUser = true;
-		extraGroups = [ "wheel" "audio" "video" "input" "tty" "kvm" "libvirtd" ];
+		extraGroups = [
+			"wheel"
+			"audio"
+			"video"
+			"input"
+			"tty"
+			"kvm"
+			"libvirtd"
+		];
 		useDefaultShell = true;
 	};
 
 	programs = {
 		ssh.startAgent = true;
-		steam.enable = true;
+		steam.enable = getByHost false true;
 		neovim = {
 			enable = true;
 			defaultEditor = true;
 		};
+		hyprland.enable = getByHost true false;
 		bash = {
 			interactiveShellInit = ''
 if [[ $(${pkgs.procps}/bin/ps --no-header --pid=$PPID --format=comm) != "fish" && -z ''${BASH_EXECUTION_STRING} ]]; then
@@ -387,13 +405,12 @@ abbr --position anywhere pgenw "pgen | wl-copy";
 		];
 		WM_NAME = getByHost "hyprland" "kde";
 		WM_ARGS = getByHost "" "wayland";
-	} // (getByHost {}
-	{
+	} // getByHost {
+	} {
 		VIRT_BASE_DOMAIN = "win-passthrough";
 		VIRT_USB_DEVICES = "$HOME/virt/usb.json";
 		LIBVIRT_DEFAULT_URI = "qemu:///system";
-	}
-	);
+	};
 
 	environment.systemPackages = with pkgs; [
 		vim
@@ -414,6 +431,7 @@ abbr --position anywhere pgenw "pgen | wl-copy";
 		lua-language-server
 		lazygit
 		btop
+		wl-clipboard
 	]
 		++ game-performance.pkg
 		++ chlayout.pkg
@@ -492,7 +510,7 @@ chmod +x /var/lib/libvirt/hooks/qemu.d/win-passthrough/release/end/stop.sh
 		'';
 	};
 	virtualisation.libvirtd = {
-		enable = true;
+		enable = getByHost false true;
 		qemu = {
 			package = pkgs.qemu_kvm;
 			verbatimConfig = ''
@@ -504,15 +522,15 @@ group = "1000"
 				enable = true;
 				# packages = [ pkgs.OVMFFull.fd ];
 				packages = [(pkgs.OVMF.override {
-        secureBoot = true;
-        tpmSupport = true;
-      }).fd];
+					secureBoot = true;
+					tpmSupport = true;
+				}).fd];
 			};
 		};
 		onBoot = "ignore";
 		onShutdown = "shutdown";
 	};
-	programs.virt-manager.enable = true;
+	programs.virt-manager.enable = getByHost false true;
 
 	systemd.services.nethandler = {
 		enable = true;
@@ -559,7 +577,7 @@ ATTRS{name}=="DualSense Wireless Controller Touchpad", ENV{LIBINPUT_IGNORE_DEVIC
   });
 '';
 	services.scx = {
-		enable = true;
+		enable = getByHost false true;
 		scheduler = "scx_lavd";
 		extraArgs = [ "--performance" ];
 
