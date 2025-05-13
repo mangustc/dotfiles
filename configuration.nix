@@ -17,6 +17,31 @@ let
 	] [
 		"com.usebottles.bottles"
 	];
+	flatpak-update = pkgs.writeShellScriptBin "flatpak-update" ''
+echo "Adding flathub repo if not exists"
+${pkgs.flatpak}/bin/flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+installedFlatpaks=$(${pkgs.flatpak}/bin/flatpak list --app --columns=application)
+
+for installed in $installedFlatpaks; do
+	if ! echo ${toString desiredFlatpaks} | ${pkgs.gnugrep}/bin/grep -q $installed; then
+		echo "Removing $installed"
+		${pkgs.flatpak}/bin/flatpak uninstall -y --noninteractive $installed
+	fi
+done
+
+for app in ${toString desiredFlatpaks}; do
+	echo "Installing $app"
+	${pkgs.flatpak}/bin/flatpak install -y flathub $app
+done
+
+echo "Removing unused apps and updating"
+${pkgs.flatpak}/bin/flatpak uninstall --unused -y
+${pkgs.flatpak}/bin/flatpak update -y
+	'';
+	nix-index = pkgs.writeShellScriptBin "nix-index" ''
+sudo nix-channel --add https://nixos.org/channels/nixos-unstable nixos
+sudo nix-channel --update
+	'';
 in {
 	nix = {
 		settings = {
@@ -41,6 +66,7 @@ in {
 		loader.efi.canTouchEfiVariables = true;
 		kernelPackages = pkgs.linuxPackages_latest;
 		blacklistedKernelModules = getByHost [
+			"pcspkr"
 		] [
 			"nouveau"
 			"iTCO_wdt"
@@ -55,6 +81,7 @@ in {
 			"nvidia_modeset"
 		];
 		kernelParams = getByHost [
+			"nowatchodg"
 		] [
 			"nowatchdog"
 			"intel_iommu=on"
@@ -70,6 +97,14 @@ in {
 
 
 	networking = {
+		wireless.iwd = {
+			enable = getByHost true false;
+			settings = {
+				Settings = {
+					AutoConnect = true;
+				};
+			};
+		};
 		firewall.enable = false;
 		nftables = {
 			enable = true;
@@ -134,25 +169,6 @@ table ip nethandler {
 	};
 
 	services.flatpak.enable = true;
-	system.userActivationScripts.flatpakManagement = {
-		text = ''
-${pkgs.flatpak}/bin/flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
-installedFlatpaks=$(${pkgs.flatpak}/bin/flatpak list --app --columns=application)
-
-for installed in $installedFlatpaks; do
-	if ! echo ${toString desiredFlatpaks} | ${pkgs.gnugrep}/bin/grep -q $installed; then
-		${pkgs.flatpak}/bin/flatpak uninstall -y --noninteractive $installed
-	fi
-done
-
-for app in ${toString desiredFlatpaks}; do
-	${pkgs.flatpak}/bin/flatpak install -y flathub $app
-done
-
-${pkgs.flatpak}/bin/flatpak uninstall --unused -y
-${pkgs.flatpak}/bin/flatpak update -y
-		'';
-	};
 
 	users.defaultUserShell = pkgs.bash;
 	users.users.ivan = {
@@ -373,7 +389,7 @@ function nixupd
     if test -d "$dotsdir/.git"
         mv "$dotsdir/.git" "$dotsdir/.git.no"
     end
-    sudo nixos-rebuild --flake $dotsdir/#${host.name} switch
+    sudo nixos-rebuild --flake $dotsdir/#${host.name} switch $argv
     if test -d "$dotsdir/.git.no"
         mv "$dotsdir/.git.no" "$dotsdir/.git"
     end
@@ -426,7 +442,7 @@ abbr --position anywhere pgenw "pgen | wl-copy";
 		qbittorrent
 		mpv
 		tealdeer
-		discord
+		# discord
 		unzip
 		nil
 		python313Packages.python-lsp-server
@@ -434,6 +450,12 @@ abbr --position anywhere pgenw "pgen | wl-copy";
 		lazygit
 		btop
 		wl-clipboard
+		gcc
+		kdePackages.dolphin
+		libnetfilter_queue
+		adwaita-icon-theme
+		flatpak-update
+		nix-index
 	]
 		++ game-performance.pkg
 		++ chlayout.pkg

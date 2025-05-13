@@ -621,6 +621,8 @@ env = GDK_BACKEND,wayland,x11
 env = SDL_VIDEODRIVER,wayland
 env = CLUTTER_BACKEND,wayland
 env = MOZ_ENABLE_WAYLAND,1
+env = HYPRCURSOR_THEME,Adwaita
+env = HYPRCURSOR_SIZE,24
 $base00 = 0xff262626
 $base01 = 0xff3a3a3a
 $base02 = 0xff4e4e4e
@@ -725,10 +727,10 @@ binde = SUPER SHIFT, Tab, movefocus, l
 binde = SUPER, Tab, movefocus, r
 bind = SUPER, T, exec, KITTY_ENABLE_WAYLAND=1 kitty
 bind = SUPER, C, killactive,
-bind = SUPER, W, exec, sh -c "[ \"$(pidof waybar)\" = \"\" ] && exec waybar --config ~/.config/hypr/config --style ~/.config/hypr/style.css || pkill -f waybar"
+bind = SUPER, W, exec, sh -c "[ \"$(pidof waybar)\" = \"\" ] && exec ${pkgs.waybar}/bin/waybar --config ~/.config/hypr/config --style ~/.config/hypr/style.css || pkill -f waybar"
 bind = SUPER, V, togglefloating,
 bind = SUPER, F, fullscreen,
-bind = SUPER, P, exec, BEMENU_BACKEND=wayland bemenu-run -H 20 -i
+bind = SUPER, P, exec, BEMENU_BACKEND=wayland ${pkgs.bemenu}/bin/bemenu-run -H 20 -i
 binde = SUPER SHIFT, Y, exec, echo $(($(cat /sys/class/backlight/amdgpu_bl1/brightness)-15)) > /sys/class/backlight/amdgpu_bl1/brightness
 binde = SUPER, Y, exec, echo $(($(cat /sys/class/backlight/amdgpu_bl1/brightness)+15)) > /sys/class/backlight/amdgpu_bl1/brightness
 bind = SUPER, Left, exec, pactl set-sink-mute @DEFAULT_SINK@ toggle
