@@ -151,6 +151,7 @@ ${pkgs.flatpak}/bin/flatpak update -y
 	};
 
 	programs = {
+		ssh.startAgent = true;
 		steam.enable = true;
 		neovim = {
 			enable = true;
@@ -412,6 +413,7 @@ abbr --position anywhere pgenw "pgen | wl-copy";
 		python313Packages.python-lsp-server
 		lua-language-server
 		lazygit
+		btop
 	]
 		++ game-performance.pkg
 		++ chlayout.pkg
