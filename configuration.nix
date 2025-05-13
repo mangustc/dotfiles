@@ -47,6 +47,7 @@ in {
 			"i915"
 		];
 		kernelModules = getByHost [
+			"amdgpu"
 		] [
 			"nvidia"
 			"nvidia_drm"
@@ -100,6 +101,7 @@ table ip nethandler {
 
 	hardware = {
 		graphics.enable = true;
+		graphics.enable32Bit = true;
 		nvidia = getByHost {
 		} {
 			powerManagement.enable = false;
@@ -119,7 +121,7 @@ table ip nethandler {
 				variant = "dvorak,";
 				options = "grp:caps_toggle,terminate:ctrl_alt_bksp";
 			};
-			videoDrivers = ["nvidia"];
+			videoDrivers = getByHost [ "amdgpu" ] [ "nvidia" ];
 			displayManager.lightdm.enable = lib.mkForce false;
 		};
 		desktopManager = {
