@@ -15,7 +15,6 @@ let
 		"app.zen_browser.zen"
 	] ++ getByHost [
 	] [
-		"com.usebottles.bottles"
 	];
 	flatpak-update = pkgs.writeShellScriptBin "flatpak-update" ''
 echo "Adding flathub repo if not exists"
@@ -451,7 +450,6 @@ abbr --position anywhere pgenw "pgen | wl-copy";
 	};
 
 	environment.systemPackages = with pkgs; [
-		vim
 		git
 		kitty
 		eza
@@ -475,6 +473,9 @@ abbr --position anywhere pgenw "pgen | wl-copy";
 		libnetfilter_queue
 		adwaita-icon-theme
 		flatpak-update
+	] ++ getByHost [
+	] [
+		protonup-qt
 	]
 		++ game-performance.pkg
 		++ chlayout.pkg
