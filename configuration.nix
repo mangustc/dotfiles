@@ -38,10 +38,6 @@ echo "Removing unused apps and updating"
 ${pkgs.flatpak}/bin/flatpak uninstall --unused -y
 ${pkgs.flatpak}/bin/flatpak update -y
 	'';
-	nix-index = pkgs.writeShellScriptBin "nix-index" ''
-sudo nix-channel --add https://nixos.org/channels/nixos-unstable nixos
-sudo nix-channel --update
-	'';
 in {
 	nix = {
 		settings = {
@@ -395,6 +391,17 @@ function nixupd
     end
 end
 
+function nix-index
+	sudo nix-channel --add https://nixos.org/channels/nixos-unstable nixos
+	sudo nix-channel --update
+end
+
+function nix-clean
+	nix-collect-garbage --delete-old
+	sudo nix-collect-garbage -d
+	sudo /run/current-system/bin/switch-to-configuration boot
+end
+
 alias eza "eza -M --icons=always --no-permissions --group-directories-first --git --color=always"
 abbr --position anywhere nix-shell "nix-shell --run 'fish'";
 abbr --position anywhere rm "rm -vrf";
@@ -468,7 +475,6 @@ abbr --position anywhere pgenw "pgen | wl-copy";
 		libnetfilter_queue
 		adwaita-icon-theme
 		flatpak-update
-		nix-index
 	]
 		++ game-performance.pkg
 		++ chlayout.pkg
