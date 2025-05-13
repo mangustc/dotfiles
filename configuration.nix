@@ -462,7 +462,7 @@ abbr --position anywhere pgenw "pgen | wl-copy";
 		qbittorrent
 		mpv
 		tealdeer
-		# discord
+		discord
 		unzip
 		nil
 		python313Packages.python-lsp-server
