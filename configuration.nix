@@ -5,14 +5,15 @@ let
 		if host.name == "main" then first
 		else if host.name == "gaming" then second
 		else throw "Unsupported host: ${host.name}";
-	wm = (import ./scripts/wm.nix pkgs);
-	gitsshsetup = (import ./scripts/gitsshsetup.nix pkgs);
-	chlayout = (import ./scripts/chlayout.nix pkgs);
-	cpuperf = (import ./scripts/cpuperf.nix pkgs);
-	game-performance = (import ./scripts/game-performance.nix pkgs);
-	virt = (import ./scripts/virt.nix pkgs);
+	wm = (import ./scripts/wm.nix pkgs).pkg;
+	gitsshsetup = (import ./scripts/gitsshsetup.nix pkgs).pkg;
+	chlayout = (import ./scripts/chlayout.nix pkgs).pkg;
+	cpuperf = (import ./scripts/cpuperf.nix pkgs).pkg;
+	game-performance = (import ./scripts/game-performance.nix pkgs).pkg;
+	virt = (import ./scripts/virt.nix pkgs).pkg;
 	desiredFlatpaks = [
 		"app.zen_browser.zen"
+		"com.discordapp.Discord"
 	] ++ getByHost [
 	] [
 	];
@@ -460,7 +461,6 @@ abbr --position anywhere pgenw "pgen | wl-copy";
 		qbittorrent
 		mpv
 		tealdeer
-		discord
 		unzip
 		nil
 		python313Packages.python-lsp-server
@@ -476,14 +476,19 @@ abbr --position anywhere pgenw "pgen | wl-copy";
 	] ++ getByHost [
 	] [
 		protonup-qt
-	]
-		++ game-performance.pkg
-		++ chlayout.pkg
-		++ cpuperf.pkg
-		++ gitsshsetup.pkg
-		++ virt.pkg
-		++ wm.pkg
-		;
+	] ++ getByHost (
+		[]
+		++ wm
+		++ gitsshsetup
+	) (
+		[]
+		++ wm
+		++ gitsshsetup
+		++ chlayout
+		++ cpuperf
+		++ game-performance
+		++ virt
+	);
 	fonts.packages = with pkgs; [
 		noto-fonts
 		noto-fonts-emoji
