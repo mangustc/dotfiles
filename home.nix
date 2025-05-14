@@ -719,11 +719,10 @@ bind = SUPER SHIFT, D, exec, hyprctl keyword monitor eDP-1,disabled
 bind = CTRL ALT, Backspace, exit,
 bind = SUPER SHIFT, S, exec, ${pkgs.slurp}/bin/slurp -d | ${pkgs.grim}/bin/grim -g - - | convert - -shave 1x1 PNG:- | ${pkgs.wl-clipboard}/bin/wl-copy
 bind = , Print, exec, ${pkgs.slurp}/bin/slurp -d | ${pkgs.grim}/bin/grim -g - - | convert - -shave 1x1 PNG:- | ${pkgs.wl-clipboard}/bin/wl-copy
-binde = SUPER, Down, exec, new_volume=$(($(echo "$(pactl get-sink-volume @DEFAULT_SINK@)" | head -1 | sed 's/%.*//; s/.*\/ //') + -1)); [ ''${new_volume} -le 150 ] && pactl set-sink-volume @DEFAULT_SINK@ "''${new_volume}%" || exit 1
-binde = SUPER SHIFT, Down, exec, new_volume=$(($(echo "$(pactl get-sink-volume @DEFAULT_SINK@)" | head -1 | sed 's/%.*//; s/.*\/ //') + -5)); [ ''${new_volume} -le 150 ] && pactl set-sink-volume @DEFAULT_SINK@ "''${new_volume}%" || exit 1
-binde = SUPER SHIFT, Up, exec, new_volume=$(($(echo "$(pactl get-sink-volume @DEFAULT_SINK@)" | head -1 | sed 's/%.*//; s/.*\/ //') + +5)); [ ''${new_volume} -le 150 ] && pactl set-sink-volume @DEFAULT_SINK@ "''${new_volume}%" || exit 1
-binde = SUPER, Up, exec, new_volume=$(($(echo "$(pactl get-sink-volume @DEFAULT_SINK@)" | head -1 | sed 's/%.*//; s/.*\/ //') + +1)); [ ''${new_volume} -le 150 ] && pactl set-sink-volume @DEFAULT_SINK@ "''${new_volume}%" || exit 1
-binde = SUPER SHIFT, Tab, movefocus, l
+binde = SUPER, Down, exec, new_volume=$(($(wpctl get-volume @DEFAULT_AUDIO_SINK@ | awk '{print $2 * 100}' | cut -d. -f1) + -1)); [ ''${new_volume} -le 150 ] && wpctl set-volume @DEFAULT_AUDIO_SINK@ ''${new_volume}% || exit 1
+binde = SUPER SHIFT, Down, exec, new_volume=$(($(wpctl get-volume @DEFAULT_AUDIO_SINK@ | awk '{print $2 * 100}' | cut -d. -f1) + -5)); [ ''${new_volume} -le 150 ] && wpctl set-volume @DEFAULT_AUDIO_SINK@ ''${new_volume}% || exit 1
+binde = SUPER SHIFT, Up, exec, new_volume=$(($(wpctl get-volume @DEFAULT_AUDIO_SINK@ | awk '{print $2 * 100}' | cut -d. -f1) + +5)); [ ''${new_volume} -le 150 ] && wpctl set-volume @DEFAULT_AUDIO_SINK@ ''${new_volume}% || exit 1
+binde = SUPER, Up, exec, new_volume=$(($(wpctl get-volume @DEFAULT_AUDIO_SINK@ | awk '{print $2 * 100}' | cut -d. -f1) + +1)); [ ''${new_volume} -le 150 ] && wpctl set-volume @DEFAULT_AUDIO_SINK@ ''${new_volume}% || exit 1binde = SUPER SHIFT, Tab, movefocus, l
 binde = SUPER, Tab, movefocus, r
 bind = SUPER, T, exec, KITTY_ENABLE_WAYLAND=1 kitty
 bind = SUPER, C, killactive,
