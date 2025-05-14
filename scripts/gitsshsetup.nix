@@ -1,7 +1,7 @@
 { pkgs, ... }:
 
 let
-	script = pkgs.writeScriptBin "game-performance" ''
+	script = pkgs.writeScriptBin "gitsshsetup" ''
 #!/usr/bin/env sh
 
 AUTHOR="mangustc"

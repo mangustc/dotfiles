@@ -1,7 +1,7 @@
 { pkgs, ... }:
 
 let
-	script = pkgs.writeScriptBin "game-performance" ''
+	script = pkgs.writeScriptBin "chlayout" ''
 #!/usr/bin/env sh
 
 if [ "$1" = "default" ]; then
