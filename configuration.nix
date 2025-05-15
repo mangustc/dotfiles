@@ -162,6 +162,7 @@ table ip nethandler {
 			enable = true;
 			pulse.enable = true;
 		};
+		tlp.enable = getByHost true false;
 	};
 	environment.plasma6.excludePackages = with pkgs; [
 		kdePackages.discover
