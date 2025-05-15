@@ -15,7 +15,7 @@ import xml.etree.ElementTree as ET
 def run_command(cmd: str) -> tuple[str, int]:
     result = subprocess.run(cmd, shell=True, capture_output=True, text=True)
     if result.returncode == 1:
-        print(f${"'''"}Warning: command [{cmd}] failed to run.${"'''"})
+        print(f${"'''"}Warning: command [{cmd}] failed to run. Log:\n{result.stderr.strip()}${"'''"})
     return result.stdout.strip(), result.returncode
 
 
