@@ -163,6 +163,13 @@ table ip nethandler {
 			pulse.enable = true;
 		};
 	};
+	environment.plasma6.excludePackages = with pkgs; [
+		kdePackages.discover
+		kdePackages.krdp
+		kdePackages.elisa
+		kdePackages.konsole
+		kdePackages.khelpcenter
+	];
 
 	services.flatpak.enable = true;
 
