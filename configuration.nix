@@ -57,28 +57,39 @@ in {
 		./hardware-configuration-${host.name}.nix
 	];
 
-	boot = {
+	boot = getByHost {
+		loader.systemd-boot.enable = lib.mkForce false;
+		loader.efi.canTouchEfiVariables = true;
+		kernelPackages = pkgs.linuxPackages_latest;
+		lanzaboote = {
+			enable = getByHost true false;
+			pkiBundle = "/var/lib/sbctl";
+		};
+		blacklistedKernelModules = [
+			"pcspkr"
+		];
+		kernelModules = [
+			"amdgpu"
+		];
+		kernelParams =[
+			"nowatchodg"
+		];
+	} {
 		loader.systemd-boot.enable = true;
 		loader.efi.canTouchEfiVariables = true;
 		kernelPackages = pkgs.linuxPackages_latest;
-		blacklistedKernelModules = getByHost [
-			"pcspkr"
-		] [
+		blacklistedKernelModules = [
 			"nouveau"
 			"iTCO_wdt"
 			"i915"
 		];
-		kernelModules = getByHost [
-			"amdgpu"
-		] [
+		kernelModules = [
 			"nvidia"
 			"nvidia_drm"
 			"nvidia_uvm"
 			"nvidia_modeset"
 		];
-		kernelParams = getByHost [
-			"nowatchodg"
-		] [
+		kernelParams = [
 			"nowatchdog"
 			"intel_iommu=on"
 			"nvidia_drm.modeset=1"
@@ -90,7 +101,6 @@ in {
 			"nvidia.Nvreg_PreserveVideoMemoryAllocations=1"
 		];
 	};
-
 
 	networking = {
 		wireless.iwd = {
@@ -482,6 +492,7 @@ abbr --position anywhere pgenw "pgen | wl-copy";
 		adwaita-icon-theme
 		flatpak-update
 	] ++ getByHost [
+		sbctl
 	] [
 		protonup-qt
 	] ++ getByHost (
