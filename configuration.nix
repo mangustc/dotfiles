@@ -494,6 +494,7 @@ abbr --position anywhere pgenw "pgen | wl-copy";
 	] ++ getByHost [
 		sbctl
 	] [
+		mangohud
 		protonup-qt
 	] ++ getByHost (
 		[]
