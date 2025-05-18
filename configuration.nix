@@ -649,6 +649,8 @@ ATTRS{name}=="DualSense Wireless Controller Touchpad", ENV{LIBINPUT_IGNORE_DEVIC
     }
   });
 '';
+	security.sudo.enable = false;
+	security.sudo-rs.enable = true;
 	services.scx = {
 		enable = getByHost false true;
 		scheduler = "scx_lavd";
