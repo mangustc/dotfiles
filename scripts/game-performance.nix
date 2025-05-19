@@ -1,7 +1,7 @@
 { pkgs, ... }:
 
 let
-	script = pkgs.writeScriptBin "game-performance" ''
+	script = pkgs.writeShellScriptBin "game-performance" ''
 export LD_PRELOAD=""
 export DXVK_FILTER_DEVICE_NAME="NVIDIA"
 export VKD3D_FILTER_DEVICE_NAME="NVIDIA"

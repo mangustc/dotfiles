@@ -1,9 +1,7 @@
 { pkgs, ... }:
 
 let
-	script = pkgs.writeScriptBin "chlayout" ''
-#!/usr/bin/env sh
-
+	script = pkgs.writeShellScriptBin "chlayout" ''
 if [ "$1" = "default" ]; then
 	if ([ ! "$KDE_SESSION_UID" == "" ] || [ "$XDG_CURRENT_DESKTOP" == "KDE" ]) && ([ ! "$WAYLAND_DISPLAY" == "" ] || [ "$XDG_SESSION_TYPE" == "wayland" ]); then
 		kwriteconfig6 --file ~/.config/kxkbrc --group Layout --key LayoutList "us,ru"

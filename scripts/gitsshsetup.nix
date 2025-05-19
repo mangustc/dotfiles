@@ -1,9 +1,7 @@
 { pkgs, ... }:
 
 let
-	script = pkgs.writeScriptBin "gitsshsetup" ''
-#!/usr/bin/env sh
-
+	script = pkgs.writeShellScriptBin "gitsshsetup" ''
 AUTHOR="mangustc"
 
 if [[ $# -eq 1 ]]; then

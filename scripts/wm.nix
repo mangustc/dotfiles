@@ -1,9 +1,7 @@
 { pkgs, ... }:
 
 let
-	script = pkgs.writeScriptBin "wm" ''
-#!/usr/bin/env sh
-
+	script = pkgs.writeShellScriptBin "wm" ''
 wm_name="''${WM_NAME}"
 wm_args="''${WM_ARGS}"
 wm_config_path="''${XDG_CONFIG_HOME}/wm"

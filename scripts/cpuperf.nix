@@ -1,9 +1,7 @@
 { pkgs, ... }:
 
 let
-	script = pkgs.writeScriptBin "cpuperf" ''
-#!/usr/bin/env sh
-
+	script = pkgs.writeShellScriptBin "cpuperf" ''
 if [ "$1" = "performance" ]; then
     echo "Enabling performance mode..."
     echo performance | tee /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor
