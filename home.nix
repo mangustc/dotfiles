@@ -174,9 +174,6 @@ require("lazy").setup({
 	{
 		"neovim/nvim-lspconfig",
 		dependencies = {
-			{ "williamboman/mason.nvim", config = true }, -- NOTE: Must be loaded before dependants
-			"williamboman/mason-lspconfig.nvim",
-			"WhoIsSethDaniel/mason-tool-installer.nvim",
 			{ "j-hui/fidget.nvim", opts = {} },
 			"hrsh7th/cmp-nvim-lsp",
 		},
@@ -246,30 +243,10 @@ require("lazy").setup({
 			capabilities = vim.tbl_deep_extend("force", capabilities, require("cmp_nvim_lsp").default_capabilities())
 
 			local servers = {
-			    lua_ls = {
-				cmd = {'lua-language-server'},  -- Use system-installed binary
-				filetypes = {'lua'},
-				settings = {
-				    Lua = {
-					completion = {
-					    callSnippet = "Replace",
-					},
-				    },
-				},
-			    },
-			    nil_ls = {
-				cmd = {'nil'},  -- Use system-installed binary
-				filetypes = {'nix'},
-				root_markers = {'flake.nix', '.git'},
-			    },
-			    pylsp = {
-				cmd = {'pylsp'},  -- Use system-installed binary
-			    },
+			    lua_ls = {},
+			    nil_ls = {},
+			    ruff = {},
 			}
-
-			-- Remove all Mason-related setup
-			-- require("mason").setup()
-			-- require("mason-lspconfig").setup()
 
 			-- Directly setup LSP servers using system binaries
 			for server_name, server_config in pairs(servers) do

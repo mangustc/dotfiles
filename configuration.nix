@@ -484,7 +484,7 @@ abbr --position anywhere pgenw "pgen | wl-copy";
 		tealdeer
 		unzip
 		nil
-		python313Packages.python-lsp-server
+		ruff
 		lua-language-server
 		lazygit
 		btop
@@ -493,6 +493,7 @@ abbr --position anywhere pgenw "pgen | wl-copy";
 		kdePackages.dolphin
 		libnetfilter_queue
 		adwaita-icon-theme
+		python3Minimal
 		flatpak-update
 	] ++ getByHost [
 		sbctl
