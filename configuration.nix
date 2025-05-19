@@ -420,6 +420,9 @@ function nix-clean
 	sudo /run/current-system/bin/switch-to-configuration boot
 end
 
+function nix-edit
+	nvim "$(whereis $argv | cut -d " " -f 2)"
+end
 alias eza "eza -M --icons=always --no-permissions --group-directories-first --git --color=always"
 abbr --position anywhere nix-shell "nix-shell --run 'fish'";
 abbr --position anywhere rm "rm -vrf";
