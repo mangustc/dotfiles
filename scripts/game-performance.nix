@@ -11,8 +11,8 @@ cpuperf performance
 "$@"
 cpuperf powersave
 systemctl stop scx.service
-'';
-in {
-	pkg = [ script pkgs.gamemode ];
-}
+	'';
+in [
+	script
+]
 

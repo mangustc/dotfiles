@@ -50,8 +50,8 @@ else
 	echo "no such command: $1"
 	exit 1
 fi
-'';
-in {
-	pkg = [ script ];
-}
+	'';
+in [
+	script
+]
 

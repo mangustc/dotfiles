@@ -142,7 +142,9 @@ if __name__ == "__main__":
             print(f"--> {args.usb}")
             output_file.write_text(json.dumps(usbs, indent=4))
 '';
-in {
-	pkg = [ script pkgs.usbutils pkgs.python3Minimal ];
-}
+in [
+    script
+    pkgs.usbutils
+    pkgs.python3Minimal
+]
 

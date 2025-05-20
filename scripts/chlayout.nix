@@ -28,8 +28,9 @@ elif [ "$1" = "gaming" ]; then
 else
 	echo "Unknown option: \"$1\""
 fi
-'';
-in {
-	pkg = [ script pkgs.kdePackages.kconfig ];
-}
+	'';
+in [
+	script
+	pkgs.kdePackages.kconfig
+]
 

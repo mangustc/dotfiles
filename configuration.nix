@@ -5,12 +5,12 @@ let
 		if host.name == "main" then first
 		else if host.name == "gaming" then second
 		else throw "Unsupported host: ${host.name}";
-	wm = (import ./scripts/wm.nix pkgs).pkg;
-	gitsshsetup = (import ./scripts/gitsshsetup.nix pkgs).pkg;
-	chlayout = (import ./scripts/chlayout.nix pkgs).pkg;
-	cpuperf = (import ./scripts/cpuperf.nix pkgs).pkg;
-	game-performance = (import ./scripts/game-performance.nix pkgs).pkg;
-	virt = (import ./scripts/virt.nix pkgs).pkg;
+	wm = import ./scripts/wm.nix pkgs;
+	gitsshsetup = import ./scripts/gitsshsetup.nix pkgs;
+	chlayout = import ./scripts/chlayout.nix pkgs;
+	cpuperf = import ./scripts/cpuperf.nix pkgs;
+	game-performance = import ./scripts/game-performance.nix pkgs;
+	virt = import ./scripts/virt.nix pkgs;
 	desiredFlatpaks = [
 		"app.zen_browser.zen"
 		"com.discordapp.Discord"
