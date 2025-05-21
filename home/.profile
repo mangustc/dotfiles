@@ -1,4 +1,4 @@
-termux-notification-list | jq -r '.[] | select(.id == 1337).content' | grep -qF 'wake lock held' || termux-wake-lock
+termux-wake-lock
 
 export XDG_RUNTIME_DIR="${TMPDIR}/xdg-runtime"
 mkdir -p "${XDG_RUNTIME_DIR}"
