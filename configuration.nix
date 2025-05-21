@@ -87,10 +87,10 @@ in {
 		kernelParams = [
 			"nowatchdog"
 			"intel_iommu=on"
-			"nvidia_drm.modeset=1"
-			"nvidia_drm.fbdev=1"
-			"nouveau.modeset=0"
-			"i915.modeset=0"
+			# "nvidia_drm.modeset=1"
+			# "nvidia_drm.fbdev=1"
+			# "nouveau.modeset=0"
+			# "i915.modeset=0"
 			"nvidia.NVreg_UsePageAttributeTable=1"
 			"nvidia.NVreg_DynamicPowerManagement=0"
 			"nvidia.Nvreg_PreserveVideoMemoryAllocations=1"
@@ -140,6 +140,7 @@ table ip nethandler {
 		graphics.enable32Bit = true;
 		nvidia = getByHost {
 		} {
+			modesetting.enable = true;
 			powerManagement.enable = false;
 			powerManagement.finegrained = false;
 			open = false;
@@ -171,6 +172,7 @@ table ip nethandler {
 	};
 	environment.plasma6.excludePackages = with pkgs; [
 		kdePackages.discover
+		kdePackages.krdp
 		kdePackages.elisa
 		kdePackages.konsole
 		kdePackages.khelpcenter
@@ -496,6 +498,7 @@ abbr --position anywhere pgenw "pgen | wl-copy";
 	] ++ getByHost [
 		sbctl
 	] [
+		xorg.xinit
 		mangohud
 		protonup-qt
 	] ++ getByHost (
