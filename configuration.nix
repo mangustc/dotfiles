@@ -176,7 +176,6 @@ table ip nethandler {
 	};
 	environment.plasma6.excludePackages = with pkgs; [
 		kdePackages.discover
-		kdePackages.krdp
 		kdePackages.elisa
 		kdePackages.konsole
 		kdePackages.khelpcenter
@@ -201,7 +200,11 @@ table ip nethandler {
 
 	programs = {
 		ssh.startAgent = true;
-		steam.enable = getByHost false true;
+		steam = {
+			enable = getByHost false true;
+			remotePlay.openFirewall = true;
+			localNetworkGameTransfers.openFirewall = true;
+		};
 		neovim = {
 			enable = true;
 			defaultEditor = true;
