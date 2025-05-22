@@ -169,6 +169,11 @@ table ip nethandler {
 			pulse.enable = true;
 		};
 		tlp.enable = getByHost true false;
+		sunshine = {
+			enable = getByHost false true;
+			capSysAdmin = true;
+			openFirewall = true;
+		};
 	};
 	environment.plasma6.excludePackages = with pkgs; [
 		kdePackages.discover
@@ -498,8 +503,8 @@ abbr --position anywhere pgenw "pgen | wl-copy";
 		flatpak-update
 	] ++ getByHost [
 		sbctl
+		moonlight-qt
 	] [
-		xorg.xinit
 		mangohud
 		protonup-qt
 	] ++ getByHost (
