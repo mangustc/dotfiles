@@ -197,6 +197,7 @@ table ip nethandler {
 
 	programs = {
 		ssh.startAgent = true;
+		kdeconnect.enable = true;
 		steam = {
 			enable = getByHost false true;
 			remotePlay.openFirewall = true;
