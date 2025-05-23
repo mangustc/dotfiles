@@ -171,6 +171,7 @@ table ip nethandler {
 		tlp.enable = getByHost true false;
 		sunshine = {
 			enable = getByHost false true;
+			autoStart = false;
 			capSysAdmin = true;
 			openFirewall = true;
 		};
