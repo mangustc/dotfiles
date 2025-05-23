@@ -150,6 +150,10 @@ table ip nethandler {
 		};
 		displayManager.ly = {
 			enable = true;
+			settings = {
+				animation = "doom";
+				vi_mode = true;
+			};
 		};
 		pipewire = {
 			enable = true;
