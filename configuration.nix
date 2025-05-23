@@ -5,7 +5,6 @@ let
 		if host.name == "main" then first
 		else if host.name == "gaming" then second
 		else throw "Unsupported host: ${host.name}";
-	wm = import ./scripts/wm.nix pkgs;
 	gitsshsetup = import ./scripts/gitsshsetup.nix pkgs;
 	chlayout = import ./scripts/chlayout.nix pkgs;
 	cpuperf = import ./scripts/cpuperf.nix pkgs;
@@ -63,9 +62,6 @@ in {
 		blacklistedKernelModules = [
 			"pcspkr"
 		];
-		kernelModules = [
-			"amdgpu"
-		];
 		kernelParams =[
 			"nowatchodg"
 		];
@@ -78,19 +74,9 @@ in {
 			"iTCO_wdt"
 			"i915"
 		];
-		kernelModules = [
-			"nvidia"
-			"nvidia_drm"
-			"nvidia_uvm"
-			"nvidia_modeset"
-		];
 		kernelParams = [
 			"nowatchdog"
 			"intel_iommu=on"
-			# "nvidia_drm.modeset=1"
-			# "nvidia_drm.fbdev=1"
-			# "nouveau.modeset=0"
-			# "i915.modeset=0"
 			"nvidia.NVreg_UsePageAttributeTable=1"
 			"nvidia.NVreg_DynamicPowerManagement=0"
 			"nvidia.Nvreg_PreserveVideoMemoryAllocations=1"
@@ -140,7 +126,6 @@ table ip nethandler {
 		graphics.enable32Bit = true;
 		nvidia = getByHost {
 		} {
-			modesetting.enable = true;
 			powerManagement.enable = false;
 			powerManagement.finegrained = false;
 			open = false;
@@ -152,7 +137,6 @@ table ip nethandler {
 	services = {
 		xserver = {
 			enable = true;
-			autorun = false;
 			xkb = {
 				layout = "us,ru";
 				variant = "dvorak,";
@@ -163,6 +147,9 @@ table ip nethandler {
 		};
 		desktopManager = {
 			plasma6.enable = getByHost false true;
+		};
+		displayManager.ly = {
+			enable = true;
 		};
 		pipewire = {
 			enable = true;
@@ -510,11 +497,9 @@ abbr --position anywhere pgenw "pgen | wl-copy";
 		protonup-qt
 	] ++ getByHost (
 		[]
-		++ wm
 		++ gitsshsetup
 	) (
 		[]
-		++ wm
 		++ gitsshsetup
 		++ chlayout
 		++ cpuperf
