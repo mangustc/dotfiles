@@ -435,7 +435,6 @@ abbr --position anywhere lsst "eza --time-style relative -lA -T --total-size";
 abbr --position anywhere lsts "eza --time-style relative -lA -T --total-size";
 abbr --position anywhere pgenx "pgen | xclip -sel clip";
 abbr --position anywhere pgenw "pgen | wl-copy";
-
 			'';
 		};
 	};
@@ -452,8 +451,6 @@ abbr --position anywhere pgenw "pgen | wl-copy";
 		PATH = [
 			"$HOME/.local/bin"
 		];
-		WM_NAME = getByHost "hyprland" "kde";
-		WM_ARGS = getByHost "" "wayland";
 		HISTFILE = "${xdg-state-home}/bash/history";
 		CUDA_CACHE_PATH = "${xdg-cache-home}/nv";
 		CARGO_HOME = "${xdg-data-home}/cargo";
@@ -492,6 +489,15 @@ abbr --position anywhere pgenw "pgen | wl-copy";
 		libnetfilter_queue
 		adwaita-icon-theme
 		python3Minimal
+		(pkgs.evil-helix.overrideAttrs (oldAttrs: rec {
+			src = pkgs.fetchFromGitHub {
+				owner = "usagi-flow";
+				repo = "evil-helix";
+				rev = "0e43ef684889a39309dd27f87ccdaacbb381609f";
+				sha256 = "sha256-evUWyY33FOUt1PxpnkkA4+KMs14SheJhN18z1dlUJRc=";
+			};
+			cargoHash = null;
+		}))
 		flatpak-update
 	] ++ getByHost [
 		sbctl
