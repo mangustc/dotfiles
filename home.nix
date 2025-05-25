@@ -26,44 +26,6 @@ in {
 		};
 	};
 	xdg.configFile = {
-		"helix/config.toml" = {
-			force = true;
-			text = ''
-theme = "gruvbox"
-
-[editor]
-line-number = "relative"
-scrolloff = 10
-color-modes = true
-
-[editor.whitespace.render]
-space = "none"
-tab = "all"
-nbsp = "all"
-nnbsp = "all"
-newline = "none"
-
-[editor.whitespace.characters]
-nbsp = "⍽"
-nnbsp = "␣"
-tab = "»"
-
-[keys.normal]
-"C-d" = ["page_cursor_half_down", "align_view_center"]
-"C-u" = ["page_cursor_half_up", "align_view_center"]
-"n" = ["search_next", "align_view_center"]
-"N" = ["search_prev", "align_view_center"]
-"K" = ["hover"]
-			'';
-		};
-		"helix/languages.toml" = {
-			force = true;
-			text = ''
-[[language]]
-name = "nix"
-indent = { tab-width = 4, unit = "\t" }
-			'';
-		};
 		"nvim/init.lua" = {
 			force = true;
 			text = ''

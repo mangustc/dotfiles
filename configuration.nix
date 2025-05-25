@@ -489,15 +489,6 @@ abbr --position anywhere pgenw "pgen | wl-copy";
 		libnetfilter_queue
 		adwaita-icon-theme
 		python3Minimal
-		(pkgs.evil-helix.overrideAttrs (oldAttrs: rec {
-			src = pkgs.fetchFromGitHub {
-				owner = "usagi-flow";
-				repo = "evil-helix";
-				rev = "0e43ef684889a39309dd27f87ccdaacbb381609f";
-				sha256 = "sha256-evUWyY33FOUt1PxpnkkA4+KMs14SheJhN18z1dlUJRc=";
-			};
-			cargoHash = null;
-		}))
 		flatpak-update
 	] ++ getByHost [
 		sbctl
