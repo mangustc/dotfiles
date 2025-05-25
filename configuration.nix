@@ -57,10 +57,6 @@ in {
 		loader.systemd-boot.enable = getByHost (lib.mkForce false) true;
 		loader.efi.canTouchEfiVariables = true;
 		kernelPackages = pkgs.linuxPackages_latest;
-		lanzaboote = {
-			enable = getByHost true false;
-			pkiBundle = "/var/lib/sbctl";
-		};
 		blacklistedKernelModules = [
 		] ++ getByHost [
 			"pcspkr"
@@ -77,6 +73,12 @@ in {
 			"nvidia.NVreg_DynamicPowerManagement=0"
 			"nvidia.Nvreg_PreserveVideoMemoryAllocations=1"
 		];
+	} // getByHost {
+		lanzaboote = {
+			enable = true;
+			pkiBundle = "/var/lib/sbctl";
+		};
+	} {
 	};
 
 	networking = {
