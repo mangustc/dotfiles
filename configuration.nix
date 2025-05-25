@@ -1,9 +1,11 @@
 { config, lib, pkgs, host, ... }:
 
 let
+	mh = "main";
+	gh = "gaming";
 	getByHost = first: second:
-		if host.name == "main" then first
-		else if host.name == "gaming" then second
+		if host.name == mh then first
+		else if host.name == gh then second
 		else throw "Unsupported host: ${host.name}";
 	gitsshsetup = import ./scripts/gitsshsetup.nix pkgs;
 	chlayout = import ./scripts/chlayout.nix pkgs;
@@ -51,8 +53,8 @@ in {
 		./hardware-configuration-${host.name}.nix
 	];
 
-	boot = getByHost {
-		loader.systemd-boot.enable = lib.mkForce false;
+	boot = {
+		loader.systemd-boot.enable = getByHost (lib.mkForce false) true;
 		loader.efi.canTouchEfiVariables = true;
 		kernelPackages = pkgs.linuxPackages_latest;
 		lanzaboote = {
@@ -60,22 +62,16 @@ in {
 			pkiBundle = "/var/lib/sbctl";
 		};
 		blacklistedKernelModules = [
+		] ++ getByHost [
 			"pcspkr"
-		];
-		kernelParams =[
-			"nowatchodg"
-		];
-	} {
-		loader.systemd-boot.enable = true;
-		loader.efi.canTouchEfiVariables = true;
-		kernelPackages = pkgs.linuxPackages_latest;
-		blacklistedKernelModules = [
-			"nouveau"
+		] [
 			"iTCO_wdt"
 			"i915"
 		];
 		kernelParams = [
 			"nowatchdog"
+		] ++ getByHost [
+		] [
 			"intel_iommu=on"
 			"nvidia.NVreg_UsePageAttributeTable=1"
 			"nvidia.NVreg_DynamicPowerManagement=0"
