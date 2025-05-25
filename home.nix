@@ -57,6 +57,7 @@ vim.g.loaded_netrw = 1
 vim.g.loaded_netrwSettings = 1
 vim.g.loaded_netrwFileHandlers = 1
 vim.g.loaded_netrw_gitignore = 1
+vim.o.statusline = [[%<%f %h%m%r %y%=%{v:register} %-14.(%l,%c%V%) %P]]
 
 vim.api.nvim_create_autocmd("TextYankPost", {
 	desc = "Highlight when yanking (copying) text",
@@ -107,10 +108,6 @@ local kbds = {
 
 require("lazy").setup({
 	"tpope/vim-sleuth", -- Detect tabstop and shiftwidth automatically
-	-- {
-	-- 	"nmac427/guess-indent.nvim",
-	-- 	opts = {},
-	-- },
 	{ "numToStr/Comment.nvim", opts = {} },
 	{
 		"nvim-telescope/telescope.nvim",
@@ -151,25 +148,10 @@ require("lazy").setup({
 				builtin.oldfiles,
 				{ desc = '[S]earch Recent Files ("." for repeat)' }
 			)
-			-- vim.keymap.set('n', '<leader><leader>', builtin.buffers, { desc = '[ ] Find existing buffers' })
-
-			-- NOTE: Shortcut for searching your Neovim configuration files
 			vim.keymap.set("n", kbds.telescope_config_dir, function()
 				builtin.find_files({ cwd = vim.fn.stdpath("config") })
 			end, { desc = "[S]earch [N]eovim files" })
 		end,
-	},
-	{
-		-- `lazydev` configures Lua LSP for your Neovim config, runtime and plugins
-		-- used for completion, annotations and signatures of Neovim apis
-		"folke/lazydev.nvim",
-		ft = "lua",
-		opts = {
-			library = {
-				-- Load luvit types when the `vim.uv` word is found
-				{ path = "''${3rd}/luv/library", words = { "vim%.uv" } },
-			},
-		},
 	},
 	{
 		"neovim/nvim-lspconfig",
@@ -270,19 +252,8 @@ require("lazy").setup({
 		},
 		opts = {
 			notify_on_error = false,
-			-- format_on_save = function(bufnr)
-			-- 	if vim.g.disable_autoformat or vim.b[bufnr].disable_autoformat then
-			-- 		return
-			-- 	end
-			-- 	local disable_filetypes = { c = false, cpp = false }
-			-- 	return {
-			-- 		timeout_ms = 500,
-			-- 		lsp_fallback = not disable_filetypes[vim.bo[bufnr].filetype],
-			-- 	}
-			-- end,
 			formatters_by_ft = {
 				lua = { "stylua" },
-				-- jsx = { "prettier" },
 				typescript = { "prettierd", "prettier", stop_after_first = true },
 				typescriptreact = { "prettierd", "prettier", stop_after_first = true },
 				javascript = { "prettierd", "prettier", stop_after_first = true },
@@ -296,7 +267,6 @@ require("lazy").setup({
 			require("conform").setup(opts)
 		end,
 	},
-
 	{
 		"hrsh7th/nvim-cmp",
 		event = "InsertEnter",
@@ -323,11 +293,9 @@ require("lazy").setup({
 			"hrsh7th/cmp-path",
 		},
 		config = function()
-			-- See `:help cmp`
 			local cmp = require("cmp")
 			local luasnip = require("luasnip")
 			luasnip.config.setup({})
-
 			cmp.setup({
 				snippet = {
 					expand = function(args)
@@ -336,24 +304,10 @@ require("lazy").setup({
 				},
 				completion = { completeopt = "menu,menuone,noinsert" },
 				mapping = cmp.mapping.preset.insert({
-					-- ['<C-n>'] = cmp.mapping.select_next_item(),
-					-- ['<C-p>'] = cmp.mapping.select_prev_item(),
 					[kbds.cmp_next_item] = cmp.mapping.select_next_item(),
 					[kbds.cmp_prev_item] = cmp.mapping.select_prev_item(),
-
 					[kbds.cmp_confirm] = cmp.mapping.confirm({ select = true }),
 					[kbds.cmp_complete] = cmp.mapping.complete({}),
-
-					-- ['<C-l>'] = cmp.mapping(function()
-					--   if luasnip.expand_or_locally_jumpable() then
-					--     luasnip.expand_or_jump()
-					--   end
-					-- end, { 'i', 's' }),
-					-- ['<C-h>'] = cmp.mapping(function()
-					--   if luasnip.locally_jumpable(-1) then
-					--     luasnip.jump(-1)
-					--   end
-					-- end, { 'i', 's' }),
 				}),
 				sources = {
 					{ name = "nvim_lsp" },
@@ -383,8 +337,7 @@ require("lazy").setup({
 	{ -- Highlight, edit, and navigate code
 		"nvim-treesitter/nvim-treesitter",
 		build = ":TSUpdate",
-		main = "nvim-treesitter.configs", -- Sets main module to use for opts
-		-- [[ Configure Treesitter ]] See `:help nvim-treesitter`
+		main = "nvim-treesitter.configs",
 		opts = {
 			ensure_installed = {
 				"bash",
@@ -449,20 +402,6 @@ require("lazy").setup({
 			-- indent = { char = '»' },
 		},
 	},
-	{
-		"echasnovski/mini.nvim",
-		config = function()
-			-- require("mini.ai").setup({ n_lines = 500 })
-			-- require("mini.surround").setup()
-
-			local statusline = require("mini.statusline")
-			statusline.setup({ use_icons = vim.g.have_nerd_font })
-			---@diagnostic disable-next-line: duplicate-set-field
-			statusline.section_location = function()
-				return "%2l:%-2v"
-			end
-		end,
-	},
 }, {
 	ui = {
 		icons = vim.g.have_nerd_font and {} or {
@@ -483,6 +422,21 @@ require("lazy").setup({
 	},
 })
 
+local recording_group = vim.api.nvim_create_augroup("RecordingToggleQ", {})
+vim.api.nvim_create_autocmd({"VimEnter", "RecordingLeave"}, {
+  group = recording_group,
+  callback = function()
+    vim.keymap.set("n", "Q", "qa", { noremap = true, silent = true })
+  end,
+})
+vim.api.nvim_create_autocmd("RecordingEnter", {
+  group = recording_group,
+  callback = function()
+    vim.keymap.set("n", "Q", "q", { noremap = true, silent = true })
+  end,
+})
+vim.keymap.set("n", "q", "@a", {})
+
 -- system clipboard stuff
 vim.keymap.set({ "n", "v" }, "<leader>y", [["+y]], {})
 vim.keymap.set("n", "<leader>Y", [["+Y]], {})
@@ -496,7 +450,6 @@ vim.keymap.set("x", "<leader>p", [["_dP]], {})
 vim.keymap.set("", "gu", "<nop>", {})
 vim.keymap.set("", "gU", "<nop>", {})
 vim.keymap.set("", "<F1>", "<nop>", {})
-vim.keymap.set("n", "Q", "<nop>", {})
 
 -- Center on some movements
 vim.keymap.set("n", "<C-d>", "<C-d>zz", {})
