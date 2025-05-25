@@ -107,7 +107,7 @@ local kbds = {
 -- other keybindings at the end of the file
 
 require("lazy").setup({
-	"tpope/vim-sleuth", -- Detect tabstop and shiftwidth automatically
+	'NMAC427/guess-indent.nvim',
 	{ "numToStr/Comment.nvim", opts = {} },
 	{
 		"nvim-telescope/telescope.nvim",
@@ -157,7 +157,7 @@ require("lazy").setup({
 		"neovim/nvim-lspconfig",
 		dependencies = {
 			{ "j-hui/fidget.nvim", opts = {} },
-			"hrsh7th/cmp-nvim-lsp",
+			'saghen/blink.cmp',
 		},
 		config = function()
 			vim.api.nvim_create_autocmd("LspAttach", {
@@ -221,106 +221,114 @@ require("lazy").setup({
 					end
 				end,
 			})
-			local capabilities = vim.lsp.protocol.make_client_capabilities()
-			capabilities = vim.tbl_deep_extend("force", capabilities, require("cmp_nvim_lsp").default_capabilities())
 
+			vim.diagnostic.config {
+				severity_sort = true,
+				float = { border = 'rounded', source = 'if_many' },
+				underline = { severity = vim.diagnostic.severity.ERROR },
+				signs = vim.g.have_nerd_font and {
+					text = {
+						[vim.diagnostic.severity.ERROR] = '󰅚 ',
+						[vim.diagnostic.severity.WARN] = '󰀪 ',
+						[vim.diagnostic.severity.INFO] = '󰋽 ',
+						[vim.diagnostic.severity.HINT] = '󰌶 ',
+					},
+				} or {},
+				virtual_text = {
+					source = 'if_many',
+					spacing = 2,
+					format = function(diagnostic)
+						local diagnostic_message = {
+							[vim.diagnostic.severity.ERROR] = diagnostic.message,
+							[vim.diagnostic.severity.WARN] = diagnostic.message,
+							[vim.diagnostic.severity.INFO] = diagnostic.message,
+							[vim.diagnostic.severity.HINT] = diagnostic.message,
+						}
+						return diagnostic_message[diagnostic.severity]
+					end,
+				},
+			}
+
+			local capabilities = require('blink.cmp').get_lsp_capabilities()
 			local servers = {
 			    lua_ls = {},
 			    nil_ls = {},
 			    ruff = {},
 			}
-
-			-- Directly setup LSP servers using system binaries
 			for server_name, server_config in pairs(servers) do
 			    server_config.capabilities = vim.tbl_deep_extend("force", {}, capabilities, server_config.capabilities or {})
 			    require('lspconfig')[server_name].setup(server_config)
 			end
 		end,
 	},
-	{
-		"stevearc/conform.nvim",
-		lazy = false,
-		keys = {
-			{
-				kbds.formatter_format,
-				function()
-					require("conform").format({ async = true, lsp_fallback = true })
-				end,
-				mode = "",
-				desc = "[F]ormat buffer",
-			},
-		},
-		opts = {
-			notify_on_error = false,
-			formatters_by_ft = {
-				lua = { "stylua" },
-				typescript = { "prettierd", "prettier", stop_after_first = true },
-				typescriptreact = { "prettierd", "prettier", stop_after_first = true },
-				javascript = { "prettierd", "prettier", stop_after_first = true },
-				javascriptreact = { "prettierd", "prettier", stop_after_first = true },
-				json = { "prettierd", "prettier", stop_after_first = true },
-				html = { "prettierd", "prettier", stop_after_first = true },
-				css = { "prettierd", "prettier", stop_after_first = true },
-			},
-		},
-		config = function(_, opts)
-			require("conform").setup(opts)
+	{ -- Autoformat
+	    'stevearc/conform.nvim',
+	    event = { 'BufWritePre' },
+	    cmd = { 'ConformInfo' },
+	    keys = {
+	      {
+		'<leader>f',
+		function()
+		  require('conform').format { async = true, lsp_format = 'fallback' }
 		end,
-	},
-	{
-		"hrsh7th/nvim-cmp",
-		event = "InsertEnter",
-		dependencies = {
-			{
-				"L3MON4D3/LuaSnip",
-				build = (function()
-					if vim.fn.has("win32") == 1 or vim.fn.executable("make") == 0 then
-						return
-					end
-					return "make install_jsregexp"
-				end)(),
-				dependencies = {
-					{
-						"rafamadriz/friendly-snippets",
-						config = function()
-							require("luasnip.loaders.from_vscode").lazy_load()
-						end,
-					},
-				},
-			},
-			"saadparwaiz1/cmp_luasnip",
-			"hrsh7th/cmp-nvim-lsp",
-			"hrsh7th/cmp-path",
-		},
-		config = function()
-			local cmp = require("cmp")
-			local luasnip = require("luasnip")
-			luasnip.config.setup({})
-			cmp.setup({
-				snippet = {
-					expand = function(args)
-						luasnip.lsp_expand(args.body)
-					end,
-				},
-				completion = { completeopt = "menu,menuone,noinsert" },
-				mapping = cmp.mapping.preset.insert({
-					[kbds.cmp_next_item] = cmp.mapping.select_next_item(),
-					[kbds.cmp_prev_item] = cmp.mapping.select_prev_item(),
-					[kbds.cmp_confirm] = cmp.mapping.confirm({ select = true }),
-					[kbds.cmp_complete] = cmp.mapping.complete({}),
-				}),
-				sources = {
-					{ name = "nvim_lsp" },
-					{ name = "luasnip" },
-					{ name = "path" },
-				},
-				experimental = {
-					ghost_text = true,
-				},
-			})
-		end,
-	},
-	{
+		mode = "",
+		desc = '[F]ormat buffer',
+	      },
+	    },
+	    opts = {
+	      notify_on_error = false,
+	      formatters_by_ft = {
+		lua = { 'stylua' },
+	      },
+	    },
+	  },
+	{ -- Autocompletion
+    'saghen/blink.cmp',
+    event = 'VimEnter',
+    version = '1.*',
+    dependencies = {
+      {
+        'L3MON4D3/LuaSnip',
+        version = '2.*',
+        build = (function()
+          if vim.fn.has 'win32' == 1 or vim.fn.executable 'make' == 0 then
+            return
+          end
+          return 'make install_jsregexp'
+        end)(),
+        dependencies = {
+          -- {
+          --   'rafamadriz/friendly-snippets',
+          --   config = function()
+          --     require('luasnip.loaders.from_vscode').lazy_load()
+          --   end,
+          -- },
+        },
+        opts = {},
+      },
+    },
+    --- @module 'blink.cmp'
+    --- @type blink.cmp.Config
+    opts = {
+      keymap = {
+        preset = 'default',
+      },
+      appearance = {
+        nerd_font_variant = 'mono',
+      },
+      completion = {
+        documentation = { auto_show = false, auto_show_delay_ms = 500 },
+      },
+      sources = {
+        default = { 'lsp', 'path', 'snippets' },
+        providers = {},
+      },
+      snippets = { preset = 'luasnip' },
+      fuzzy = { implementation = 'lua' },
+      signature = { enabled = true },
+    },
+  },
+  {
 		"RRethy/base16-nvim",
 		lazy = false,
 		priority = 1000,
@@ -335,32 +343,19 @@ require("lazy").setup({
 		opts = { signs = false },
 	},
 	{ -- Highlight, edit, and navigate code
-		"nvim-treesitter/nvim-treesitter",
-		build = ":TSUpdate",
-		main = "nvim-treesitter.configs",
-		opts = {
-			ensure_installed = {
-				"bash",
-				"c",
-				"diff",
-				"html",
-				"lua",
-				"luadoc",
-				"markdown",
-				"markdown_inline",
-				"query",
-				"vim",
-				"vimdoc",
-			},
-			auto_install = true,
-			highlight = {
-				enable = true,
-				additional_vim_regex_highlighting = { "ruby" },
-			},
-			indent = { enable = true, disable = { "ruby" } },
-		},
+	    'nvim-treesitter/nvim-treesitter',
+	    build = ':TSUpdate',
+	    main = 'nvim-treesitter.configs', -- Sets main module to use for opts
+	    opts = {
+	      ensure_installed = { 'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'vim', 'vimdoc' },
+	      auto_install = true,
+	      highlight = {
+		enable = true,
+		additional_vim_regex_highlighting = { 'ruby' },
+	      },
+	      indent = { enable = true, disable = { 'ruby' } },
+	    },
 	},
-
 	{
 		"nvim-neo-tree/neo-tree.nvim",
 		version = "*",
@@ -396,11 +391,16 @@ require("lazy").setup({
 		},
 	},
 	{
-		"lukas-reineke/indent-blankline.nvim",
-		main = "ibl",
-		opts = {
-			-- indent = { char = '»' },
-		},
+	  'windwp/nvim-autopairs',
+	  event = 'InsertEnter',
+	  opts = {},
+	},
+	{
+	  {
+	    'lukas-reineke/indent-blankline.nvim',
+	    main = 'ibl',
+	    opts = {},
+	  },
 	},
 }, {
 	ui = {
@@ -442,7 +442,6 @@ vim.keymap.set({ "n", "v" }, "<leader>y", [["+y]], {})
 vim.keymap.set("n", "<leader>Y", [["+Y]], {})
 vim.keymap.set("n", "<leader>yy", [["+yy]], {})
 vim.keymap.set({ "n", "v" }, "<leader>d", [["_d]], {})
-
 vim.keymap.set("n", "<leader>p", '"_dp', {})
 vim.keymap.set("x", "<leader>p", [["_dP]], {})
 
