@@ -39,6 +39,17 @@ echo "Removing unused apps and updating"
 ${pkgs.flatpak}/bin/flatpak uninstall --unused -y
 ${pkgs.flatpak}/bin/flatpak update -y
 	'';
+	dualsound = pkgs.writeShellScriptBin "dualsound" ''
+if [ "$(pw-link -l | xargs | grep "playback.surround_40_output:output_FL |-> alsa_output.usb-Sony_Interactive_Entertainment_DualSense_Wireless_Controller-00.analog-surround-40:playback_FL |-> alsa_output.usb-Sony_Interactive_Entertainment_DualSense_Wireless_Controller-00.analog-surround-40:playback_RL")" == "" ]; then
+	echo "activating"
+	pw-link playback.surround_40_output:output_FL alsa_output.usb-Sony_Interactive_Entertainment_DualSense_Wireless_Controller-00.analog-surround-40:playback_RL
+	pw-link playback.surround_40_output:output_FR alsa_output.usb-Sony_Interactive_Entertainment_DualSense_Wireless_Controller-00.analog-surround-40:playback_RR
+else
+	echo "deactivating"
+	pw-link -d playback.surround_40_output:output_FL alsa_output.usb-Sony_Interactive_Entertainment_DualSense_Wireless_Controller-00.analog-surround-40:playback_RL
+	pw-link -d playback.surround_40_output:output_FR alsa_output.usb-Sony_Interactive_Entertainment_DualSense_Wireless_Controller-00.analog-surround-40:playback_RR
+fi
+	'';
 in {
 	nix = {
 		settings = {
@@ -150,7 +161,6 @@ table ip nethandler {
 			enable = true;
 			settings = {
 				animation = "doom";
-				vi_mode = true;
 			};
 		};
 		pipewire = {
@@ -488,6 +498,7 @@ abbr --position anywhere pgenw "pgen | wl-copy";
 		adwaita-icon-theme
 		python3Minimal
 		flatpak-update
+		dualsound
 	] ++ getByHost [
 		sbctl
 		moonlight-qt
