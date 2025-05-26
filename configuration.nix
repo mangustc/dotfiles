@@ -40,14 +40,30 @@ ${pkgs.flatpak}/bin/flatpak uninstall --unused -y
 ${pkgs.flatpak}/bin/flatpak update -y
 	'';
 	dualsound = pkgs.writeShellScriptBin "dualsound" ''
-if [ "$(pw-link -l | xargs | grep "playback.surround_40_output:output_FL |-> alsa_output.usb-Sony_Interactive_Entertainment_DualSense_Wireless_Controller-00.analog-surround-40:playback_FL |-> alsa_output.usb-Sony_Interactive_Entertainment_DualSense_Wireless_Controller-00.analog-surround-40:playback_RL")" == "" ]; then
-	echo "activating"
-	pw-link playback.surround_40_output:output_FL alsa_output.usb-Sony_Interactive_Entertainment_DualSense_Wireless_Controller-00.analog-surround-40:playback_RL
-	pw-link playback.surround_40_output:output_FR alsa_output.usb-Sony_Interactive_Entertainment_DualSense_Wireless_Controller-00.analog-surround-40:playback_RR
+dualsense_name="alsa_output.usb-Sony_Interactive_Entertainment_DualSense_Wireless_Controller-00.analog-surround-40"
+if [ "$1" == "toggle" ]; then
+	if [ "$(pw-link -l | xargs | grep "playback.surround_40_output:output_FL |-> $dualsense_name:playback_FL |-> $dualsense_name:playback_RL")" == "" ]; then
+		${if config.services.desktopManager.plasma6.enable then "${pkgs.libnotify}/bin/notify-send 'Dualsense Haptic' 'Activated'" else ""}
+		echo "activating"
+		pw-link playback.surround_40_output:output_FL $dualsense_name:playback_RL
+		pw-link playback.surround_40_output:output_FR $dualsense_name:playback_RR
+	else
+		${if config.services.desktopManager.plasma6.enable then "${pkgs.libnotify}/bin/notify-send 'Dualsense Haptic' 'Deactivated'" else ""}
+		echo "deactivating"
+		pw-link -d playback.surround_40_output:output_FL $dualsense_name:playback_RL
+		pw-link -d playback.surround_40_output:output_FR $dualsense_name:playback_RR
+	fi
+elif [ "$1" == "level" ]; then
+	if [ "$2" == "" ]; then
+		echo "provide a level (number in range 0 to 100)"
+		exit 1
+	fi
+	level="$2"
+	${if config.services.desktopManager.plasma6.enable then ''${pkgs.libnotify}/bin/notify-send 'Dualsense Haptic' "Set level to $level%"'' else ""}
+	pactl set-sink-volume $dualsense_name 100% 100% $level% $level%
 else
-	echo "deactivating"
-	pw-link -d playback.surround_40_output:output_FL alsa_output.usb-Sony_Interactive_Entertainment_DualSense_Wireless_Controller-00.analog-surround-40:playback_RL
-	pw-link -d playback.surround_40_output:output_FR alsa_output.usb-Sony_Interactive_Entertainment_DualSense_Wireless_Controller-00.analog-surround-40:playback_RR
+	echo "no such command"
+	exit 1
 fi
 	'';
 in {
