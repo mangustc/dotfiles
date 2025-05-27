@@ -66,6 +66,9 @@ else
 	exit 1
 fi
 	'';
+	killsteamgame = pkgs.writeShellScriptBin "killsteamgame" ''
+${pkgs.killall}/bin/killall GameThread
+	'';
 in {
 	nix = {
 		settings = {
@@ -515,6 +518,7 @@ abbr --position anywhere pgenw "pgen | wl-copy";
 		python3Minimal
 		flatpak-update
 		dualsound
+		killsteamgame
 	] ++ getByHost [
 		sbctl
 		moonlight-qt
