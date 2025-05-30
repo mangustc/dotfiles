@@ -23,7 +23,7 @@ def run_command(cmd: str) -> tuple[str, int]:
 if __name__ == "__main__":
     parser = ArgumentParser(prog="virt", description="A libvirt domains manager")
     parser.add_argument("command", choices=["start", "usbdump", "xmlsave"])
-    parser.add_argument("-c", "--cdrom", default=os.getenv("VIRT_CDROM_PATH", ""), type=os.path.expanduser, help="path to a cdrom device file")
+    parser.add_argument("-c", "--cdrom", default=[os.getenv("VIRT_CDROM_PATH")] if os.getenv("VIRT_CDROM_PATH") else [], action='append', type=os.path.expanduser, help="path to a cdrom device file")
     parser.add_argument("-u", "--usb", default=os.getenv("VIRT_USB_DEVICES", ""), type=os.path.expanduser, help="path to a usb passthrough file")
     parser.add_argument("-b", "--base", default=os.getenv("VIRT_BASE_DOMAIN", ""), help="base domain name")
     parser.add_argument("path", nargs="?", default="")
@@ -36,8 +36,8 @@ if __name__ == "__main__":
             _out, _code = run_command(f${"'''"}virsh dominfo "{args.base}"${"'''"})
             if _code == 1:
                 raise Exception()
-            if args.cdrom != "":
-                if not os.path.isfile(args.cdrom):
+            for cdrom in args.cdrom:
+                if not os.path.isfile(cdrom):
                     raise Exception()
             if args.usb != "":
                 if not os.path.isfile(args.usb):
@@ -78,12 +78,12 @@ if __name__ == "__main__":
 
 
             devices_tag = root.find("devices")
-            if args.cdrom != "":
+            for cdrom in args.cdrom:
                 if (len(devs_free) == 0) or (len(units_free) == 0):
                     raise Exception(f"No available devs and units left:\n\tdevs: {devs_free}\n\tunits: {units_free}")
                 cdrom_dev = devs_free.pop()
                 cdrom_unit = units_free.pop()
-                cdrom_xml, _ = run_command(f${"'''"}virsh attach-disk --print-xml --domain "{args.base}" --source "{args.cdrom}" --target "{cdrom_dev}" --type "cdrom" --targetbus "sata" --sourcetype "file" --mode "readonly" --driver "qemu" --subdriver "raw" --address "sata:0.0.{cdrom_unit}" | tr -d "\n"${"'''"})
+                cdrom_xml, _ = run_command(f${"'''"}virsh attach-disk --print-xml --domain "{args.base}" --source "{cdrom}" --target "{cdrom_dev}" --type "cdrom" --targetbus "sata" --sourcetype "file" --mode "readonly" --driver "qemu" --subdriver "raw" --address "sata:0.0.{cdrom_unit}" | tr -d "\n"${"'''"})
 
                 devices_tag.append(ET.fromstring(cdrom_xml))
 
