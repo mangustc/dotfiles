@@ -18,6 +18,52 @@ let
 	] ++ getByHost [
 	] [
 	];
+	nixupd = pkgs.writeShellScriptBin "nixupd" ''
+if_root_chown() {
+	if [ "$(stat -c "%U" "$1")" == "root" ]; then
+		sudo chown ivan "$dotsdir/flake.lock"
+	fi
+}
+
+dotsdir="$HOME/dotfiles"
+if [ ! -d "$dotsdir" ]; then
+	echo "can't find dotfiles in directory $dotsdir"
+	return 1
+fi
+
+# optional update
+if [ "$1" == "upgrade" ]; then
+	nix flake update --flake "$dotsdir"
+fi
+
+# Prepare
+if [ -f "$dotsdir/flake.lock" ]; then
+	if_root_chown "$dotsdir/flake.lock"
+	mv -v "$dotsdir/flake.lock" "$dotsdir/flake.lock.${host.name}"
+fi
+if [ -d "$dotsdir/.git.no" ]; then
+	mv -v "$dotsdir/.git.no" "$dotsdir/.git"
+fi
+
+# Building
+if [ -f "$dotsdir/flake.lock.${host.name}" ]; then
+	if_root_chown "$dotsdir/flake.lock.${host.name}"
+	mv -v "$dotsdir/flake.lock.${host.name}" "$dotsdir/flake.lock"
+fi
+if [ -d "$dotsdir/.git" ]; then
+	mv -v "$dotsdir/.git" "$dotsdir/.git.no"
+fi
+sudo nixos-rebuild --flake "$dotsdir/#${host.name}" switch
+
+# After build
+if [ -f "$dotsdir/flake.lock" ]; then
+	if_root_chown "$dotsdir/flake.lock"
+	mv -v "$dotsdir/flake.lock" "$dotsdir/flake.lock.${host.name}"
+fi
+if [ -d "$dotsdir/.git.no" ]; then
+	mv -v "$dotsdir/.git.no" "$dotsdir/.git"
+fi
+	'';
 	flatpak-update = pkgs.writeShellScriptBin "flatpak-update" ''
 echo "Adding flathub repo if not exists"
 ${pkgs.flatpak}/bin/flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
@@ -416,24 +462,6 @@ function fish_prompt
     echo -n -s "$nix_shell_info" (set_color $color_cwd) (prompt_pwd -D 3) $normal (fish_vcs_prompt) $normal " "$prompt_status $suffix " "
 end
 
-function nixupd
-    set dotsdir "$HOME/dotfiles"
-    if not test -d "$dotsdir"
-        echo "can't find dotfiles in directory $dotsdir"
-        return 1
-    end
-    if test -d "$dotsdir/.git.no"
-        mv "$dotsdir/.git.no" "$dotsdir/.git"
-    end
-    if test -d "$dotsdir/.git"
-        mv "$dotsdir/.git" "$dotsdir/.git.no"
-    end
-    sudo nixos-rebuild --flake $dotsdir/#${host.name} switch $argv
-    if test -d "$dotsdir/.git.no"
-        mv "$dotsdir/.git.no" "$dotsdir/.git"
-    end
-end
-
 function nix-index
 	sudo nix-channel --add https://nixos.org/channels/nixos-unstable nixos
 	sudo nix-channel --update
@@ -520,6 +548,7 @@ abbr --position anywhere pgenw "pgen | wl-copy";
 		flatpak-update
 		dualsound
 		killsteamgame
+		nixupd
 	] ++ getByHost [
 		sbctl
 		moonlight-qt
