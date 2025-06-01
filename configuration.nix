@@ -86,7 +86,7 @@ in {
 	boot = {
 		loader.systemd-boot.enable = getByHost (lib.mkForce false) true;
 		loader.efi.canTouchEfiVariables = true;
-		kernelPackages = pkgs.linuxPackages_latest;
+		kernelPackages = pkgs.linuxPackages_6_14;
 		blacklistedKernelModules = [
 		] ++ getByHost [
 			"pcspkr"
@@ -158,7 +158,7 @@ table ip nethandler {
 			powerManagement.finegrained = false;
 			open = false;
 			nvidiaSettings = true;
-			package = config.boot.kernelPackages.nvidiaPackages.latest;
+			package = config.boot.kernelPackages.nvidiaPackages.stable;
 		};
 	};
 
@@ -486,6 +486,7 @@ abbr --position anywhere pgenw "pgen | wl-copy";
 		NPM_CONFIG_CACHE = "${xdg-cache-home}/npm";
 		NPM_CONFIG_TMP = "$XDG_RUNTIME_DIR/npm";
 		# XAUTHORITY = "$XDG_RUNTIME_DIR/Xauthority";
+		MANPAGER="nvim +Man!";
 	} // getByHost {
 	} {
 		VIRT_BASE_DOMAIN = "win-passthrough";
@@ -525,6 +526,7 @@ abbr --position anywhere pgenw "pgen | wl-copy";
 	] [
 		mangohud
 		protonup-qt
+		godot
 	] ++ getByHost (
 		[]
 		++ gitsshsetup
