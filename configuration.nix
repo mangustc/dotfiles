@@ -477,6 +477,7 @@ function nix-edit
 	nvim "$(whereis $argv | cut -d " " -f 2)"
 end
 alias eza "eza -M --icons=always --no-permissions --group-directories-first --git --color=always"
+abbr --position anywhere ns "nix-shell --run fish -p";
 abbr --position anywhere rm "rm -vrf";
 abbr --position anywhere cp "cp -vr";
 abbr --position anywhere mv "mv -vf";
