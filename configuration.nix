@@ -640,24 +640,16 @@ chmod +x /var/lib/libvirt/hooks/qemu.d/win-passthrough/release/end/stop.sh
 		enable = getByHost false true;
 		qemu = {
 			package = pkgs.qemu_kvm;
-			verbatimConfig = ''
-namespace = []
-user = "1000"
-group = "1000"
-			'';
 			ovmf = {
 				enable = true;
-				# packages = [ pkgs.OVMFFull.fd ];
-				packages = [(pkgs.OVMF.override {
-					secureBoot = true;
-					tpmSupport = true;
-				}).fd];
+				packages = [ pkgs.OVMFFull.fd ];
 			};
 		};
 		onBoot = "ignore";
 		onShutdown = "shutdown";
 	};
 	programs.virt-manager.enable = getByHost false true;
+	services.spice-vdagentd.enable = getByHost false true;
 
 	systemd.services.nethandler = {
 		enable = true;
