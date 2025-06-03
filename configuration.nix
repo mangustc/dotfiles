@@ -18,6 +18,7 @@ let
 	] [
 	];
 	nixupd = pkgs.writeShellScriptBin "nixupd" ''
+set -e
 if_root_chown() {
 	if [ "$(stat -c "%U" "$1")" == "root" ]; then
 		sudo chown ivan "$dotsdir/flake.lock"
@@ -131,7 +132,7 @@ in {
 	boot = {
 		loader.systemd-boot.enable = getByHost (lib.mkForce false) true;
 		loader.efi.canTouchEfiVariables = true;
-		kernelPackages = pkgs.linuxPackages_6_14;
+		kernelPackages = getByHost pkgs.linuxPackages_latest pkgs.linuxPackages_6_14;
 		blacklistedKernelModules = [
 		] ++ getByHost [
 			"pcspkr"
