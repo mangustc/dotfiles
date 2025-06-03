@@ -58,7 +58,7 @@ sudo nixos-rebuild --flake "$dotsdir/#${host.name}" switch
 # After build
 if [ -f "$dotsdir/flake.lock" ]; then
 	if_root_chown "$dotsdir/flake.lock"
-	mv -v "$dotsdir/flake.lock" "$dotsdir/flake.lock.${host.name}"
+	cp -vf "$dotsdir/flake.lock" "$dotsdir/flake.lock.${host.name}"
 fi
 if [ -d "$dotsdir/.git.no" ]; then
 	mv -v "$dotsdir/.git.no" "$dotsdir/.git"
