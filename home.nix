@@ -514,16 +514,6 @@ color15 #ebdbb2
 			'';
 			force = true;
 		};
-		"git/config" = {
-			text = ''
-[user]
-	name = Ivan Lifanov
-	email = letalbark@gmail.com
-[core]
-	quotepath = false
-			'';
-			force = true;
-		};
 	} // getByHost {
 		"hypr/hyprland.conf" = {
 			text = ''

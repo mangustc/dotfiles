@@ -266,6 +266,15 @@ table ip nethandler {
 	};
 
 	programs = {
+		git = {
+			enable = true;
+			config = {
+				user.name = "Ivan Lifanov";
+				user.email = "letalbark@gmail.com";
+				init.defaultBranch = "main";
+				core.quotepath = false;
+			};
+		};
 		ssh.startAgent = true;
 		kdeconnect.enable = true;
 		steam = {
@@ -523,7 +532,6 @@ abbr --position anywhere pgenw "pgen | wl-copy";
 	};
 
 	environment.systemPackages = with pkgs; [
-		git
 		kitty
 		eza
 		obsidian
@@ -556,6 +564,7 @@ abbr --position anywhere pgenw "pgen | wl-copy";
 		mangohud
 		protonup-qt
 		godot
+		rpcs3
 	] ++ getByHost (
 		[]
 		++ gitsshsetup
