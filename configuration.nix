@@ -9,8 +9,6 @@ let
 		else throw "Unsupported host: ${host.name}";
 	gitsshsetup = import ./scripts/gitsshsetup.nix pkgs;
 	chlayout = import ./scripts/chlayout.nix pkgs;
-	cpuperf = import ./scripts/cpuperf.nix pkgs;
-	game-performance = import ./scripts/game-performance.nix pkgs;
 	nixupd = pkgs.writeShellScriptBin "nixupd" ''
 set -e
 if_root_chown() {
@@ -58,9 +56,6 @@ if [ -d "$dotsdir/.git.no" ]; then
 	mv -v "$dotsdir/.git.no" "$dotsdir/.git"
 fi
 	'';
-	killsteamgame = pkgs.writeShellScriptBin "killsteamgame" ''
-${pkgs.killall}/bin/killall GameThread
-	'';
 in {
 	nix = {
 		settings = {
@@ -82,6 +77,8 @@ in {
 		./modules/kitty.nix
 		./modules/dualsound.nix
 		./modules/vm.nix
+		./modules/gaming.nix
+		./modules/cpuperf.nix
 	];
 
 	modules.boot = {
@@ -197,9 +194,11 @@ in {
 	modules.kitty.enable = true;
 	modules.dualsound.enable = true;
 	modules.vm = {
-		enable = true;
+		enable = getByHost false true;
 		gpuPassthrough.enable = true;
 	};
+	modules.gaming.enable = getByHost false true;
+	modules.cpuperf.enable = getByHost false true;
 	programs = {
 		git = {
 			enable = true;
@@ -262,7 +261,6 @@ in {
 		xclip
 		adwaita-icon-theme
 		python3Minimal
-		killsteamgame
 		nixupd
 	] ++ getByHost [
 		moonlight-qt
@@ -278,8 +276,6 @@ in {
 		[]
 		++ gitsshsetup
 		++ chlayout
-		++ cpuperf
-		++ game-performance
 	);
 	fonts.packages = with pkgs; [
 		noto-fonts
@@ -291,43 +287,10 @@ in {
 SUBSYSTEM=="backlight", ACTION=="add", \
 	RUN+="${pkgs.coreutils}/bin/chgrp video /sys/class/backlight/%k/brightness", \
 	RUN+="${pkgs.coreutils}/bin/chmod g+w /sys/class/backlight/%k/brightness"
-	'' ''
-SUBSYSTEM=="cpu", ACTION=="add", \
-	RUN+="${pkgs.coreutils}/bin/chgrp video /sys/devices/system/cpu/%k/cpufreq/scaling_governor", \
-	RUN+="${pkgs.coreutils}/bin/chgrp video /sys/devices/system/cpu/%k/cpufreq/energy_performance_preference", \
-	RUN+="${pkgs.coreutils}/bin/chmod g+w /sys/devices/system/cpu/%k/cpufreq/scaling_governor", \
-	RUN+="${pkgs.coreutils}/bin/chmod g+w /sys/devices/system/cpu/%k/cpufreq/energy_performance_preference"
+	'' '''';
 
-# Disable DS4 touchpad acting as mouse
-# USB
-ATTRS{name}=="Sony Interactive Entertainment Wireless Controller Touchpad", ENV{LIBINPUT_IGNORE_DEVICE}="1"
-# Bluetooth
-ATTRS{name}=="Wireless Controller Touchpad", ENV{LIBINPUT_IGNORE_DEVICE}="1"
-
-# USB
-ATTRS{name}=="Sony Interactive Entertainment DualSense Wireless Controller Touchpad", ENV{LIBINPUT_IGNORE_DEVICE}="1"
-# Bluetooth
-ATTRS{name}=="DualSense Wireless Controller Touchpad", ENV{LIBINPUT_IGNORE_DEVICE}="1"
-	'';
-
-	security.polkit.extraConfig = ''
-  polkit.addRule(function(action, subject) {
-    if (action.id == "org.freedesktop.systemd1.manage-units" &&
-        (action.lookup("unit") == "scx.service") &&
-        subject.user == "ivan") {
-      return polkit.Result.YES;
-    }
-  });
-	'';
 	security.sudo.enable = false;
 	security.sudo-rs.enable = true;
-	services.scx = {
-		enable = getByHost false true;
-		scheduler = "scx_lavd";
-		extraArgs = [ "--performance" ];
-
-	};
-	systemd.services.scx.wantedBy = lib.mkForce [];
 
 	system.stateVersion = "24.11"; # Did you read the comment?
 }
