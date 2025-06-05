@@ -17,6 +17,10 @@ in {
 	};
 
 	config = lib.mkIf cfg.enable {
+		users.users.ivan.extraGroups = [
+			"kvm"
+			"libvirtd"
+		];
 		systemd.services.libvirtd = lib.mkIf cfg.gpuPassthrough.enable {
 			preStart = ''
 rm -rf /var/lib/libvirt/hooks
