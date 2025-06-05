@@ -1,17 +1,15 @@
 { config, lib, pkgs, ... }:
 
-{
-	options = {
-		modules = {
-			boot = {
-				enable = lib.mkEnableOption "Enable boot loader";
-				secureBoot.enable = lib.mkEnableOption "Enable secure boot";
-			};
-		};
+let
+	cfg = config.modules.boot;
+in {
+	options.modules.boot = {
+		enable = lib.mkEnableOption "Enable boot loader";
+		secureBoot.enable = lib.mkEnableOption "Enable secure boot";
 	};
 
-	config = lib.mkIf config.modules.boot.enable {
-		boot = if config.modules.boot.secureBoot.enable then {
+	config = lib.mkIf cfg.enable {
+		boot = if cfg.secureBoot.enable then {
 			lanzaboote = {
 				enable = true;
 				pkiBundle = "/var/lib/sbctl";
@@ -38,7 +36,7 @@
 				"nowatchdog"
 			];
 		};
-		environment.systemPackages = with pkgs; [
+		environment.systemPackages = with pkgs; lib.mkIf cfg.secureBoot.enable [
 			sbctl
 		];
 	};
