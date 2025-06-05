@@ -51,6 +51,15 @@ in {
 				ExecStart = pkgs.writeShellScript "nethandler" (builtins.readFile ./nethandler);
 			};
 		};
+		security.polkit.extraConfig = ''
+  polkit.addRule(function(action, subject) {
+    if (action.id == "org.freedesktop.systemd1.manage-units" &&
+        (action.lookup("unit") == "nethandler.service") &&
+        subject.user == "ivan") {
+      return polkit.Result.YES;
+    }
+  });
+		'';
 		environment.systemPackages = with pkgs; [
 			libnetfilter_queue
 		];
