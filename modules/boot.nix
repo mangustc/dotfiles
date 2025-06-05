@@ -18,7 +18,7 @@
 			};
 			loader.systemd-boot.enable = lib.mkForce false;
 			loader.efi.canTouchEfiVariables = true;
-			kernelPackages = pkgs.linuxPackages_latest;
+			kernelPackages = lib.mkDefault pkgs.linuxPackages_latest;
 			blacklistedKernelModules = [
 				"pcspkr"
 				"iTCO_wdt"
@@ -29,7 +29,7 @@
 		} else {
 			loader.systemd-boot.enable = true;
 			loader.efi.canTouchEfiVariables = true;
-			kernelPackages = pkgs.linuxPackages_latest;
+			kernelPackages = lib.mkDefault pkgs.linuxPackages_latest;
 			blacklistedKernelModules = [
 				"pcspkr"
 				"iTCO_wdt"

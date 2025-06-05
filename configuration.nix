@@ -86,9 +86,10 @@ in {
 
 	modules.boot = {
 		enable = true;
-		secureBoot.enable = true;
+		secureBoot.enable = getByHost true false;
 	};
 	boot = lib.mkIf (host.name == "gaming") {
+		kernelPackages = pkgs.linuxPackages_6_14;
 		kernelParams = [
 			"intel_iommu=on"
 			"nvidia.NVreg_UsePageAttributeTable=1"
