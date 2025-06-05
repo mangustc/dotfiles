@@ -11,7 +11,6 @@ let
 	chlayout = import ./scripts/chlayout.nix pkgs;
 	cpuperf = import ./scripts/cpuperf.nix pkgs;
 	game-performance = import ./scripts/game-performance.nix pkgs;
-	virt = import ./scripts/virt.nix pkgs;
 	nixupd = pkgs.writeShellScriptBin "nixupd" ''
 set -e
 if_root_chown() {
@@ -82,6 +81,7 @@ in {
 		./modules/flatpak.nix
 		./modules/kitty.nix
 		./modules/dualsound.nix
+		./modules/vm.nix
 	];
 
 	modules.boot = {
@@ -196,6 +196,10 @@ in {
 	modules.hyprland.enable = getByHost true false;
 	modules.kitty.enable = true;
 	modules.dualsound.enable = true;
+	modules.vm = {
+		enable = true;
+		gpuPassthrough.enable = true;
+	};
 	programs = {
 		git = {
 			enable = true;
@@ -276,91 +280,12 @@ in {
 		++ chlayout
 		++ cpuperf
 		++ game-performance
-		++ virt
 	);
 	fonts.packages = with pkgs; [
 		noto-fonts
 		noto-fonts-emoji
 		nerd-fonts.jetbrains-mono
 	];
-
-	systemd.services.libvirtd = {
-		preStart = ''
-rm -rf /var/lib/libvirt/hooks
-mkdir -p /var/lib/libvirt/hooks
-mkdir -p /var/lib/libvirt/hooks/qemu.d/win-passthrough/prepare/begin
-mkdir -p /var/lib/libvirt/hooks/qemu.d/win-passthrough/release/end
-
-echo '#!/run/current-system/sw/bin/bash
-
-GUEST_NAME="$1"
-HOOK_NAME="$2"
-STATE_NAME="$3"
-
-BASEDIR="$(dirname $0)"
-
-if [ "$(echo "$GUEST_NAME" | grep "tmp-")" ]; then
-	GUEST_NAME="$(echo "$GUEST_NAME" | sed "s|tmp-||")"
-fi
-HOOKPATH="$BASEDIR/qemu.d/$GUEST_NAME/$HOOK_NAME/$STATE_NAME"
-set -e # If a script exits with an error, we should as well.
-
-if [ -f "$HOOKPATH" ]; then
-	eval \""$HOOKPATH"\" "$@"
-elif [ -d "$HOOKPATH" ]; then
-	while read file; do
-		eval \""$file"\" "$@"
-	done <<< "$(find -L "$HOOKPATH" -maxdepth 1 -type f -executable -print;)"
-fi
-' > /var/lib/libvirt/hooks/qemu
-echo '#!/run/current-system/sw/bin/bash
-set -x
-
-echo efi-framebuffer.0 > /sys/bus/platform/drivers/efi-framebuffer/unbind
-modprobe -r nvidia_drm nvidia_modeset nvidia_uvm nvidia snd_hda_intel
-
-systemctl set-property --runtime -- system.slice AllowedCPUs=5
-systemctl set-property --runtime -- user.slice AllowedCPUs=5
-systemctl set-property --runtime -- init.scope AllowedCPUs=5
-echo performance | tee /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor
-echo performance | tee /sys/devices/system/cpu/cpu*/cpufreq/energy_performance_preference
-' > /var/lib/libvirt/hooks/qemu.d/win-passthrough/prepare/begin/start.sh
-echo '#!/run/current-system/sw/bin/bash
-set -x
-
-systemctl set-property --runtime -- system.slice AllowedCPUs=0-5
-systemctl set-property --runtime -- user.slice AllowedCPUs=0-5
-systemctl set-property --runtime -- init.scope AllowedCPUs=0-5
-echo powersave | tee /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor
-echo balance_performance | tee /sys/devices/system/cpu/cpu*/cpufreq/energy_performance_preference
-
-echo "efi-framebuffer.0" > /sys/bus/platform/drivers/efi-framebuffer/bind
-modprobe nvidia_drm
-modprobe nvidia_modeset
-modprobe nvidia_uvm
-modprobe nvidia
-modprobe snd_hda_intel
-' > /var/lib/libvirt/hooks/qemu.d/win-passthrough/release/end/stop.sh
-
-chmod +x /var/lib/libvirt/hooks/qemu
-chmod +x /var/lib/libvirt/hooks/qemu.d/win-passthrough/prepare/begin/start.sh
-chmod +x /var/lib/libvirt/hooks/qemu.d/win-passthrough/release/end/stop.sh
-		'';
-	};
-	virtualisation.libvirtd = {
-		enable = getByHost false true;
-		qemu = {
-			package = pkgs.qemu_kvm;
-			ovmf = {
-				enable = true;
-				packages = [ pkgs.OVMFFull.fd ];
-			};
-		};
-		onBoot = "ignore";
-		onShutdown = "shutdown";
-	};
-	programs.virt-manager.enable = getByHost false true;
-	services.spice-vdagentd.enable = getByHost false true;
 
 	services.udev.extraRules = getByHost ''
 SUBSYSTEM=="backlight", ACTION=="add", \
@@ -388,19 +313,12 @@ ATTRS{name}=="DualSense Wireless Controller Touchpad", ENV{LIBINPUT_IGNORE_DEVIC
 	security.polkit.extraConfig = ''
   polkit.addRule(function(action, subject) {
     if (action.id == "org.freedesktop.systemd1.manage-units" &&
-        (action.lookup("unit") == "nethandler.service") &&
-        subject.user == "ivan") {
-      return polkit.Result.YES;
-    }
-  });
-  polkit.addRule(function(action, subject) {
-    if (action.id == "org.freedesktop.systemd1.manage-units" &&
         (action.lookup("unit") == "scx.service") &&
         subject.user == "ivan") {
       return polkit.Result.YES;
     }
   });
-'';
+	'';
 	security.sudo.enable = false;
 	security.sudo-rs.enable = true;
 	services.scx = {
