@@ -8,7 +8,6 @@ let
 		else if host.name == gh then second
 		else throw "Unsupported host: ${host.name}";
 	myPkgs = import ./myPkgs pkgs;
-	gitsshsetup = import ./scripts/gitsshsetup.nix pkgs;
 	nixupd = pkgs.writeShellScriptBin "nixupd" ''
 set -e
 if_root_chown() {
