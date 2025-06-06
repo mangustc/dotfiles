@@ -194,6 +194,8 @@ in {
 		btop
 		gcc
 		kdePackages.dolphin
+		kdePackages.gwenview
+		kdePackages.okular
 		wl-clipboard
 		xclip
 		adwaita-icon-theme
