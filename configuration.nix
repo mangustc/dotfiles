@@ -226,10 +226,6 @@ in {
 		NPM_CONFIG_INIT_MODULE = "${xdg-config-home}/npm/config/npm-init.js";
 		NPM_CONFIG_CACHE = "${xdg-cache-home}/npm";
 		NPM_CONFIG_TMP = "$XDG_RUNTIME_DIR/npm";
-		# XAUTHORITY = "$XDG_RUNTIME_DIR/Xauthority";
-		VIRT_BASE_DOMAIN = "win-passthrough";
-		VIRT_USB_DEVICES = "$HOME/virt/usb.json";
-		LIBVIRT_DEFAULT_URI = "qemu:///system";
 	};
 
 	environment.systemPackages = with pkgs; [
