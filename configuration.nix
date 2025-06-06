@@ -7,8 +7,8 @@ let
 		if host.name == mh then first
 		else if host.name == gh then second
 		else throw "Unsupported host: ${host.name}";
+	myPkgs = import ./myPkgs pkgs;
 	gitsshsetup = import ./scripts/gitsshsetup.nix pkgs;
-	chlayout = import ./scripts/chlayout.nix pkgs;
 	nixupd = pkgs.writeShellScriptBin "nixupd" ''
 set -e
 if_root_chown() {
@@ -264,11 +264,13 @@ in {
 		nixupd
 	] ++ getByHost [
 		moonlight-qt
+		myPkgs.chlayout
 	] [
 		mangohud
 		protonup-qt
 		godot
 		rpcs3
+		myPkgs.chlayout
 	] ++ getByHost (
 		[]
 		++ gitsshsetup
