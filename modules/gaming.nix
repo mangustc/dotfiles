@@ -2,6 +2,7 @@
 
 let
 	cfg = config.modules.gaming;
+	myPkgs = (import ../myPkgs pkgs);
 in {
 	options.modules.gaming = {
 		enable = lib.mkEnableOption "Enable gaming";
@@ -45,6 +46,7 @@ else
 	systemctl stop scx.service
 fi
 			'')
+			myPkgs.cpuperf
 		];
 	};
 }
