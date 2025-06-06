@@ -277,7 +277,6 @@ in {
 	) (
 		[]
 		++ gitsshsetup
-		++ chlayout
 	);
 	fonts.packages = with pkgs; [
 		noto-fonts
