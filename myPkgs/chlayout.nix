@@ -36,12 +36,5 @@ fi
     cp ${src}/bin/${pname} $out/bin/${pname}
     chmod +x $out/bin/${pname}
   '';
-
-  # meta = with pkgs.lib; {
-  #   description = "Keyboard layout switching script for KDE and X11";
-  #   license = licenses.mit;
-  #   maintainers = with maintainers; [ ];
-  #   platforms = platforms.linux;
-  # };
 }
 
