@@ -67,18 +67,7 @@ in {
 
 	imports = [
 		./hardware-configuration-${host.name}.nix
-		./modules/boot.nix
-		./modules/neovim.nix
-		./modules/networking.nix
-		./modules/firefox.nix
-		./modules/fish.nix
-		./modules/hyprland.nix
-		./modules/flatpak.nix
-		./modules/kitty.nix
-		./modules/dualsound.nix
-		./modules/vm.nix
-		./modules/gaming.nix
-		./modules/cpuperf.nix
+		./modules
 	];
 
 	modules.boot = {
@@ -262,22 +251,16 @@ in {
 		adwaita-icon-theme
 		python3Minimal
 		nixupd
+		myPkgs.gitsshsetup
 	] ++ getByHost [
 		moonlight-qt
-		myPkgs.chlayout
 	] [
 		mangohud
 		protonup-qt
 		godot
 		rpcs3
 		myPkgs.chlayout
-	] ++ getByHost (
-		[]
-		++ gitsshsetup
-	) (
-		[]
-		++ gitsshsetup
-	);
+	];
 	fonts.packages = with pkgs; [
 		noto-fonts
 		noto-fonts-emoji
