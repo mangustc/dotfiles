@@ -17,6 +17,10 @@ in {
 	};
 
 	config = lib.mkIf cfg.enable {
+		boot.kernelParams = [
+			"intel_iommu=on"
+			"amd_iommu=on"
+		];
 		users.users.ivan.extraGroups = [
 			"kvm"
 			"libvirtd"

@@ -74,9 +74,7 @@ in {
 		secureBoot.enable = getByHost true false;
 	};
 	boot = lib.mkIf (host.name == "gaming") {
-		kernelPackages = pkgs.linuxPackages_6_14;
 		kernelParams = [
-			"intel_iommu=on"
 			"nvidia.NVreg_UsePageAttributeTable=1"
 			"nvidia.NVreg_DynamicPowerManagement=0"
 			"nvidia.Nvreg_PreserveVideoMemoryAllocations=1"
