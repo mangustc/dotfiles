@@ -167,8 +167,6 @@ in {
 			"video"
 			"input"
 			"tty"
-			"kvm"
-			"libvirtd"
 		];
 		useDefaultShell = true;
 	};
