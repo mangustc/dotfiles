@@ -2,113 +2,7 @@
 
 let
 	cfg = config.modules.vm;
-in {
-	options.modules.vm = {
-		enable = lib.mkEnableOption "Enable boot loader";
-		gpuPassthrough.enable = lib.mkEnableOption "Enable gpu passthrough";
-		defaultDomain = lib.mkOption {
-			default = "win-passthrough";
-			description = "default libvirt domain";
-		};
-		defaultUSBDevices = lib.mkOption {
-			default = "$HOME/virt/usb.json";
-			description = "path to usb devices json";
-		};
-	};
-
-	config = lib.mkIf cfg.enable {
-		boot.kernelParams = [
-			"intel_iommu=on"
-			"amd_iommu=on"
-		];
-		users.users.ivan.extraGroups = [
-			"kvm"
-			"libvirtd"
-		];
-		systemd.services.libvirtd = lib.mkIf cfg.gpuPassthrough.enable {
-			preStart = ''
-rm -rf /var/lib/libvirt/hooks
-mkdir -p /var/lib/libvirt/hooks
-mkdir -p /var/lib/libvirt/hooks/qemu.d/win-passthrough/prepare/begin
-mkdir -p /var/lib/libvirt/hooks/qemu.d/win-passthrough/release/end
-
-echo '#!/run/current-system/sw/bin/bash
-
-GUEST_NAME="$1"
-HOOK_NAME="$2"
-STATE_NAME="$3"
-
-BASEDIR="$(dirname $0)"
-
-if [ "$(echo "$GUEST_NAME" | grep "tmp-")" ]; then
-	GUEST_NAME="$(echo "$GUEST_NAME" | sed "s|tmp-||")"
-fi
-HOOKPATH="$BASEDIR/qemu.d/$GUEST_NAME/$HOOK_NAME/$STATE_NAME"
-set -e # If a script exits with an error, we should as well.
-
-if [ -f "$HOOKPATH" ]; then
-	eval \""$HOOKPATH"\" "$@"
-elif [ -d "$HOOKPATH" ]; then
-	while read file; do
-		eval \""$file"\" "$@"
-	done <<< "$(find -L "$HOOKPATH" -maxdepth 1 -type f -executable -print;)"
-fi
-' > /var/lib/libvirt/hooks/qemu
-echo '#!/run/current-system/sw/bin/bash
-set -x
-
-echo efi-framebuffer.0 > /sys/bus/platform/drivers/efi-framebuffer/unbind
-modprobe -r nvidia_drm nvidia_modeset nvidia_uvm nvidia snd_hda_intel
-
-systemctl set-property --runtime -- system.slice AllowedCPUs=5
-systemctl set-property --runtime -- user.slice AllowedCPUs=5
-systemctl set-property --runtime -- init.scope AllowedCPUs=5
-echo performance | tee /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor
-echo performance | tee /sys/devices/system/cpu/cpu*/cpufreq/energy_performance_preference
-' > /var/lib/libvirt/hooks/qemu.d/win-passthrough/prepare/begin/start.sh
-echo '#!/run/current-system/sw/bin/bash
-set -x
-
-systemctl set-property --runtime -- system.slice AllowedCPUs=0-5
-systemctl set-property --runtime -- user.slice AllowedCPUs=0-5
-systemctl set-property --runtime -- init.scope AllowedCPUs=0-5
-echo powersave | tee /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor
-echo balance_performance | tee /sys/devices/system/cpu/cpu*/cpufreq/energy_performance_preference
-
-echo "efi-framebuffer.0" > /sys/bus/platform/drivers/efi-framebuffer/bind
-modprobe nvidia_drm
-modprobe nvidia_modeset
-modprobe nvidia_uvm
-modprobe nvidia
-modprobe snd_hda_intel
-' > /var/lib/libvirt/hooks/qemu.d/win-passthrough/release/end/stop.sh
-
-chmod +x /var/lib/libvirt/hooks/qemu
-chmod +x /var/lib/libvirt/hooks/qemu.d/win-passthrough/prepare/begin/start.sh
-chmod +x /var/lib/libvirt/hooks/qemu.d/win-passthrough/release/end/stop.sh
-			'';
-		};
-		virtualisation.libvirtd = {
-			enable = true;
-			qemu = {
-				package = pkgs.qemu_kvm;
-				ovmf = {
-					enable = true;
-					packages = [ pkgs.OVMFFull.fd ];
-				};
-			};
-			onBoot = "ignore";
-			onShutdown = "shutdown";
-		};
-		programs.virt-manager.enable = true;
-		services.spice-vdagentd.enable = true;
-		environment.variables = {
-			VIRT_BASE_DOMAIN = cfg.defaultDomain;
-			VIRT_USB_DEVICES = cfg.defaultUSBDevices;
-			LIBVIRT_DEFAULT_URI = "qemu:///system";
-		};
-		environment.systemPackages = with pkgs; [
-			(pkgs.writeScriptBin "virt" ''
+	virt = pkgs.writeScriptBin "virt" ''
 #!/usr/bin/env python
 
 from argparse import ArgumentParser
@@ -248,7 +142,185 @@ if __name__ == "__main__":
 
             print(f"--> {args.usb}")
             output_file.write_text(json.dumps(usbs, indent=4))
-'')
+	'';
+	virt-launcher = pkgs.writeShellScriptBin "virt-launcher" ''
+last_path_file="$HOME/.local/share/virt/last_path"
+path=""
+options=""
+
+set_path() {
+	path="$(cat $last_path_file 2>/dev/null || echo "")"
+	while [ -z "$path" ] || [ ! -d "$path" ]; do
+		if [ -n "$path" ]; then
+			echo "$path is not a valid directory"
+		fi
+		read -p "dir: " -r path
+		eval path="$path"
+	done
+	mkdir -p "$(dirname $last_path_file)"
+	echo $path > $last_path_file
+}
+
+set_options() {
+	options="$(find $path -maxdepth 1 -mindepth 1 -type f -printf '%f\n')"
+}
+
+print_options() {
+	echo "[0] change path"
+	i=1
+	while [ $i -le $(echo "$options" | wc -l) ]; do
+		echo "[$i] $(echo "$options" | sed "$i!d;q" )"
+		i=$(( i + 1 ))
+	done
+	echo "[x] exit script"
+}
+
+select_action() {
+	if [ "$selected" = "0" ]; then
+		rm $last_path_file
+		path=""
+		options=""
+		set_path
+		set_options
+	elif [ "$selected" = "x" ]; then
+		echo "exiting..."
+		exit 0
+	elif [ -n "$(echo "$selected" | sed 's/[0-9]*//g')" ]; then
+		echo "invalid option [$selected]"
+	else
+		filename="$(echo "$options" | sed "$selected!d;q")"
+		if [ -z "$filename" ]; then
+			echo "invalid option [$selected]"
+		else
+			exec ${virt}/bin/virt start "$path/$filename"
+			exit 0
+		fi
+	fi
+}
+
+set_path
+set_options
+
+while true; do
+	print_options
+	read -p "option: " -r selected
+	select_action
+done
+	'';
+in {
+	options.modules.vm = {
+		enable = lib.mkEnableOption "Enable boot loader";
+		gpuPassthrough.enable = lib.mkEnableOption "Enable gpu passthrough";
+		defaultDomain = lib.mkOption {
+			default = "win-passthrough";
+			description = "default libvirt domain";
+		};
+		defaultUSBDevices = lib.mkOption {
+			default = "$HOME/virt/usb.json";
+			description = "path to usb devices json";
+		};
+	};
+	
+
+	config = lib.mkIf cfg.enable {
+		boot.kernelParams = [
+			"intel_iommu=on"
+			"amd_iommu=on"
+		];
+		users.users.ivan.extraGroups = [
+			"kvm"
+			"libvirtd"
+		];
+		systemd.services.libvirtd = lib.mkIf cfg.gpuPassthrough.enable {
+			preStart = ''
+rm -rf /var/lib/libvirt/hooks
+mkdir -p /var/lib/libvirt/hooks
+mkdir -p /var/lib/libvirt/hooks/qemu.d/win-passthrough/prepare/begin
+mkdir -p /var/lib/libvirt/hooks/qemu.d/win-passthrough/release/end
+
+echo '#!/run/current-system/sw/bin/bash
+
+GUEST_NAME="$1"
+HOOK_NAME="$2"
+STATE_NAME="$3"
+
+BASEDIR="$(dirname $0)"
+
+if [ "$(echo "$GUEST_NAME" | grep "tmp-")" ]; then
+	GUEST_NAME="$(echo "$GUEST_NAME" | sed "s|tmp-||")"
+fi
+HOOKPATH="$BASEDIR/qemu.d/$GUEST_NAME/$HOOK_NAME/$STATE_NAME"
+set -e # If a script exits with an error, we should as well.
+
+if [ -f "$HOOKPATH" ]; then
+	eval \""$HOOKPATH"\" "$@"
+elif [ -d "$HOOKPATH" ]; then
+	while read file; do
+		eval \""$file"\" "$@"
+	done <<< "$(find -L "$HOOKPATH" -maxdepth 1 -type f -executable -print;)"
+fi
+' > /var/lib/libvirt/hooks/qemu
+echo '#!/run/current-system/sw/bin/bash
+set -x
+
+echo efi-framebuffer.0 > /sys/bus/platform/drivers/efi-framebuffer/unbind
+modprobe -r nvidia_drm nvidia_modeset nvidia_uvm nvidia snd_hda_intel
+
+systemctl set-property --runtime -- system.slice AllowedCPUs=5
+systemctl set-property --runtime -- user.slice AllowedCPUs=5
+systemctl set-property --runtime -- init.scope AllowedCPUs=5
+echo performance | tee /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor
+echo performance | tee /sys/devices/system/cpu/cpu*/cpufreq/energy_performance_preference
+' > /var/lib/libvirt/hooks/qemu.d/win-passthrough/prepare/begin/start.sh
+echo '#!/run/current-system/sw/bin/bash
+set -x
+
+systemctl set-property --runtime -- system.slice AllowedCPUs=0-5
+systemctl set-property --runtime -- user.slice AllowedCPUs=0-5
+systemctl set-property --runtime -- init.scope AllowedCPUs=0-5
+echo powersave | tee /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor
+echo balance_performance | tee /sys/devices/system/cpu/cpu*/cpufreq/energy_performance_preference
+
+echo "efi-framebuffer.0" > /sys/bus/platform/drivers/efi-framebuffer/bind
+modprobe nvidia_drm
+modprobe nvidia_modeset
+modprobe nvidia_uvm
+modprobe nvidia
+modprobe snd_hda_intel
+' > /var/lib/libvirt/hooks/qemu.d/win-passthrough/release/end/stop.sh
+
+chmod +x /var/lib/libvirt/hooks/qemu
+chmod +x /var/lib/libvirt/hooks/qemu.d/win-passthrough/prepare/begin/start.sh
+chmod +x /var/lib/libvirt/hooks/qemu.d/win-passthrough/release/end/stop.sh
+			'';
+		};
+		virtualisation.libvirtd = {
+			enable = true;
+			qemu = {
+				package = pkgs.qemu_kvm;
+				ovmf = {
+					enable = true;
+					packages = [ pkgs.OVMFFull.fd ];
+				};
+			};
+			onBoot = "ignore";
+			onShutdown = "shutdown";
+		};
+		programs.fish.interactiveShellInit = ''
+if test (tty) = /dev/tty2
+	exec ${virt-launcher}/bin/virt-launcher
+end
+		'';
+		programs.virt-manager.enable = true;
+		services.spice-vdagentd.enable = true;
+		environment.variables = {
+			VIRT_BASE_DOMAIN = cfg.defaultDomain;
+			VIRT_USB_DEVICES = cfg.defaultUSBDevices;
+			LIBVIRT_DEFAULT_URI = "qemu:///system";
+		};
+		environment.systemPackages = with pkgs; [
+			virt
+			virt-launcher
 			pkgs.usbutils
 			pkgs.python3Minimal
 		];
