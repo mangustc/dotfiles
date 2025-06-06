@@ -3,7 +3,7 @@ pkgs.stdenv.mkDerivation rec {
   pname = "gitsshsetup";
   version = "1.0";
   src = pkgs.writeShellScriptBin pname ''
-export PATH="${pkgs.kdePackages.kconfig}/bin:$PATH"
+export PATH="$PATH"
 AUTHOR="mangustc"
 
 if [[ $# -eq 1 ]]; then
