@@ -279,8 +279,8 @@ experimental {
 }
 bind = SUPER SHIFT, D, exec, hyprctl keyword monitor eDP-1,disabled
 bind = CTRL ALT, Backspace, exit,
-bind = SUPER SHIFT, S, exec, ${pkgs.slurp}/bin/slurp -d | ${pkgs.grim}/bin/grim -g - - | convert - -shave 1x1 PNG:- | ${pkgs.wl-clipboard}/bin/wl-copy
-bind = , Print, exec, ${pkgs.slurp}/bin/slurp -d | ${pkgs.grim}/bin/grim -g - - | convert - -shave 1x1 PNG:- | ${pkgs.wl-clipboard}/bin/wl-copy
+bind = SUPER SHIFT, S, exec, sh -c 'REGION=$(${pkgs.slurp}/bin/slurp) || exit; ${pkgs.grim}/bin/grim -g "$REGION" - | ${pkgs.wl-clipboard}/bin/wl-copy && mkdir -p ${cfg.screenshotsPath} && ${pkgs.wl-clipboard}/bin/wl-paste > ${cfg.screenshotsPath}/screenshot-$(date +%F_%T).png'
+bind = , Print, exec, sh -c 'REGION=$(${pkgs.slurp}/bin/slurp) || exit; ${pkgs.grim}/bin/grim -g "$REGION" - | ${pkgs.wl-clipboard}/bin/wl-copy && mkdir -p ${cfg.screenshotsPath} && ${pkgs.wl-clipboard}/bin/wl-paste > ${cfg.screenshotsPath}/screenshot-$(date +%F_%T).png'
 binde = SUPER, Down, exec, new_volume=$(($(wpctl get-volume @DEFAULT_AUDIO_SINK@ | awk '{print $2 * 100}' | cut -d. -f1) + -1)); [ ''${new_volume} -le 150 ] && wpctl set-volume @DEFAULT_AUDIO_SINK@ ''${new_volume}% || exit 1
 binde = SUPER SHIFT, Down, exec, new_volume=$(($(wpctl get-volume @DEFAULT_AUDIO_SINK@ | awk '{print $2 * 100}' | cut -d. -f1) + -5)); [ ''${new_volume} -le 150 ] && wpctl set-volume @DEFAULT_AUDIO_SINK@ ''${new_volume}% || exit 1
 binde = SUPER SHIFT, Up, exec, new_volume=$(($(wpctl get-volume @DEFAULT_AUDIO_SINK@ | awk '{print $2 * 100}' | cut -d. -f1) + +5)); [ ''${new_volume} -le 150 ] && wpctl set-volume @DEFAULT_AUDIO_SINK@ ''${new_volume}% || exit 1
@@ -331,6 +331,11 @@ DesktopNames=hyprland-system
 in {
 	options.modules.hyprland = {
 		enable = lib.mkEnableOption "Enable hyprland";
+		screenshotsPath = lib.mkOption {
+			default = "$HOME/screenshots";
+			description = "path to screenshots directory";
+			type = lib.types.str;
+		};
 	};
 
 	config = lib.mkIf cfg.enable {
