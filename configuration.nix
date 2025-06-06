@@ -8,53 +8,6 @@ let
 		else if host.name == gh then second
 		else throw "Unsupported host: ${host.name}";
 	myPkgs = import ./myPkgs pkgs;
-	nixupd = pkgs.writeShellScriptBin "nixupd" ''
-set -e
-if_root_chown() {
-	if [ "$(stat -c "%U" "$1")" == "root" ]; then
-		sudo chown ivan "$dotsdir/flake.lock"
-	fi
-}
-
-dotsdir="$HOME/dotfiles"
-if [ ! -d "$dotsdir" ]; then
-	echo "can't find dotfiles in directory $dotsdir"
-	return 1
-fi
-
-# optional update
-if [ "$1" == "upgrade" ]; then
-	nix flake update --flake "$dotsdir"
-fi
-
-# Prepare
-if [ -f "$dotsdir/flake.lock" ]; then
-	if_root_chown "$dotsdir/flake.lock"
-	cp -v "$dotsdir/flake.lock" "$dotsdir/flake.lock.${host.name}"
-fi
-if [ -d "$dotsdir/.git.no" ]; then
-	mv -v "$dotsdir/.git.no" "$dotsdir/.git"
-fi
-
-# Building
-if [ -f "$dotsdir/flake.lock.${host.name}" ]; then
-	if_root_chown "$dotsdir/flake.lock.${host.name}"
-	cp -v "$dotsdir/flake.lock.${host.name}" "$dotsdir/flake.lock"
-fi
-if [ -d "$dotsdir/.git" ]; then
-	mv -v "$dotsdir/.git" "$dotsdir/.git.no"
-fi
-sudo nixos-rebuild --flake "$dotsdir/#${host.name}" switch
-
-# After build
-if [ -f "$dotsdir/flake.lock" ]; then
-	if_root_chown "$dotsdir/flake.lock"
-	cp -vf "$dotsdir/flake.lock" "$dotsdir/flake.lock.${host.name}"
-fi
-if [ -d "$dotsdir/.git.no" ]; then
-	mv -v "$dotsdir/.git.no" "$dotsdir/.git"
-fi
-	'';
 in {
 	nix = {
 		settings = {
@@ -183,6 +136,10 @@ in {
 	};
 	modules.gaming.enable = getByHost false true;
 	modules.cpuperf.enable = getByHost false true;
+	modules.nixscripts = {
+		enable = true;
+		host.name = host.name;
+	};
 	programs = {
 		git = {
 			enable = true;
@@ -241,7 +198,6 @@ in {
 		xclip
 		adwaita-icon-theme
 		python3Minimal
-		nixupd
 		myPkgs.gitsshsetup
 	] ++ getByHost [
 		moonlight-qt

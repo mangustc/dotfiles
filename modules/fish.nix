@@ -192,20 +192,6 @@ function fish_prompt
     echo -n -s "$nix_shell_info" (set_color $color_cwd) (prompt_pwd -D 3) $normal (fish_vcs_prompt) $normal " "$prompt_status $suffix " "
 end
 
-function nix-index
-	sudo nix-channel --add https://nixos.org/channels/nixos-unstable nixos
-	sudo nix-channel --update
-end
-
-function nix-clean
-	nix-collect-garbage --delete-old
-	sudo nix-collect-garbage -d
-	sudo /run/current-system/bin/switch-to-configuration boot
-end
-
-function nix-edit
-	nvim "$(whereis $argv | cut -d " " -f 2)"
-end
 alias eza "eza -M --icons=always --no-permissions --group-directories-first --git --color=always"
 abbr --position anywhere ns "nix-shell --run fish -p";
 abbr --position anywhere rm "rm -vrf";
