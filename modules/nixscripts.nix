@@ -71,7 +71,7 @@ fi
 			(
 				pkgs.writeShellScriptBin "nixconf" ''
 cd ${cfg.dotfilesPath}
-nvim ./configuration.nix
+$EDITOR ./configuration.nix
 				''
 			)
 			(
