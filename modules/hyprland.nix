@@ -350,11 +350,13 @@ cp ${desktop} $out/share/wayland-sessions/hyprland-system.desktop
 				passthru.providedSessions = [ "hyprland-system" ];
 			})
 		];
+		programs.dconf.enable = true;
 		environment.systemPackages = with pkgs; [
 			evince
 			file-roller
 			nautilus
 			loupe
+			gnome-themes-extra
 		];
 	};
 }
