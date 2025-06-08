@@ -116,9 +116,9 @@ in {
 	modules.neovim.enable = true;
 	modules.firefox.enable = true;
 	modules.fish.enable = true;
-	modules.hyprland.enable = getByHost true false;
+	modules.hyprland.enable = false;
 	modules.gnome.enable = false;
-	modules.plasma.enable = getByHost false true;
+	modules.plasma.enable = true;
 	modules.kitty.enable = true;
 	modules.dualsound.enable = true;
 	modules.vm = {

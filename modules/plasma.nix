@@ -17,6 +17,10 @@ in {
 			kdePackages.konsole
 			kdePackages.khelpcenter
 		];
+		programs.dconf.enable = true;
+		services.power-profiles-daemon.enable = false;
+		networking.networkmanager.enable = false;
+		hardware.bluetooth.enable = false;
 		environment.systemPackages = with pkgs; [
 		];
 		fonts.packages = with pkgs; [
