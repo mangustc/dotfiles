@@ -72,9 +72,6 @@ in {
 			videoDrivers = getByHost [ "amdgpu" ] [ "nvidia" ];
 			displayManager.lightdm.enable = lib.mkForce false;
 		};
-		desktopManager = {
-			plasma6.enable = getByHost false true;
-		};
 		displayManager.ly = {
 			enable = true;
 			settings = {
@@ -102,14 +99,6 @@ in {
 			openFirewall = true;
 		};
 	};
-	environment.plasma6.excludePackages = with pkgs; [
-		kdePackages.discover
-		kdePackages.krdp
-		kdePackages.elisa
-		kdePackages.konsole
-		kdePackages.khelpcenter
-	];
-
 
 	users.defaultUserShell = pkgs.bash;
 	users.users.ivan = {
@@ -127,7 +116,8 @@ in {
 	modules.neovim.enable = true;
 	modules.firefox.enable = true;
 	modules.fish.enable = true;
-	modules.hyprland.enable = getByHost true false;
+	modules.hyprland.enable = false;
+	modules.gnome.enable = true;
 	modules.kitty.enable = true;
 	modules.dualsound.enable = true;
 	modules.vm = {
@@ -151,7 +141,6 @@ in {
 			};
 		};
 		ssh.startAgent = true;
-		kdeconnect.enable = true;
 		steam = {
 			enable = getByHost false true;
 			remotePlay.openFirewall = true;
@@ -193,9 +182,6 @@ in {
 		lazygit
 		btop
 		gcc
-		kdePackages.dolphin
-		kdePackages.gwenview
-		kdePackages.okular
 		wl-clipboard
 		xclip
 		adwaita-icon-theme
