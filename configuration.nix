@@ -22,10 +22,40 @@ in {
 		./modules
 	];
 
+
 	modules.boot = {
 		enable = true;
 		secureBoot.enable = getByHost true false;
 	};
+	modules.networking = {
+		enable = true;
+		wireless.enable = getByHost true false;
+	};
+	modules.flatpak = {
+		enable = true;
+		desiredFlatpaks = [
+			"com.discordapp.Discord"
+		];
+	};
+	modules.neovim.enable = true;
+	modules.firefox.enable = true;
+	modules.fish.enable = true;
+	modules.hyprland.enable = false;
+	modules.gnome.enable = false;
+	modules.plasma.enable = true;
+	modules.kitty.enable = true;
+	modules.dualsound.enable = true;
+	modules.vm = {
+		enable = getByHost false true;
+		gpuPassthrough.enable = true;
+	};
+	modules.gaming.enable = getByHost false true;
+	modules.cpuperf.enable = getByHost false true;
+	modules.nixscripts = {
+		enable = true;
+		host.name = host.name;
+	};
+
 	boot = lib.mkIf (host.name == "gaming") {
 		kernelParams = [
 			"nvidia.NVreg_UsePageAttributeTable=1"
@@ -34,10 +64,6 @@ in {
 		];
 	};
 
-	modules.networking = {
-		enable = true;
-		wireless.enable = getByHost true false;
-	};
 	time.timeZone = "Asia/Tomsk";
 	i18n.defaultLocale = "en_US.UTF-8";
 	console.keyMap = "dvorak";
@@ -55,12 +81,6 @@ in {
 		};
 	};
 
-	modules.flatpak = {
-		enable = true;
-		desiredFlatpaks = [
-			"com.discordapp.Discord"
-		];
-	};
 	services = {
 		xserver = {
 			enable = true;
@@ -100,37 +120,6 @@ in {
 		};
 	};
 
-	users.defaultUserShell = pkgs.bash;
-	users.users.ivan = {
-		isNormalUser = true;
-		extraGroups = [
-			"wheel"
-			"audio"
-			"video"
-			"input"
-			"tty"
-		];
-		useDefaultShell = true;
-	};
-
-	modules.neovim.enable = true;
-	modules.firefox.enable = true;
-	modules.fish.enable = true;
-	modules.hyprland.enable = false;
-	modules.gnome.enable = false;
-	modules.plasma.enable = true;
-	modules.kitty.enable = true;
-	modules.dualsound.enable = true;
-	modules.vm = {
-		enable = getByHost false true;
-		gpuPassthrough.enable = true;
-	};
-	modules.gaming.enable = getByHost false true;
-	modules.cpuperf.enable = getByHost false true;
-	modules.nixscripts = {
-		enable = true;
-		host.name = host.name;
-	};
 	programs = {
 		git = {
 			enable = true;
@@ -148,6 +137,19 @@ in {
 			localNetworkGameTransfers.openFirewall = true;
 		};
 	};
+
+	users.defaultUserShell = pkgs.bash;
+	users.users.ivan = {
+		isNormalUser = true;
+		extraGroups = [
+			"audio"
+			"video"
+			"input"
+			"tty"
+		];
+		useDefaultShell = true;
+	};
+
 	environment.variables = let
 		xdg-cache-home = "$HOME/.cache";
 		xdg-config-home = "$HOME/.config";
