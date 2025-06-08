@@ -116,10 +116,10 @@ in {
 	modules.neovim.enable = true;
 	modules.firefox.enable = true;
 	modules.fish.enable = true;
-	modules.hyprland.enable = false;
-	modules.gnome.enable = getByHost true false;
+	modules.hyprland.enable = getByHost true false;
+	modules.gnome.enable = false;
 	modules.plasma.enable = getByHost false true;
-	modules.kitty.enable = getByHost false true;
+	modules.kitty.enable = true;
 	modules.dualsound.enable = true;
 	modules.vm = {
 		enable = getByHost false true;

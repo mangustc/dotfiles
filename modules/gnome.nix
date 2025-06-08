@@ -162,5 +162,8 @@ in {
 		fonts.packages = with pkgs; [
 			nerd-fonts.jetbrains-mono
 		];
+		services.power-profiles-daemon.enable = false;
+		networking.networkmanager.enable = false;
+		hardware.bluetooth.enable = false;
 	};
 }
