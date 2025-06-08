@@ -38,7 +38,7 @@ in {
 							window-toggle-float = [ "<Super>v" ];
 							window-toggle-always-float = [ "<Shift><Super>v" ];
 							con-split-vertical = lib.gvariant.mkEmptyArray (lib.gvariant.type.string);
-							con-stacked-layout-toggle = lib.gvariant.mkEmptyArray (lib.gvariant.type.string);
+							con-stacked-layout-toggle = [ "<Shift><Super>p" ];
 						};
 						"org/gnome/shell/extensions/forge".window-gap-hidden-on-single = true;
 						"org/gnome/desktop/interface" = {
