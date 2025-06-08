@@ -405,7 +405,7 @@ Turn Off Screen=
 powerProfile=Battery; Meta+B
 
 [plasmashell][Global Shortcuts]
-activate application launcher=Meta
+activate application launcher=
 activate task manager entry 1=
 activate task manager entry 10=
 activate task manager entry 2=
