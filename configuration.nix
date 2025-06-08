@@ -117,8 +117,9 @@ in {
 	modules.firefox.enable = true;
 	modules.fish.enable = true;
 	modules.hyprland.enable = false;
-	modules.gnome.enable = true;
-	modules.kitty.enable = true;
+	modules.gnome.enable = getByHost true false;
+	modules.plasma.enable = getByHost false true;
+	modules.kitty.enable = getByHost false true;
 	modules.dualsound.enable = true;
 	modules.vm = {
 		enable = getByHost false true;
