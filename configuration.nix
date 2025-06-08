@@ -188,6 +188,7 @@ in {
 		adwaita-icon-theme
 		python3Minimal
 		myPkgs.gitsshsetup
+		myPkgs.chlayout
 	] ++ getByHost [
 		moonlight-qt
 	] [
@@ -195,7 +196,6 @@ in {
 		protonup-qt
 		godot
 		rpcs3
-		myPkgs.chlayout
 	];
 	fonts.packages = with pkgs; [
 		noto-fonts
