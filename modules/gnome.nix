@@ -15,13 +15,18 @@ in {
 				{
 					lockAll = true;
 					settings = {
+						"org/gnome/nautilus/preferences" = {
+							default-folder-viewer = "list-view";
+						};
+						"org/gnome/nautilus/list-view" = {
+							default-zoom-level = "small";
+						};
 						"org/gnome/Console" = {
 							custom-font = "JetBrainsMono Nerd Font Semi-Bold 13";
 							use-system-font = false;
 							audible-bell = false;
 							visual-bell = false;
 						};
-
 						"org/gnome/shell" = {
 							disable-user-extensions = false;
 							enabled-extensions = with pkgs.gnomeExtensions; [
