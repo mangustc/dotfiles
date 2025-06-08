@@ -142,6 +142,7 @@ in {
 	users.users.ivan = {
 		isNormalUser = true;
 		extraGroups = [
+			"wheel"
 			"audio"
 			"video"
 			"input"
