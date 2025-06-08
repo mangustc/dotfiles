@@ -350,6 +350,12 @@ cp ${desktop} $out/share/wayland-sessions/hyprland-system.desktop
 				passthru.providedSessions = [ "hyprland-system" ];
 			})
 		];
+		environment.systemPackages = with pkgs; [
+			evince
+			file-roller
+			nautilus
+			loupe
+		];
 	};
 }
 
