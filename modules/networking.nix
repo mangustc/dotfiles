@@ -6,6 +6,7 @@ in {
 	options.modules.networking = {
 		enable = lib.mkEnableOption "Enable networking";
 		wireless.enable = lib.mkEnableOption "Enable wireless";
+		nethandler.enable = lib.mkEnableOption "Enable nethandler";
 	};
 
 	config = lib.mkIf cfg.enable {
@@ -18,6 +19,10 @@ in {
 					};
 				};
 			};
+			hostName = "nixos";
+		};
+	} // lib.mkIf cfg.nethandler.enable {
+		networking = {
 			firewall.enable = false;
 			nftables = {
 				enable = true;
@@ -41,7 +46,6 @@ in {
 	}
 				'';
 			};
-			hostName = "nixos";
 		};
 		systemd.services.nethandler = {
 			enable = true;

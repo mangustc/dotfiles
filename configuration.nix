@@ -30,6 +30,7 @@ in {
 	modules.networking = {
 		enable = true;
 		wireless.enable = getByHost true false;
+		nethandler.enable = true;
 	};
 	modules.flatpak = {
 		enable = true;
