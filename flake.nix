@@ -34,28 +34,6 @@
           }
         ];
       };
-      gaming = nixpkgs.lib.nixosSystem {
-        system = "x86_64-linux";
-        specialArgs = {
-          host = {
-            name = "gaming";
-          };
-        };
-        modules = [
-          ./configuration.nix
-          home-manager.nixosModules.home-manager
-          {
-            home-manager.useGlobalPkgs = true;
-            home-manager.useUserPackages = true;
-            home-manager.extraSpecialArgs = {
-              host = {
-                name = "gaming";
-              };
-            };
-            home-manager.users.ivan = ./home.nix;
-          }
-        ];
-      };
     };
   };
 }

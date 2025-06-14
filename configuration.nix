@@ -2,10 +2,8 @@
 
 let
 	mh = "main";
-	gh = "gaming";
 	getByHost = first: second:
 		if host.name == mh then first
-		else if host.name == gh then second
 		else throw "Unsupported host: ${host.name}";
 	myPkgs = import ./myPkgs pkgs;
 in {
@@ -25,12 +23,12 @@ in {
 
 	modules.boot = {
 		enable = true;
-		secureBoot.enable = getByHost true false;
+		secureBoot.enable = true;
 	};
 	modules.networking = {
 		enable = true;
-		wireless.enable = getByHost true false;
-		nethandler.enable = true;
+		wireless.enable = true;
+		nethandler.enable = false;
 	};
 	modules.flatpak = {
 		enable = true;
@@ -47,11 +45,11 @@ in {
 	modules.kitty.enable = true;
 	modules.dualsound.enable = true;
 	modules.vm = {
-		enable = getByHost false true;
+		enable = false;
 		gpuPassthrough.enable = true;
 	};
-	modules.gaming.enable = getByHost false true;
-	modules.cpuperf.enable = getByHost false true;
+	modules.gaming.enable = false;
+	modules.cpuperf.enable = false;
 	modules.nixscripts = {
 		enable = true;
 		host.name = host.name;
@@ -72,14 +70,6 @@ in {
 	hardware = {
 		graphics.enable = true;
 		graphics.enable32Bit = true;
-		nvidia = getByHost {
-		} {
-			powerManagement.enable = false;
-			powerManagement.finegrained = false;
-			open = false;
-			nvidiaSettings = true;
-			package = config.boot.kernelPackages.nvidiaPackages.stable;
-		};
 	};
 
 	services = {
@@ -90,7 +80,7 @@ in {
 				variant = "dvorak,";
 				options = "grp:caps_toggle,terminate:ctrl_alt_bksp";
 			};
-			videoDrivers = getByHost [ "amdgpu" ] [ "nvidia" ];
+			videoDrivers = [ "amdgpu" ];
 			displayManager.lightdm.enable = lib.mkForce false;
 		};
 		displayManager.ly = {
@@ -112,9 +102,9 @@ in {
 				};
 			};
 		};
-		tlp.enable = getByHost true false;
+		tlp.enable = true;
 		sunshine = {
-			enable = getByHost false true;
+			enable = false;
 			autoStart = false;
 			capSysAdmin = true;
 			openFirewall = true;
@@ -133,7 +123,7 @@ in {
 		};
 		ssh.startAgent = true;
 		steam = {
-			enable = getByHost false true;
+			enable = false;
 			remotePlay.openFirewall = true;
 			localNetworkGameTransfers.openFirewall = true;
 		};
@@ -193,13 +183,6 @@ in {
 		python3Minimal
 		myPkgs.gitsshsetup
 		myPkgs.chlayout
-	] ++ getByHost [
-		moonlight-qt
-	] [
-		mangohud
-		protonup-qt
-		godot
-		rpcs3
 	];
 	fonts.packages = with pkgs; [
 		noto-fonts
@@ -207,11 +190,11 @@ in {
 		nerd-fonts.jetbrains-mono
 	];
 
-	services.udev.extraRules = getByHost ''
+	services.udev.extraRules = ''
 SUBSYSTEM=="backlight", ACTION=="add", \
 	RUN+="${pkgs.coreutils}/bin/chgrp video /sys/class/backlight/%k/brightness", \
 	RUN+="${pkgs.coreutils}/bin/chmod g+w /sys/class/backlight/%k/brightness"
-	'' '''';
+	'';
 
 	security.sudo.enable = false;
 	security.sudo-rs.enable = true;
