@@ -1,0 +1,5 @@
+#!/usr/bin/env sh
+
+
+remove ~/.config/MangoHud
+copy ./presets.conf ~/.config/MangoHud

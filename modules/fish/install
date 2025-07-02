@@ -1,0 +1,10 @@
+#!/usr/bin/env sh
+
+cmd sudo chsh -s /bin/bash $USER
+cmd sudo chsh -s /bin/bash
+
+remove /etc/fish
+copy ./config.fish /etc/fish
+copy ./bash.bashrc /etc
+
+

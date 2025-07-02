@@ -1,0 +1,6 @@
+#!/usr/bin/env sh
+
+remove /usr/local/share/nvim
+copy ./init.lua /usr/local/share/nvim
+copy ./nvim /usr/local/bin
+

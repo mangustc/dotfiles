@@ -1,0 +1,9 @@
+[Unit]
+Description=Nethandler
+
+[Service]
+ExecStart=/usr/local/bin/nethandler
+
+[Install]
+WantedBy=default.target
+

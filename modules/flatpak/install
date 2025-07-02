@@ -1,0 +1,30 @@
+#!/usr/bin/env sh
+
+desired_flatpaks="$1"
+
+script = "
+#!/usr/bin/env sh
+
+echo \"Adding flathub repo if not exists\"
+flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+installedFlatpaks=\$(flatpak list --app --columns=application)
+
+for installed in \$installedFlatpaks; do
+	if ! echo $desired_flatpaks | grep -q \$installed; then
+		echo \"Removing \$installed\"
+		flatpak uninstall -y --noninteractive \$installed
+	fi
+done
+
+for app in $desired_flatpaks; do
+	echo \"Installing \$app\"
+	flatpak install -y flathub \$app
+done
+
+echo \"Removing unused apps and updating\"
+flatpak uninstall --unused -y
+flatpak update -y
+"
+
+echo "$script" | tee /tmp/flatpak-update.tmp
+copy /tmp/flatpak-update.tmp /usr/local/bin

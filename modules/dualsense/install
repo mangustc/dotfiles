@@ -1,0 +1,6 @@
+#!/usr/bin/env sh
+
+copy ./99-dualsense-stereo.conf ~/.config/pipewire/pipewire.conf.d
+copy ./dualsound /usr/local/bin
+copy ./72-dualsense.rules /etc/udev/rules.d
+
