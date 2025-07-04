@@ -30,3 +30,16 @@ fi
 cd $dotfiles
 ./configuration-$host.sh
 "
+
+newscript archexport "
+#!/usr/bin/env sh
+
+echo \"\$(paru -Qe | cut -d ' ' -f 1)\" > $dotfiles/packages-$host
+"
+
+newscript archgit "
+#!/usr/bin/env sh
+
+cd $dotfiles
+lazygit
+"

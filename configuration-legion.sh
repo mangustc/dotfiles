@@ -136,6 +136,7 @@ config() {
 	cd "$dotfiles_path"
 }
 
+paru -S --needed - < ./packages-legion
 config neovim
 config fish
 config dualsense
