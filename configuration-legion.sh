@@ -50,7 +50,6 @@ requires_root() {
 	else
 		echo "1"
 	fi
-
 }
 export -f requires_root
 
@@ -79,12 +78,12 @@ copy() {
 	copy_from="$(realpath $1)"
 	if [ $? -eq 1 ] || [ ! -e "$copy_from" ]; then
 		echo "$copy_from doesn't exist"
-		return 1
+		exit 1
 	fi
 	copy_to="$(fakerealpath $2)"
 	if [ $? -eq 1 ]; then
 		echo "error happend in getting path. aborting"
-		return 1
+		exit 1
 	fi
 
 	if [ "$(requires_root $copy_to)" = "1" ]; then
@@ -110,14 +109,29 @@ cmd() {
 }
 export -f cmd
 
+newscript() {
+	newscript_name="$1"
+	newscript_content="$2"
+
+	newscript_tmp="/tmp/$newscript_name"
+	echo "$newscript_content" > "$newscript_tmp"
+	chmod +x "$newscript_tmp"
+	copy "$newscript_tmp" /usr/local/bin
+}
+export -f newscript
+
 config() {
 	export module_name="$1"
 	echo -e "\ninstalling module ${module_name}:"
 	cd "$dotfiles_path/modules/$module_name"
-	paru -S --needed - < ./packages
+	if [ ! "$(cat ./packages)" = "" ]; then
+		paru -S --needed - < ./packages
+	fi
 	./install "${@:2}"
 	if [ $? -eq 1 ]; then
-		echo -e "failed to install module ${module_name}"
+		echo -e "FAILED TO INSTALL MODULE ${module_name}"
+	else
+		echo -e "successfully installed module ${module_name}"
 	fi
 	cd "$dotfiles_path"
 }
@@ -128,3 +142,5 @@ config dualsense
 config nethandlerm
 config kitty
 config mangohud
+config ssh-agent
+config archscripts "~/dotfiles" legion

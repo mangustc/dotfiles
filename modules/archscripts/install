@@ -1,0 +1,32 @@
+#!/usr/bin/env sh
+
+dotfiles="$1"
+host="$2"
+
+if [ "$dotfiles" = "" ]; then
+	echo "pass a dotfiles directory and a host name"
+	exit 1
+fi
+
+if [ "$host" = "" ]; then
+	echo "pass a host name"
+	exit 1
+fi
+
+newscript archconf "
+#!/usr/bin/env sh
+
+cd $dotfiles
+exec nvim ./configuration-$host.sh
+"
+
+newscript archupd "
+#!/usr/bin/env sh
+
+if [ \"\$1\" = 'upgrade' ]; then
+	paru -Syu
+fi
+
+cd $dotfiles
+./configuration-$host.sh
+"

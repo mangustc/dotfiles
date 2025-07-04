@@ -1,0 +1,3 @@
+#!/usr/bin/env sh
+
+copy ./ssh-agent.service /etc/systemd/user
