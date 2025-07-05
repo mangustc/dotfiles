@@ -1,5 +1,4 @@
 #!/usr/bin/env sh
-set -e
 
 remove /etc/xdg/kitty
 copy ./kitty.conf /etc/xdg/kitty
