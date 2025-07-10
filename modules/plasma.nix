@@ -9,7 +9,6 @@ in {
 
 	config = lib.mkIf cfg.enable {
 		services.desktopManager.plasma6.enable = true;
-		programs.kdeconnect.enable = true;
 		environment.plasma6.excludePackages = with pkgs; [
 			kdePackages.discover
 			kdePackages.krdp
@@ -18,10 +17,14 @@ in {
 			kdePackages.khelpcenter
 		];
 		programs.dconf.enable = true;
-		services.power-profiles-daemon.enable = false;
-		networking.networkmanager.enable = false;
-		hardware.bluetooth.enable = false;
+
+		# plasma should only configure the desktop environment
+		services.power-profiles-daemon.enable = lib.mkDefault false;
+		networking.networkmanager.enable = lib.mkDefault false;
+		hardware.bluetooth.enable = lib.mkDefault false;
+
 		environment.systemPackages = with pkgs; [
+			maliit-keyboard
 		];
 		fonts.packages = with pkgs; [
 		];

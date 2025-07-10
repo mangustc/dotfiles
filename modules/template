@@ -1,0 +1,16 @@
+
+{ config, lib, pkgs, ... }:
+
+let
+	modulename = "template";
+	cfg = config.modules.${modulename};
+
+in {
+	options.modules.${modulename} = {
+		enable = lib.mkEnableOption "Enable ${modulename}";
+	};
+
+	config = lib.mkIf cfg.enable {
+	};
+}
+

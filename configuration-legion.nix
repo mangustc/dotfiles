@@ -1,12 +1,9 @@
-{ config, lib, pkgs, host, ... }:
-
+{ config, lib, pkgs, ... }:
 let
-	mh = "main";
-	getByHost = first: second:
-		if host.name == mh then first
-		else throw "Unsupported host: ${host.name}";
-	myPkgs = import ./myPkgs pkgs;
-in {
+	hostname = "legion";
+	username = "ivan";
+in
+{
 	nix = {
 		settings = {
 			experimental-features = ["nix-command" "flakes"];
@@ -14,21 +11,68 @@ in {
 		};
 	};
 	nixpkgs.config.allowUnfree = true;
+	nixpkgs.overlays = [
+		(import ./overlays { inherit pkgs lib; })
+	];
 
 	imports = [
-		./hardware-configuration-${host.name}.nix
+		./hardware-configuration-${hostname}.nix
 		./modules
 	];
 
-
-	modules.boot = {
-		enable = true;
-		secureBoot.enable = true;
+	boot = {
+		loader.systemd-boot.enable = true;
+		loader.efi.canTouchEfiVariables = true;
+		kernelPackages = pkgs.linuxPackages_latest;
+		blacklistedKernelModules = [
+			"pcspkr"
+			"iTCO_wdt"
+			"sp5100_tco"
+		];
+		kernelParams = [
+			"nowatchdog"
+			"fbcon=vc:2-6"
+			"amdgpu.sg_display=0"
+		];
+		initrd.kernelModules = [
+			"amdgpu"
+		];
+		extraModulePackages = [
+			config.boot.kernelPackages.acpi_call
+		];
+		kernelModules = [
+			"acpi_call"
+		];
+		kernel.sysctl = {
+			"net.ipv4.tcp_mtu_probing" = true;
+			"net.ipv4.tcp_fin_timeout" = 5;
+			"kernel.split_lock_mitigate" = 0;
+			"kernel.nmi_watchdog" = 0;
+			"kernel.soft_watchdog" = 0;
+			"kernel.watchdog" = 0;
+			"kernel.sched_cfs_bandwidth_slice_u" = 3000;
+			"kernel.sched_latency_ns" = 3000000;
+			"kernel.sched_min_granularity_ns" = 300000;
+			"kernel.sched_wakeup_granularity_ns" = 500000;
+			"kernel.sched_migration_cost_ns" = 50000;
+			"kernel.sched_nr_migrate" = 128;
+			"vm.max_map_count" = 2147483642;
+		};
 	};
-	modules.networking = {
+	zramSwap = {
 		enable = true;
-		wireless.enable = true;
-		nethandler.enable = false;
+		algorithm = "zstd";
+		memoryPercent = 50;
+		priority = 100;
+	};
+	networking = {
+		networkmanager.enable = true;
+		hostName = "nixos";
+	};
+
+	modules.nethandler = {
+		enable = true;
+		user = "${username}";
 	};
 	modules.flatpak = {
 		enable = true;
@@ -44,32 +88,18 @@ in {
 	modules.plasma.enable = true;
 	modules.kitty.enable = true;
 	modules.dualsound.enable = true;
-	modules.vm = {
-		enable = false;
-		gpuPassthrough.enable = true;
-	};
-	modules.gaming.enable = false;
-	modules.cpuperf.enable = false;
 	modules.nixscripts = {
 		enable = true;
-		host.name = host.name;
-	};
-
-	boot = lib.mkIf (host.name == "gaming") {
-		kernelParams = [
-			"nvidia.NVreg_UsePageAttributeTable=1"
-			"nvidia.NVreg_DynamicPowerManagement=0"
-			"nvidia.Nvreg_PreserveVideoMemoryAllocations=1"
-		];
+		host.name = "${hostname}";
 	};
 
 	time.timeZone = "Asia/Tomsk";
 	i18n.defaultLocale = "en_US.UTF-8";
 	console.keyMap = "dvorak";
 
-	hardware = {
-		graphics.enable = true;
-		graphics.enable32Bit = true;
+	hardware.graphics = {
+		enable = true;
+		enable32Bit = true;
 	};
 
 	services = {
@@ -83,11 +113,9 @@ in {
 			videoDrivers = [ "amdgpu" ];
 			displayManager.lightdm.enable = lib.mkForce false;
 		};
-		displayManager.ly = {
+		displayManager.sddm = {
 			enable = true;
-			settings = {
-				animation = "doom";
-			};
+			wayland.enable = true;
 		};
 		pipewire = {
 			enable = true;
@@ -102,13 +130,19 @@ in {
 				};
 			};
 		};
-		tlp.enable = true;
-		sunshine = {
-			enable = false;
-			autoStart = false;
-			capSysAdmin = true;
-			openFirewall = true;
-		};
+		# any power profile daemons conflict with handheld-daemon
+		power-profiles-daemon.enable = false;
+	};
+
+	# allow user to login in sddm without a password
+	security.pam.services.sddm = {
+		text = lib.mkForce ''
+auth      sufficient    pam_succeed_if.so user = ${username}
+auth      substack      login
+account   include       login
+password  substack      login
+session   include       login
+		'';
 	};
 
 	programs = {
@@ -122,15 +156,24 @@ in {
 			};
 		};
 		ssh.startAgent = true;
-		steam = {
-			enable = false;
-			remotePlay.openFirewall = true;
-			localNetworkGameTransfers.openFirewall = true;
-		};
 	};
+	modules.distrobox.enable = true;
+
+	programs.steam = {
+		enable = true;
+		remotePlay.openFirewall = true;
+		localNetworkGameTransfers.openFirewall = true;
+	};
+	services.handheld-daemon = {
+		enable = true;
+		user = "${username}";
+		ui.enable = true;
+	};
+	modules.steamSession.enable = true;
+	programs.fuse.userAllowOther = true;
 
 	users.defaultUserShell = pkgs.bash;
-	users.users.ivan = {
+	users.users.${username} = {
 		isNormalUser = true;
 		extraGroups = [
 			"wheel"
@@ -138,6 +181,7 @@ in {
 			"video"
 			"input"
 			"tty"
+			"networkmanager"
 		];
 		useDefaultShell = true;
 	};
@@ -163,7 +207,6 @@ in {
 		NPM_CONFIG_CACHE = "${xdg-cache-home}/npm";
 		NPM_CONFIG_TMP = "$XDG_RUNTIME_DIR/npm";
 	};
-
 	environment.systemPackages = with pkgs; [
 		eza
 		obsidian
@@ -180,9 +223,14 @@ in {
 		wl-clipboard
 		xclip
 		adwaita-icon-theme
-		python3Minimal
-		myPkgs.gitsshsetup
-		myPkgs.chlayout
+		gitsshsetup
+		chlayout
+		python3
+
+		ryubing
+		rpcs3
+		protonplus
+		mangohud
 	];
 	fonts.packages = with pkgs; [
 		noto-fonts
@@ -199,6 +247,6 @@ SUBSYSTEM=="backlight", ACTION=="add", \
 	security.sudo.enable = false;
 	security.sudo-rs.enable = true;
 
-	system.stateVersion = "24.11"; # Did you read the comment?
+	system.stateVersion = "25.05"; # Did you read the comment?
 }
 

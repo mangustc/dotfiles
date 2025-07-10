@@ -71,7 +71,7 @@ fi
 			(
 				pkgs.writeShellScriptBin "nixconf" ''
 cd ${cfg.dotfilesPath}
-$EDITOR ./configuration.nix
+$EDITOR ./configuration-${cfg.host.name}.nix
 				''
 			)
 			(

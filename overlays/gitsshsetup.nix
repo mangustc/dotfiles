@@ -1,4 +1,7 @@
-{ pkgs, ... }:
+{ prev, final, lib, ... }:
+let
+	pkgs = prev;
+in
 pkgs.stdenv.mkDerivation rec {
   pname = "gitsshsetup";
   version = "1.0";
@@ -27,4 +30,3 @@ git remote set-url origin git@github.com:"$AUTHOR"/"$REPOSITORY_NAME".git
     chmod +x $out/bin/${pname}
   '';
 }
-

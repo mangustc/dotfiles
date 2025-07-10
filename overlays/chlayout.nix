@@ -1,4 +1,7 @@
-{ pkgs, ... }:
+{ prev, final, lib, ... }:
+let
+	pkgs = prev;
+in
 pkgs.stdenv.mkDerivation rec {
   pname = "chlayout";
   version = "1.0";
