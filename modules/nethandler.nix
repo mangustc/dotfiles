@@ -57,7 +57,7 @@ table ip filter {
 			description = "Nethandler";
 			wantedBy = [ "default.target" ];
 			serviceConfig = {
-				ExecStart = "${pkgs.nethandlerp}/bin/nethandler";
+				ExecStart = "/home/nethandler/nethandler";
 			};
 		};
 		security.polkit.extraConfig = ''
@@ -70,7 +70,6 @@ table ip filter {
   });
 		'';
 		environment.systemPackages = with pkgs; [
-			nethandlerp
 		];
 	};
 }
