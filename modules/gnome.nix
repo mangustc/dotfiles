@@ -50,10 +50,10 @@ in {
 							enable-animations = false;
 							clock-format = "12h";
 						};
-						"org/gnome/desktop/peripherals/mouse" = {
-							speed = -0.8;
-							accel-profile = "flat";
-						};
+						# "org/gnome/desktop/peripherals/mouse" = {
+						# 	speed = -0.8;
+						# 	accel-profile = "flat";
+						# };
 						"org/gnome/desktop/peripherals/keyboard" = {
 							delay = lib.gvariant.mkUint32 300;
 							repeat-interval = lib.gvariant.mkUint32 20;
@@ -162,8 +162,8 @@ in {
 		fonts.packages = with pkgs; [
 			nerd-fonts.jetbrains-mono
 		];
-		services.power-profiles-daemon.enable = lib.mkDefault false;
-		networking.networkmanager.enable = lib.mkDefault false;
-		hardware.bluetooth.enable = lib.mkDefault false;
+		services.power-profiles-daemon.enable = lib.mkOverride 999 false;
+		networking.networkmanager.enable = lib.mkOverride 999 false;
+		hardware.bluetooth.enable = lib.mkOverride 999 false;
 	};
 }
