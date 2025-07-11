@@ -1,8 +1,6 @@
-{ config, lib, pkgs, host, ... }:
+{ config, lib, pkgs, ... }:
 
-let
-	myPkgs = import ./myPkgs pkgs;
-in {
+{
 	nix = {
 		settings = {
 			experimental-features = ["nix-command" "flakes"];
@@ -15,16 +13,33 @@ in {
 		./hardware-configuration-main.nix
 		./modules
 	];
+	nixpkgs.overlays = [
+		(import ./overlays { inherit pkgs lib; })
+	];
 
 
-	modules.boot = {
-		enable = true;
-		secureBoot.enable = false;
+	boot = {
+		loader.systemd-boot.enable = true;
+		loader.efi.canTouchEfiVariables = true;
+		kernelPackages = lib.mkDefault pkgs.linuxPackages_latest;
+		blacklistedKernelModules = [
+			"pcspkr"
+			"iTCO_wdt"
+		];
+		kernelParams = [
+			"nowatchdog"
+		];
 	};
-	modules.networking = {
-		enable = true;
-		nethandler.enable = false;
+
+	networking = {
+		networkmanager.enable = true;
+		hostName = "nixos";
 	};
+	modules.nethandler = {
+		enable = true;
+		user = "ivan";
+	};
+
 	modules.flatpak = {
 		enable = true;
 		desiredFlatpaks = [
@@ -34,17 +49,9 @@ in {
 	modules.neovim.enable = true;
 	modules.firefox.enable = true;
 	modules.fish.enable = true;
-	modules.hyprland.enable = false;
-	modules.gnome.enable = false;
 	modules.plasma.enable = true;
 	modules.kitty.enable = true;
 	modules.dualsound.enable = true;
-	modules.vm = {
-		enable = false;
-		gpuPassthrough.enable = true;
-	};
-	modules.gaming.enable = false;
-	modules.cpuperf.enable = false;
 	modules.nixscripts = {
 		enable = true;
 		host.name = "main";
@@ -90,12 +97,6 @@ in {
 			};
 		};
 		tlp.enable = true;
-		sunshine = {
-			enable = false;
-			autoStart = false;
-			capSysAdmin = true;
-			openFirewall = true;
-		};
 	};
 
 	programs = {
@@ -168,8 +169,8 @@ in {
 		xclip
 		adwaita-icon-theme
 		python3Minimal
-		myPkgs.gitsshsetup
-		myPkgs.chlayout
+		gitsshsetup
+		chlayout
 	];
 	fonts.packages = with pkgs; [
 		noto-fonts

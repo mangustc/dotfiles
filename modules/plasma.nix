@@ -19,9 +19,9 @@ in {
 		programs.dconf.enable = true;
 
 		# plasma should only configure the desktop environment
-		services.power-profiles-daemon.enable = lib.mkDefault false;
-		networking.networkmanager.enable = lib.mkDefault false;
-		hardware.bluetooth.enable = lib.mkDefault false;
+		services.power-profiles-daemon.enable = lib.mkOverride 999 false;
+		networking.networkmanager.enable = lib.mkOverride 999 false;
+		hardware.bluetooth.enable = lib.mkOverride 999 false;
 
 		environment.systemPackages = with pkgs; [
 			maliit-keyboard
