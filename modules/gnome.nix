@@ -165,5 +165,6 @@ in {
 		services.power-profiles-daemon.enable = lib.mkOverride 999 false;
 		networking.networkmanager.enable = lib.mkOverride 999 false;
 		hardware.bluetooth.enable = lib.mkOverride 999 false;
+		services.gnome.gcr-ssh-agent.enable = lib.mkOverride 999 false;
 	};
 }
