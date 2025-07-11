@@ -20,6 +20,7 @@ in
 		./modules
 	];
 
+	# SYSTEM SETTINGS
 	boot = {
 		loader.systemd-boot.enable = true;
 		loader.efi.canTouchEfiVariables = true;
@@ -59,6 +60,13 @@ in
 			"vm.max_map_count" = 2147483642;
 		};
 	};
+	time.timeZone = "Asia/Tomsk";
+	i18n.defaultLocale = "en_US.UTF-8";
+	console.keyMap = "dvorak";
+	hardware.graphics = {
+		enable = true;
+		enable32Bit = true;
+	};
 	zramSwap = {
 		enable = true;
 		algorithm = "zstd";
@@ -69,81 +77,68 @@ in
 		networkmanager.enable = true;
 		hostName = "nixos";
 	};
-
 	modules.nethandler = {
 		enable = true;
 		user = "${username}";
 	};
-	modules.flatpak = {
+	services.pipewire = {
 		enable = true;
-		desiredFlatpaks = [
-			"com.discordapp.Discord"
-		];
-	};
-	modules.neovim.enable = true;
-	modules.firefox.enable = true;
-	modules.fish.enable = true;
-	modules.hyprland.enable = false;
-	modules.gnome.enable = false;
-	modules.plasma.enable = true;
-	modules.kitty.enable = true;
-	modules.dualsound.enable = true;
-	modules.nixscripts = {
-		enable = true;
-		host.name = "${hostname}";
-	};
-
-	time.timeZone = "Asia/Tomsk";
-	i18n.defaultLocale = "en_US.UTF-8";
-	console.keyMap = "dvorak";
-
-	hardware.graphics = {
-		enable = true;
-		enable32Bit = true;
-	};
-
-	services = {
-		xserver = {
-			enable = true;
-			xkb = {
-				layout = "us,ru";
-				variant = "dvorak,";
-				options = "grp:caps_toggle,terminate:ctrl_alt_bksp";
-			};
-			videoDrivers = [ "amdgpu" ];
-			displayManager.lightdm.enable = lib.mkForce false;
-		};
-		displayManager.sddm = {
-			enable = true;
-			wayland.enable = true;
-		};
-		pipewire = {
-			enable = true;
-			pulse.enable = true;
-			extraConfig.pipewire-pulse = {
-				"00-crackling-fix" = {
-					"pulse.properties" = {
-						"pulse.min.req" = "1024/48000";
-						"pulse.min.frag" = "1024/48000";
-						"pulse.min.quantum" = "1024/48000";
-					};
+		pulse.enable = true;
+		extraConfig.pipewire-pulse = {
+			"00-crackling-fix" = {
+				"pulse.properties" = {
+					"pulse.min.req" = "1024/48000";
+					"pulse.min.frag" = "1024/48000";
+					"pulse.min.quantum" = "1024/48000";
 				};
 			};
 		};
 	};
 
-
-	programs = {
-		git = {
-			enable = true;
-			config = {
-				user.name = "Ivan Lifanov";
-				user.email = "letalbark@gmail.com";
-				init.defaultBranch = "main";
-				core.quotepath = false;
-			};
+	# DESKTOP MANAGERS
+	modules.hyprland.enable = false;
+	modules.gnome.enable = false;
+	modules.plasma.enable = true;
+	services.displayManager.sddm = {
+		enable = true;
+		wayland.enable = true;
+	};
+	services.xserver = {
+		enable = true;
+		xkb = {
+			layout = "us,ru";
+			variant = "dvorak,";
+			options = "grp:caps_toggle,terminate:ctrl_alt_bksp";
 		};
-		ssh.startAgent = true;
+		videoDrivers = [ "amdgpu" ];
+		displayManager.lightdm.enable = lib.mkForce false;
+	};
+
+	# PROGRAMS
+	modules.kitty.enable = true;
+	modules.dualsound.enable = true;
+	modules.neovim.enable = true;
+	modules.firefox.enable = true;
+	modules.fish.enable = true;
+	programs.git = {
+		enable = true;
+		config = {
+			user.name = "Ivan Lifanov";
+			user.email = "letalbark@gmail.com";
+			init.defaultBranch = "main";
+			core.quotepath = false;
+		};
+	};
+	modules.nixscripts = {
+		enable = true;
+		host.name = "${hostname}";
+	};
+	programs.ssh.startAgent = true;
+	modules.flatpak = {
+		enable = true;
+		desiredFlatpaks = [
+			"com.discordapp.Discord"
+		];
 	};
 	modules.distrobox.enable = true;
 
@@ -172,6 +167,11 @@ password  substack      login
 session   include       login
 		'';
 	};
+	services.udev.extraRules = ''
+SUBSYSTEM=="backlight", ACTION=="add", \
+	RUN+="${pkgs.coreutils}/bin/chgrp video /sys/class/backlight/%k/brightness", \
+	RUN+="${pkgs.coreutils}/bin/chmod g+w /sys/class/backlight/%k/brightness"
+	'';
 
 	users.defaultUserShell = pkgs.bash;
 	users.users.${username} = {
@@ -238,12 +238,6 @@ session   include       login
 		noto-fonts-emoji
 		nerd-fonts.jetbrains-mono
 	];
-
-	services.udev.extraRules = ''
-SUBSYSTEM=="backlight", ACTION=="add", \
-	RUN+="${pkgs.coreutils}/bin/chgrp video /sys/class/backlight/%k/brightness", \
-	RUN+="${pkgs.coreutils}/bin/chmod g+w /sys/class/backlight/%k/brightness"
-	'';
 
 	security.sudo.enable = false;
 	security.sudo-rs.enable = true;
