@@ -130,20 +130,8 @@ in
 				};
 			};
 		};
-		# any power profile daemons conflict with handheld-daemon
-		power-profiles-daemon.enable = false;
 	};
 
-	# allow user to login in sddm without a password
-	security.pam.services.sddm = {
-		text = lib.mkForce ''
-auth      sufficient    pam_succeed_if.so user = ${username}
-auth      substack      login
-account   include       login
-password  substack      login
-session   include       login
-		'';
-	};
 
 	programs = {
 		git = {
@@ -159,6 +147,7 @@ session   include       login
 	};
 	modules.distrobox.enable = true;
 
+	# HANDHELD USE SETTINGS
 	programs.steam = {
 		enable = true;
 		remotePlay.openFirewall = true;
@@ -169,8 +158,20 @@ session   include       login
 		user = "${username}";
 		ui.enable = true;
 	};
+	# any power profile daemons conflict with handheld-daemon
+	services.power-profiles-daemon.enable = false;
 	modules.steamSession.enable = true;
 	programs.fuse.userAllowOther = true;
+	# allow user to login in sddm without a password
+	security.pam.services.sddm = {
+		text = lib.mkForce ''
+auth      sufficient    pam_succeed_if.so user = ${username}
+auth      substack      login
+account   include       login
+password  substack      login
+session   include       login
+		'';
+	};
 
 	users.defaultUserShell = pkgs.bash;
 	users.users.${username} = {
