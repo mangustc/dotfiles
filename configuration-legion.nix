@@ -157,7 +157,7 @@ in
 	services.power-profiles-daemon.enable = false;
 	modules.steamSession.enable = true;
 	programs.fuse.userAllowOther = true;
-	# allow user to login in sddm without a password
+	# allow user to login in sddm without a password so you can enter with only touchpad
 	security.pam.services.sddm = {
 		text = lib.mkForce ''
 auth      sufficient    pam_succeed_if.so user = ${username}
