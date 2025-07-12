@@ -16,10 +16,17 @@ ATTRS{name}=="Sony Interactive Entertainment Wireless Controller Touchpad", ENV{
 # Bluetooth
 ATTRS{name}=="Wireless Controller Touchpad", ENV{LIBINPUT_IGNORE_DEVICE}="1"
 
+# Disable Dualsense touchpad acting as mouse
 # USB
 ATTRS{name}=="Sony Interactive Entertainment DualSense Wireless Controller Touchpad", ENV{LIBINPUT_IGNORE_DEVICE}="1"
 # Bluetooth
 ATTRS{name}=="DualSense Wireless Controller Touchpad", ENV{LIBINPUT_IGNORE_DEVICE}="1"
+
+# Disable Dualsense Edge touchpad acting as mouse
+# USB
+ATTRS{name}=="Sony Interactive Entertainment DualSense Edge Wireless Controller Touchpad", ENV{LIBINPUT_IGNORE_DEVICE}="1"
+# Bluetooth
+ATTRS{name}=="DualSense Edge Wireless Controller Touchpad", ENV{LIBINPUT_IGNORE_DEVICE}="1"
 		'';
 		services.pipewire.extraConfig.pipewire = {
 			"99-dualsense-stereo" = {
