@@ -228,16 +228,27 @@ SUBSYSTEM=="backlight", ACTION=="add", \
 		chlayout
 		python3
 
+		# gaming
 		ryubing
 		rpcs3
 		protonplus
 		mangohud
+		wineWowPackages.stable
+
+		# development
+		android-studio
 	];
 	fonts.packages = with pkgs; [
 		noto-fonts
 		noto-fonts-emoji
 		nerd-fonts.jetbrains-mono
 	];
+	programs.nix-ld = {
+		enable = true;
+		# libraries = (pkgs.steam-run.fhsenv.args.multiPkgs pkgs) ++ [
+		# 	pkgs.xorg.libxkbfile
+		# ];
+	};
 
 	security.sudo.enable = false;
 	security.sudo-rs.enable = true;
