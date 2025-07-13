@@ -35,3 +35,4 @@ sp5100_tco
 "
 config zram
 config git
+config steam-session
