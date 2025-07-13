@@ -34,3 +34,4 @@ iTCO_wdt
 sp5100_tco
 "
 config zram
+config git
