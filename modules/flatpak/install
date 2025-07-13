@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 
-desired_flatpaks="$1"
+desired_flatpaks="$(rm_empty "$1" | xargs)"
 
 newscript "flatpak-update" "
 #!/usr/bin/env sh
