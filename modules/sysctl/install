@@ -1,5 +1,5 @@
 #!/usr/bin/env sh
 
-content="$1"
+file="$(writetext "$1")"
+cmd sudo install "$file" /etc/sysctl.d/99-dotfiles.conf
 
-cmd echo "$content" | sudo tee /etc/sysctl.d/99-dotfiles.conf

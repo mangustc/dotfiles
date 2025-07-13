@@ -3,4 +3,4 @@
 cmd echo "[zram0]
 zram-size = min (ram / 2, 8196)
 compression-algorithm = zstd" | sudo tee /etc/systemd/zram-generator.conf
-copy ./99-vm-zram-parameters.conf /etc/sysctl.d
+cmd sudo install -D -m 644 ./99-vm-zram-parameters.conf /etc/sysctl.d/99-vm-zram-parameters.conf

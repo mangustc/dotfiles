@@ -1,4 +1,4 @@
 #!/usr/bin/env sh
 
-remove ~/.config/MangoHud
-copy ./presets.conf ~/.config/MangoHud
+cmd rm -rf ~/.config/MangoHud
+cmd install -D -m 644 ./presets.conf ~/.config/MangoHud/presets.conf

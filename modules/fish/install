@@ -3,8 +3,8 @@
 cmd sudo chsh -s /bin/bash $USER
 cmd sudo chsh -s /bin/bash
 
-remove /etc/fish
-copy ./config.fish /etc/fish
-copy ./bash.bashrc /etc
+cmd sudo rm -rf /etc/fish
+cmd sudo install -D -m 755 ./config.fish /etc/fish
+cmd sudo install -D -m 755 ./bash.bashrc /etc
 
 
