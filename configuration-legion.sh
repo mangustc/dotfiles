@@ -39,5 +39,9 @@ config git
 config steam-session
 config hhd
 config bluetooth
+config flatpak "
+io.github.ryubing.Ryujinx
+net.rpcs3.RPCS3
+"
 
 print_orphan_packages
