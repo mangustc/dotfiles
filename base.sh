@@ -2,6 +2,7 @@
 
 export dotfiles_path="$(dirname "$(realpath $0)")"
 export save_dir="$dotfiles_path/save/$(date +%Y-%m-%d_%H-%M-%S)"
+export MODULE_PACKAGES=""
 mkdir -p "$save_dir"
 chmod -R +x $dotfiles_path
 
@@ -44,12 +45,28 @@ rm_empty() {
 }
 export -f rm_empty
 
+_trim_pkgs() {
+	echo "$1" | sed '/^#/d' | awk 'NF'
+}
+trim_pkgs() {
+	_trim_pkgs "$(cat "$1")"
+}
+export -f trim_pkgs
+
+print_orphan_packages() {
+	echo "Current orphan packages (not in modules, not in packages-$DOTFILES_HOST):"
+	grep -v -F -x -f <(echo -e "$(cat ./packages-$DOTFILES_HOST)\n$MODULE_PACKAGES") <<< "$(paru -Qe | cut -d ' ' -f 1)"
+}
+export -f print_orphan_packages
+
 config() {
 	export module_name="$1"
 	echo -e "\ninstalling module ${module_name}:"
 	cd "$dotfiles_path/modules/$module_name"
-	if [ ! "$(cat ./packages)" = "" ]; then
-		paru -S --needed --noconfirm - < ./packages
+	pkgs="$(trim_pkgs ./packages)"
+	if [ ! "$pkgs" = "" ]; then
+		paru -S --needed --noconfirm $pkgs
+		export MODULE_PACKAGES="$(_trim_pkgs "$MODULE_PACKAGES$(echo -e "\n$pkgs")")"
 	fi
 	chmod +x ./install
 	./install "${@:2}"

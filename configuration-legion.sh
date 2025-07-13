@@ -2,9 +2,10 @@
 
 cd "$(dirname "$0")"
 source ./base.sh
+DOTFILES_HOST="legion"
+DOTFILES_DIR="$(realpath "$(dirname "$0")")"
 
-# paru -S --needed - < ./packages-legion
-# paru -Qdtq | paru -Rns -
+paru -S --needed $(trim_pkgs ./packages-legion)
 config neovim
 config fish
 config dualsense
@@ -12,7 +13,7 @@ config nethandlerm
 config kitty
 config mangohud
 config ssh-agent
-config archscripts "~/dotfiles" legion
+config archscripts $DOTFILES_DIR $DOTFILES_HOST
 config sysctl "
 net.ipv4.tcp_mtu_probing = true
 net.ipv4.tcp_fin_timeout = 5
@@ -36,3 +37,7 @@ sp5100_tco
 config zram
 config git
 config steam-session
+config hhd
+config bluetooth
+
+print_orphan_packages
