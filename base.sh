@@ -106,11 +106,12 @@ copy() {
 export -f copy
 
 cmd() {
-	cmd_command="$@"
+	# cmd_command="$*"
 
-	$cmd_command
+	# $cmd_command
+	"$@"
 
-	echo "cmd ($module_name): $cmd_command" >> "$save_dir/log"
+	echo "cmd ($module_name): $@" >> "$save_dir/log"
 }
 export -f cmd
 
@@ -120,18 +121,24 @@ newscript() {
 
 	newscript_tmp="/tmp/$newscript_name"
 	echo "$newscript_content" > "$newscript_tmp"
-	chmod +x "$newscript_tmp"
+	chmod 755 "$newscript_tmp"
 	copy "$newscript_tmp" /usr/local/bin
 }
 export -f newscript
+
+rm_empty() {
+	echo "$1" | awk 'NF'
+}
+export -f rm_empty
 
 config() {
 	export module_name="$1"
 	echo -e "\ninstalling module ${module_name}:"
 	cd "$dotfiles_path/modules/$module_name"
 	if [ ! "$(cat ./packages)" = "" ]; then
-		paru -S --needed - < ./packages
+		paru -S --needed --noconfirm - < ./packages
 	fi
+	chmod +x ./install
 	./install "${@:2}"
 	if [ $? -eq 1 ]; then
 		echo -e "FAILED TO INSTALL MODULE ${module_name}"

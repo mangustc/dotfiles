@@ -1,0 +1,5 @@
+#!/usr/bin/env sh
+
+content="$1"
+
+cmd echo "$content" | sudo tee /etc/sysctl.d/99-dotfiles.conf

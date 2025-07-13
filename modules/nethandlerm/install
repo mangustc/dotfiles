@@ -1,8 +1,8 @@
 #!/usr/bin/env sh
 
 copy ./nethandler.service /etc/systemd/system
-copy ./nethandler /usr/local/bin
-copy ./share/nethandler /usr/local/share
+copy ./nethandler /usr/local/share
+cmd sudo ln -sf /usr/local/share/nethandler/nethandler /usr/local/bin/nethandler
 copy ./nftables.conf /etc
 cmd sudo systemctl enable --now nftables.service nethandler.service
 

@@ -1,0 +1,5 @@
+#!/usr/bin/env sh
+
+modules="$(rm_empty "$1")"
+
+cmd echo "$modules" | sed "s|^|blacklist |" | sudo tee /etc/modprobe.d/dotfiles.conf
