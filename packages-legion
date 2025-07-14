@@ -16,6 +16,8 @@ qt5-declarative
 networkmanager
 wl-clipboard
 paru-bin
+7zip
+unrar
 
 # progs
 btop
@@ -33,6 +35,7 @@ obsidian
 zen-browser-bin
 discord
 qbittorrent
+ark
 
 # gaming
 # ryujinx
