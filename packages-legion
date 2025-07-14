@@ -15,6 +15,7 @@ plasma-meta
 qt5-declarative
 networkmanager
 wl-clipboard
+paru-bin
 
 # progs
 btop
