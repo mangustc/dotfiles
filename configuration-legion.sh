@@ -44,5 +44,6 @@ io.github.ryubing.Ryujinx
 net.rpcs3.RPCS3
 "
 config sddm nopasswd
+config scripts
 
 print_orphan_packages
