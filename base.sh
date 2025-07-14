@@ -1,10 +1,26 @@
 #!/usr/bin/env sh
 
-export dotfiles_path="$(dirname "$(realpath $0)")"
-export save_dir="$dotfiles_path/save/$(date +%Y-%m-%d_%H-%M-%S)"
+# dotfiles dir:
+# - modules/
+#   - some_module/
+#     - install (any executable, mainly shell scripts)
+#     - packages (paru compatible package list)
+#   - ...
+# - base.sh
+# - configuration-HOST.sh (where bash.sh should be sourced as below)
+# - packages-HOST (paru compatible package list)
+# - save/.../* (all logs and files from configuration update run, *created automatically*)
+
+# Start of each configuration
+# DOTFILES_HOST="your-host-name"
+# DOTFILES_DIR="your-dotfiles-dir"
+# cd "$(DOTFILES_DIR)"
+# source ./base.sh
+
+export save_dir="$DOTFILES_DIR/save/$(date +%Y-%m-%d_%H-%M-%S)"
 export MODULE_PACKAGES=""
 mkdir -p "$save_dir"
-chmod -R +x $dotfiles_path
+chmod -R +x $DOTFILES_DIR
 
 errcho() {
 	>&2 echo $@;
@@ -64,7 +80,7 @@ export -f print_orphan_packages
 config() {
 	export module_name="$1"
 	echo -e "\ninstalling module ${module_name}:"
-	cd "$dotfiles_path/modules/$module_name"
+	cd "$DOTFILES_DIR/modules/$module_name"
 	pkgs="$(trim_pkgs ./packages)"
 	if [ ! "$pkgs" = "" ]; then
 		paru -S --needed --noconfirm $pkgs
@@ -77,5 +93,5 @@ config() {
 	else
 		echo -e "successfully installed module ${module_name}"
 	fi
-	cd "$dotfiles_path"
+	cd "$DOTFILES_DIR"
 }

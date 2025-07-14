@@ -1,10 +1,14 @@
 #!/usr/bin/env sh
 
-cd "$(dirname "$0")"
-source ./base.sh
+# build info
 DOTFILES_HOST="legion"
 DOTFILES_DIR="$(realpath "$(dirname "$0")")"
 
+# prepare
+cd "$DOTFILES_DIR"
+source ./base.sh
+
+# config
 paru -S --needed $(trim_pkgs ./packages-legion)
 config neovim
 config fish
