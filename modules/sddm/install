@@ -1,0 +1,38 @@
+#!/usr/bin/env sh
+
+if [ "$1" = "nopasswd" ]; then
+	pam="$(writetext "#%PAM-1.0
+
+	auth      sufficient    pam_succeed_if.so user = $(whoami)
+	auth        include     system-login
+	-auth       optional    pam_gnome_keyring.so
+	-auth       optional    pam_kwallet5.so
+
+	account     include     system-login
+
+	password    include     system-login
+	-password   optional    pam_gnome_keyring.so    use_authtok
+
+	session     optional    pam_keyinit.so          force revoke
+	session     include     system-login
+	-session    optional    pam_gnome_keyring.so    auto_start
+	-session    optional    pam_kwallet5.so         auto_start")"
+else
+	pam="$(writetext "#%PAM-1.0
+
+	auth        include     system-login
+	-auth       optional    pam_gnome_keyring.so
+	-auth       optional    pam_kwallet5.so
+
+	account     include     system-login
+
+	password    include     system-login
+	-password   optional    pam_gnome_keyring.so    use_authtok
+
+	session     optional    pam_keyinit.so          force revoke
+	session     include     system-login
+	-session    optional    pam_gnome_keyring.so    auto_start
+	-session    optional    pam_kwallet5.so         auto_start")"
+fi
+cmd sudo install -D -m 644 "$pam" /etc/pam.d/sddm
+cmd sudo systemctl enable sddm.service
