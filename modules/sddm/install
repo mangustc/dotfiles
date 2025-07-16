@@ -34,5 +34,13 @@ else
 	-session    optional    pam_gnome_keyring.so    auto_start
 	-session    optional    pam_kwallet5.so         auto_start")"
 fi
+conf="$(writetext "
+[Wayland]
+EnableHiDPI=true
+
+[X11]
+EnableHiDPI=true
+")"
+cmd sudo install -D -m 644 "$conf" /etc/sddm.conf.d/dotfiles.conf
 cmd sudo install -D -m 644 "$pam" /etc/pam.d/sddm
 cmd sudo systemctl enable sddm.service
