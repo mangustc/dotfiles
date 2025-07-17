@@ -49,5 +49,6 @@ net.rpcs3.RPCS3
 "
 config sddm nopasswd
 config scripts
+config brightness
 
 print_orphan_packages
