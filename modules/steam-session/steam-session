@@ -75,6 +75,11 @@ touch ~/.steam/root/config/SteamAppData.vdf || true
 # 	mangoapp
 # 	sleep 5
 # done) &
+# (while true; do
+# 	udiskie -a
+# 	sleep 5
+# done) &
+udiskie-mount -a &
 gamescope --steam \
 	--mangoapp \
 	--force-orientation left \
