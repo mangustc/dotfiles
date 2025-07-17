@@ -1,10 +1,8 @@
 #!/usr/bin/env sh
 
-# build info
+# prepare
 DOTFILES_HOST="legion"
 DOTFILES_DIR="$(realpath "$(dirname "$0")")"
-
-# prepare
 cd "$DOTFILES_DIR"
 source ./base.sh
 
@@ -51,4 +49,5 @@ config sddm nopasswd
 config scripts
 config brightness
 
+# end
 print_orphan_packages

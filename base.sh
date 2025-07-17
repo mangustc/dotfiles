@@ -1,32 +1,17 @@
 #!/usr/bin/env sh
 
-# dotfiles dir:
-# - modules/
-#   - some_module/
-#     - install (any executable, mainly shell scripts)
-#     - packages (paru compatible package list)
-#   - ...
-# - base.sh
-# - configuration-HOST.sh (where bash.sh should be sourced as below)
-# - packages-HOST (paru compatible package list)
-# - save/.../* (all logs and files from configuration update run, *created automatically*)
-
-# Start of each configuration
-# DOTFILES_HOST="your-host-name"
-# DOTFILES_DIR="your-dotfiles-dir"
-# cd "$(DOTFILES_DIR)"
-# source ./base.sh
-
 export save_dir="$DOTFILES_DIR/save/$(date +%Y-%m-%d_%H-%M-%S)"
 export MODULE_PACKAGES=""
 mkdir -p "$save_dir"
 chmod -R +x $DOTFILES_DIR
 
+# echo as error
 errcho() {
 	>&2 echo $@;
 }
 export -f errcho
 
+# prints command to log
 cmd() {
 	"$@"
 
@@ -34,6 +19,7 @@ cmd() {
 }
 export -f cmd
 
+# create new script inside /usr/local/bin with name and content
 newscript() {
 	newscript_name="$1"
 	newscript_content="$2"
@@ -44,6 +30,7 @@ newscript() {
 }
 export -f newscript
 
+# create file with content and return temporary file path
 writetext() {
 	writetext_content="$1"
 
@@ -53,11 +40,13 @@ writetext() {
 }
 export -f writetext
 
+# remove empty lines from string
 rm_empty() {
 	echo "$1" | awk 'NF'
 }
 export -f rm_empty
 
+# remove comments, remove empty lines, remove duplicate strings, sort. string or fil
 trim_pkgs_str() {
 	echo "$1" | sed '/^#/d' | awk 'NF' | uniq | sort
 }
@@ -67,6 +56,7 @@ trim_pkgs_file() {
 export -f trim_pkgs_str
 export -f trim_pkgs_file
 
+# print orphan and overlapping packages. should be used at the end of configuration-HOST.sh
 print_orphan_packages() {
 	echo "Current orphan packages (not in modules, not in packages-$DOTFILES_HOST):"
 	grep -v -F -x -f <(echo -e "$(cat ./packages-$DOTFILES_HOST)\n$MODULE_PACKAGES") <<< "$(paru -Qe | cut -d ' ' -f 1)"
@@ -75,6 +65,7 @@ print_orphan_packages() {
 }
 export -f print_orphan_packages
 
+# installes packages from a string of package names
 install_pkgs() {
 	install_pkgs_paru=""
 	install_pkgs_list="$(trim_pkgs_str "$1" | grep -v -F -x -f <(echo "$(paru -Q | cut -d ' ' -f 1)"))"
@@ -85,6 +76,7 @@ install_pkgs() {
 }
 export -f install_pkgs
 
+# by module name, install a module and its packages. You can also pass arguments if possible by a module
 config() {
 	export module_name="$1"
 	echo -e "\ninstalling module ${module_name}:"
