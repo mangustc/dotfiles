@@ -37,9 +37,14 @@ fi
 conf="$(writetext "
 [Wayland]
 EnableHiDPI=true
+CompositorCommand=kwin_wayland --drm --no-lockscreen --no-global-shortcuts --locale1
 
 [X11]
 EnableHiDPI=true
+
+[General]
+DisplayServer=wayland
+GreeterEnvironment=QT_WAYLAND_SHELL_INTEGRATION=layer-shell
 ")"
 cmd sudo install -D -m 644 "$conf" /etc/sddm.conf.d/dotfiles.conf
 cmd sudo install -D -m 644 "$pam" /etc/pam.d/sddm
