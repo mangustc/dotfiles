@@ -9,7 +9,7 @@ cd "$DOTFILES_DIR"
 source ./base.sh
 
 # config
-paru -S --needed $(trim_pkgs ./packages-legion)
+install_pkgs "$(trim_pkgs_file ./packages-legion)"
 config neovim
 config fish
 config dualsense
