@@ -1,0 +1,19 @@
+#!/bin/sh
+
+multiplier="2"
+flow="100"
+performance="p"
+
+while getopts :nm:f: flag
+do
+    case "${flag}" in
+        m) multiplier=${OPTARG};;
+        f) flow=${OPTARG};;
+        n) performance=${OPTARG};;
+    esac
+done
+shift $(expr $OPTIND - 1 )
+
+export LSFG_PROCESS="lsfg$multiplier$flow$performance"
+echo $LSFG_PROCESS
+exec "$@"

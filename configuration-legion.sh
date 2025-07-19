@@ -48,6 +48,8 @@ net.rpcs3.RPCS3
 config sddm nopasswd
 config scripts
 config brightness
+config legion-go
+config lsfg
 
 # end
 print_orphan_packages

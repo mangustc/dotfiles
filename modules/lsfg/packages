@@ -1,0 +1,9 @@
+base-devel
+git
+clang
+llvm
+cmake
+ninja
+spirv-headers
+vulkan-headers
+vulkan-icd-loader
