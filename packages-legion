@@ -18,6 +18,7 @@ wl-clipboard
 paru-bin
 7zip
 unrar
+ntfs-3g
 
 # progs
 btop
@@ -38,6 +39,7 @@ qbittorrent
 ark
 maliit-keyboard
 kwalletmanager
+gparted
 
 # gaming
 # ryujinx
@@ -45,3 +47,6 @@ kwalletmanager
 # protonplus
 proton-ge-custom-bin
 wine
+
+# programming
+android-studio
