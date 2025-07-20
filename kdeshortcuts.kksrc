@@ -1,5 +1,6 @@
 [ActivityManager][Global Shortcuts]
 switch-to-activity-0738a768-c830-4434-a2e9-b6496b616ee1=
+switch-to-activity-9bed1aea-a3a7-400a-95c6-a34b42823b90=
 switch-to-activity-e72d072e-94a0-4117-9aea-612a77994199=
 
 [Custom Commands][net.local.chlayout-2.desktop]
@@ -7,16 +8,20 @@ Exec=chlayout gaming
 Name=
 
 [Custom Commands][net.local.chlayout-3.desktop]
-Exec=chlayout gaming
-Name=
+Exec=chlayout default
+Name=default layout
 
 [Custom Commands][net.local.chlayout-4.desktop]
-Exec=chlayout default
-Name=
+Exec=chlayout gaming
+Name=gaming layout
 
 [Custom Commands][net.local.chlayout.desktop]
 Exec=chlayout default
 Name=
+
+[Custom Commands][net.local.kitty.desktop]
+Exec=konsole
+Name=terminal
 
 [KDE Keyboard Layout Switcher][Global Shortcuts]
 Switch keyboard layout to English (Dvorak)=
@@ -32,15 +37,15 @@ Activate Next Tab=Ctrl+PgDown; Ctrl+]
 Activate Previous Tab=Ctrl+PgUp; Ctrl+[
 ActualSize=Ctrl+0
 AddBookmark=Ctrl+B
-Back=Back; Alt+Left
+Back=Alt+Left; Back
 BackwardWord=Ctrl+Left
 Begin=Ctrl+Home
 BeginningOfLine=Home
 Clear=
-Close=Ctrl+W; Ctrl+Esc
+Close=Ctrl+Esc; Ctrl+W
 ConfigureNotifications=
 ConfigureToolbars=
-Copy=Ctrl+Ins; Ctrl+C
+Copy=Ctrl+C; Ctrl+Ins
 CreateFolder=Ctrl+Shift+N
 Cut=Shift+Del; Ctrl+X
 DeleteFile=Shift+Del
@@ -59,7 +64,7 @@ FindPrev=Shift+F3
 FitToHeight=
 FitToPage=
 FitToWidth=
-Forward=Alt+Right; Forward
+Forward=Forward; Alt+Right
 ForwardWord=Ctrl+Right
 FullScreen=Ctrl+Shift+F
 Goto=
@@ -96,7 +101,7 @@ RotateUp=Up
 Save=Ctrl+S
 SaveAs=Ctrl+Shift+S
 SelectAll=Ctrl+A
-ShowHideHiddenFiles=Alt+.; Ctrl+H
+ShowHideHiddenFiles=Ctrl+H; Alt+.
 ShowMenubar=Ctrl+M
 ShowStatusbar=
 ShowToolbar=
@@ -132,12 +137,12 @@ decrease_volume_small=Shift+Volume Down
 increase_microphone_volume=Microphone Volume Up
 increase_volume=Volume Up
 increase_volume_small=Shift+Volume Up
-mic_mute=Microphone Mute; Meta+Volume Mute
+mic_mute=Meta+Volume Mute; Microphone Mute
 mute=Volume Mute
 
 [ksmserver][Global Shortcuts]
 Halt Without Confirmation=
-Lock Session=Screensaver
+Lock Session=
 Log Out=Ctrl+Alt+Del
 Log Out Without Confirmation=
 LogOut=
@@ -150,7 +155,7 @@ Activate Window Demanding Attention=
 Cycle Overview=
 Cycle Overview Opposite=
 Decrease Opacity=
-Edit Tiles=Meta+L
+Edit Tiles=
 Expose=
 ExposeAll=
 ExposeClass=
@@ -165,19 +170,19 @@ KrohnkiteFloatAll=
 KrohnkiteFloatingLayout=
 KrohnkiteFocusDown=
 KrohnkiteFocusLeft=
-KrohnkiteFocusNext=
-KrohnkiteFocusPrev=
+KrohnkiteFocusNext=Meta+Right; Meta+.
+KrohnkiteFocusPrev=Meta+,; Meta+Left
 KrohnkiteFocusRight=
 KrohnkiteFocusUp=
 KrohnkiteGrowHeight=
 KrohnkiteIncrease=
 KrohnkiteMonocleLayout=
-KrohnkiteNextLayout=
+KrohnkiteNextLayout=Meta+Shift+Return
 KrohnkitePreviousLayout=
 KrohnkiteQuarterLayout=
 KrohnkiteRotate=
 KrohnkiteRotatePart=
-KrohnkiteSetMaster=
+KrohnkiteSetMaster=Meta+Return; Meta+'
 KrohnkiteShiftDown=
 KrohnkiteShiftLeft=
 KrohnkiteShiftRight=
@@ -353,19 +358,27 @@ stopmedia=Media Stop
 _launch=Meta+F9
 
 [net.local.chlayout-3.desktop][Global Shortcuts]
-_launch=Meta+F9
+_launch=Meta+Shift+Left; Meta+<
 
 [net.local.chlayout-4.desktop][Global Shortcuts]
-_launch=Meta+F8
+_launch=Meta+Shift+Right; Meta+>
 
 [net.local.chlayout.desktop][Global Shortcuts]
 _launch=Meta+F8
 
+[net.local.kitty.desktop][Global Shortcuts]
+_launch=Meta+T
+
 [org.kde.dolphin.desktop][Global Shortcuts]
 _launch=
 
+[org.kde.konsole.desktop][Global Shortcuts]
+NewTab=
+NewWindow=
+_launch=Ctrl+Alt+T
+
 [org.kde.krunner.desktop][Global Shortcuts]
-RunClipboard=Alt+Shift+F2
+RunClipboard=
 _launch=Meta+P
 
 [org.kde.kscreen.desktop][Global Shortcuts]
@@ -382,12 +395,17 @@ ActiveWindowScreenShot=Meta+Print
 CurrentMonitorScreenShot=
 FullScreenScreenShot=Shift+Print
 OpenWithoutScreenshot=
-RecordRegion=Meta+R; Meta+Shift+R
+RecordRegion=Meta+Shift+R; Meta+R
 RecordScreen=Meta+Alt+R
 RecordWindow=Meta+Ctrl+R
-RectangularRegionScreenShot=Print
+RectangularRegionScreenShot=
 WindowUnderCursorScreenShot=Meta+Ctrl+Print
-_launch=Meta+Shift+S
+_launch=Print; Meta+Shift+S
+
+[org.kde.touchpadshortcuts.desktop][Global Shortcuts]
+DisableTouchpad=Touchpad Off
+EnableTouchpad=Touchpad On
+ToggleTouchpad=Touchpad Toggle; Meta+Ctrl+Zenkaku Hankaku; Meta+Ctrl+Touchpad Toggle
 
 [org_kde_powerdevil][Global Shortcuts]
 Decrease Keyboard Brightness=Keyboard Brightness Down
@@ -421,6 +439,7 @@ clipboard_action=
 cycle-panels=
 cycleNextAction=
 cyclePrevAction=
+edit_clipboard=
 manage activities=
 next activity=
 previous activity=
