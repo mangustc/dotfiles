@@ -221,7 +221,6 @@ require("lazy").setup({
 			local capabilities = require('blink.cmp').get_lsp_capabilities()
 			local servers = {
 			    lua_ls = {},
-			    nil_ls = {},
 			    pyright = {},
 			}
 			for server_name, server_config in pairs(servers) do
