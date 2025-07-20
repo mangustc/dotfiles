@@ -3,7 +3,7 @@
 export save_dir="$DOTFILES_DIR/save/$(date +%Y-%m-%d_%H-%M-%S)"
 export MODULE_PACKAGES=""
 mkdir -p "$save_dir"
-chmod -R +x $DOTFILES_DIR
+# chmod -R +x $DOTFILES_DIR
 
 # echo as error
 errcho() {
@@ -84,7 +84,7 @@ config() {
 	pkgs="$(trim_pkgs_file ./packages)"
 	install_pkgs "$pkgs"
 	export MODULE_PACKAGES="$(trim_pkgs_str "$MODULE_PACKAGES$(echo -e "\n$pkgs")")"
-	chmod +x ./install
+	chmod 755 ./install
 	./install "${@:2}"
 	if [ $? -eq 1 ]; then
 		echo -e "FAILED TO INSTALL MODULE ${module_name}"
