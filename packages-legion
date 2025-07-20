@@ -40,12 +40,12 @@ ark
 maliit-keyboard
 kwalletmanager
 gparted
+vial-appimage
 
 # gaming
 # ryujinx
 # rpcs3-bin
-# protonplus
-proton-ge-custom-bin
+protonplus
 wine
 
 # programming
