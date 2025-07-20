@@ -1,0 +1,8 @@
+#!/usr/bin/env sh
+
+cmd rm -rf ~/.local/share/konsole
+cmd install -Dm644 ./base16-gruvbox-dark-pale.colorscheme ~/.local/share/konsole/base16-gruvbox-dark-pale.colorscheme
+cmd install -Dm644 ./dotfiles.profile ~/.local/share/konsole/dotfiles.profile
+
+cmd install -Dm644 ./konsolerc ~/.config/konsolerc
+cmd install -Dm644 ./konsolesshconfig ~/.config/konsolesshconfig

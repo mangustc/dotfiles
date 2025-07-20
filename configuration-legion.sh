@@ -12,7 +12,6 @@ config neovim
 config fish
 config dualsense
 config nethandlerm
-config kitty
 config mangohud
 config ssh-agent
 config archscripts $DOTFILES_DIR $DOTFILES_HOST
@@ -50,6 +49,7 @@ config scripts
 config brightness
 config legion-go
 config lsfg
+config konsole
 
 # end
 print_orphan_packages
