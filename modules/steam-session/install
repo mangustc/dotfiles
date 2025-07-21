@@ -11,3 +11,4 @@ cmd sudo install -D -m 755 ./steamos-select-branch /usr/local/bin/steamos-select
 cmd sudo install -D -m 755 ./steamos-session-select /usr/local/bin/steamos-session-select
 cmd sudo install -D -m 755 ./steamos-update /usr/local/bin/steamos-update
 cmd sudo install -D -m 755 ./steamos-wifi-set-backend /usr/local/bin/steamos-wifi-set-backend
+cmd sudo install -D -m 755 ./jupiter-biosupdate /usr/local/bin/jupiter-biosupdate

@@ -8,6 +8,63 @@ source ./base.sh
 
 # config
 install_pkgs "$(trim_pkgs_file ./packages-legion)"
+
+# systemd-boot
+arch_conf="$(writetext "
+title Arch Linux
+linux /vmlinuz-linux
+initrd /initramfs-linux.img
+options root=LABEL=arch-root rw
+")"
+bazzite_conf="$(writetext "
+title Arch Linux - Bazzite kernel
+linux /vmlinuz-linux-bazzite
+initrd /initramfs-linux-bazzite.img
+options root=LABEL=arch-root rw nowatchdog fbcon=vc:2-6 amdgpu.sg_display=0 drm.edid_firmware=DP-3:edid/v226hql.bin
+")"
+loader_conf="$(writetext "
+timeout 0
+default bazzite.conf
+console-mode keep
+")"
+cmd sudo install -Dm644 "$loader_conf" /boot/loader/loader.conf
+cmd sudo install -Dm644 "$arch_conf" /boot/loader/entries/arch.conf
+cmd sudo install -Dm644 "$bazzite_conf" /boot/loader/entries/bazzite.conf
+
+# mkinitcpio
+linux_preset="$(writetext "
+ALL_kver=\"/boot/vmlinuz-linux\"
+PRESETS=('default')
+default_image=\"/boot/initramfs-linux.img\"
+")"
+linux_bazzite_preset="$(writetext "
+ALL_kver=\"/boot/vmlinuz-linux-bazzite\"
+PRESETS=('default')
+default_image=\"/boot/initramfs-linux-bazzite.img\"
+")"
+cmd sudo install -Dm644 ./v226hql/v226hql.bin /usr/lib/firmware/edid/v226hql.bin
+cmd sudo install -Dm644 ./v226hql/v226hql.conf /etc/mkinitcpio.conf.d/v226hql.conf
+cmd sudo install -Dm644 "$linux_preset" /etc/mkinitcpio.d/linux.preset
+cmd sudo install -Dm644 "$linux_bazzite_preset" /etc/mkinitcpio.d/linux-bazzite.preset
+
+cmd sudo ln -sf /usr/share/zoneinfo/Asia/Tomsk /etc/localtime
+cmd sudo hwclock --systohc
+
+cmd sudo install -Dm644 "$(writetext "
+en_CA.UTF-8 UTF-8
+en_CA ISO-8859-1
+en_US.UTF-8 UTF-8
+en_US ISO-8859-1
+ru_RU.KOI8-R KOI8-R
+ru_RU.UTF-8 UTF-8
+ru_RU ISO-8859-5
+")" /etc/locale.gen
+
+cmd sudo install -Dm644 "$(writetext "LANG=en_US.UTF-8")" /etc/locale.conf
+cmd sudo install -Dm644 "$(writetext "KEYMAP=dvorak")" /etc/vconsole.conf
+cmd sudo install -Dm644 "$(writetext "arch")" /etc/hostname
+
+config networkmanager
 config neovim
 config fish
 config dualsense
@@ -47,7 +104,7 @@ net.rpcs3.RPCS3
 config sddm nopasswd
 config scripts
 config brightness
-config legion-go
+config legion-go-mic
 config lsfg
 config konsole
 config pipewire
