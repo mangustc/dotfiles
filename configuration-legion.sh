@@ -50,6 +50,7 @@ config brightness
 config legion-go
 config lsfg
 config konsole
+config pipewire
 
 # end
 print_orphan_packages
