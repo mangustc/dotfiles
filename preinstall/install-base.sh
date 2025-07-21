@@ -20,6 +20,7 @@ echo "KEYMAP=dvorak" > /etc/vconsole.conf
 
 echo "arch" > /etc/hostname
 
+echo "%wheel ALL=(ALL:ALL) ALL" > /etc/sudoers.d/wheel
 passwd
 useradd -m -G audio,video,wheel,tty,kvm,input,network -s /bin/bash ivan
 passwd ivan
