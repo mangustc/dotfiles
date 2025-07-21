@@ -5,12 +5,10 @@ base-devel
 sudo
 vulkan-radeon
 lib32-mesa
-lib32-pipewire-jack
 lib32-vulkan-radeon
 linux
 linux-bazzite-bin
 linux-firmware
-pipewire-alsa
 plasma-meta
 qt5-declarative
 networkmanager
