@@ -1,6 +1,17 @@
 #!/usr/bin/env sh
 
+# mic
 cmd sudo install -D -m 644 ./mic-fix.service /etc/systemd/user/mic-fix.service
 cmd systemctl --user enable --now mic-fix.service
-
 cmd install -D -m 644 ./99-mic-denoised.conf ~/.config/pipewire/pipewire.conf.d/99-mic-denoised.conf
+
+# mkinitcpio
+cmd sudo install -Dm644 ./v226hql.bin /usr/lib/firmware/edid/v226hql.bin
+cmd sudo install -Dm644 ./v226hql.conf /etc/mkinitcpio.conf.d/v226hql.conf
+cmd sudo install -Dm644 ./linux.preset /etc/mkinitcpio.d/linux.preset
+cmd sudo install -Dm644 ./linux-bazzite.preset /etc/mkinitcpio.d/linux-bazzite.preset
+
+# systemd-boot
+cmd sudo install -Dm644 ./loader.conf /boot/loader/loader.conf
+cmd sudo install -Dm644 ./entries/arch.conf /boot/loader/entries/arch.conf
+cmd sudo install -Dm644 ./entries/bazzite.conf /boot/loader/entries/bazzite.conf
