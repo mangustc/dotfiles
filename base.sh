@@ -69,7 +69,6 @@ export -f print_orphan_packages
 install_pkgs() {
 	install_pkgs_paru=""
 	install_pkgs_list="$(trim_pkgs_str "$1" | grep -v -F -x -f <(echo "$(paru -Q | cut -d ' ' -f 1)"))"
-	echo "$install_pkgs_list"
 	if [ ! "$install_pkgs_list" = "" ]; then
 		paru -S --needed $install_pkgs_list
 	fi
