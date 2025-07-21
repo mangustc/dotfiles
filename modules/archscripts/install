@@ -29,6 +29,12 @@ fi
 
 cd $dotfiles
 ./configuration-$host.sh
+
+if [ \"\$1\" = 'upgrade' ]; then
+	sudo mkinitcpio -P
+	sudo locale-gen
+	sudo bootctl update
+fi
 "
 
 newscript archexport "
