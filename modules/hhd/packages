@@ -1,3 +1,5 @@
 hhd
 adjustor
 hhd-ui
+# required for "reboot into windows" button to work
+efibootmgr
