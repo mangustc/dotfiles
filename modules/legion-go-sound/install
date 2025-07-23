@@ -5,7 +5,7 @@ cmd systemctl --user enable --now sound-fix.service
 cmd install -D -m 644 ./99-mic-denoised.conf ~/.config/pipewire/pipewire.conf.d/99-mic-denoised.conf
 
 cmd install -Dm 644 ./multiwayCor48.wav ~/.config/pipewire/multiwayCor48.wav
-cmd install -Dm 644 "$(writetext "$(cat <<EOF
+cmd install -Dm 644 "$(writetext <<EOF
 # Convolver Configuration for Pipewire
 #
 # This configuration applies separate left and right convolver effects using the corresponding impulse response files
@@ -64,5 +64,5 @@ context.properties = {
     default.clock.allowed-rates = [ 48000 ]
 }
 EOF
-)")" ~/.config/pipewire/pipewire.conf.d/convolver.conf
+)" ~/.config/pipewire/pipewire.conf.d/convolver.conf
 

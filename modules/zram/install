@@ -1,7 +1,10 @@
 #!/usr/bin/env sh
 
-file="$(writetext "[zram0]
+file="$(writetext <<EOF
+[zram0]
 zram-size = min (ram / 2, 8196)
-compression-algorithm = zstd")"
+compression-algorithm = zstd
+EOF
+)"
 sudo install -D -m 644 "$file" /etc/systemd/zram-generator.conf
 cmd sudo install -D -m 644 ./99-vm-zram-parameters.conf /etc/sysctl.d/99-vm-zram-parameters.conf
