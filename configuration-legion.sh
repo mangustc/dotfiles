@@ -99,7 +99,7 @@ net.rpcs3.RPCS3
 config sddm nopasswd
 config scripts
 config brightness
-config legion-go-mic
+config legion-go-sound
 config lsfg
 config konsole
 config pipewire
