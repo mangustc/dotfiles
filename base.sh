@@ -33,9 +33,17 @@ export -f newscript
 # create file with content and return temporary file path
 writetext() {
 	writetext_content="$1"
-
 	writetext_tmp="$(mktemp "/tmp/writetext.XXXXXXX")"
-	echo "$writetext_content" > "$writetext_tmp"
+
+	if [ "$1" = "" ]; then
+		cat > "$writetext_tmp"
+	elif [ ! "$2" = "" ]; then
+		errcho "writetext accepts only one argument or a heredoc"
+		return 1
+	else
+		echo "$writetext_content" > "$writetext_tmp"
+	fi
+
 	echo "$writetext_tmp"
 }
 export -f writetext
