@@ -12,6 +12,7 @@ My goal is:
 - separate configuration to different modules.
 - each module can accept arguments to specify configuration individually for each host.
 - each module has an install script that can be written in whatever way you want.
+- provide simple functions that make the proccess of applying a configuration easier.
 
 ## prerequisites
 
@@ -19,6 +20,7 @@ My goal is:
 - Arch linux.
 - paru installed.
 - connected to network.
+- partition table as follows: root partition labeled arch-root, boot partition labeled arch-boot.
 
 ## usage
 
