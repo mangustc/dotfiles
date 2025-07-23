@@ -22,7 +22,15 @@ export -f cmd
 # create new script inside /usr/local/bin with name and content
 newscript() {
 	newscript_name="$1"
-	newscript_content="$2"
+
+	if [ "$2" = "" ]; then
+		newscript_content="$(cat)"
+	elif [ ! "$3" = "" ]; then
+		errcho "writetext accepts only two arguments: name, content or a heredoc"
+		return 1
+	else
+		newscript_content="$2"
+	fi
 
 	newscript_tmp="/tmp/$newscript_name"
 	echo "$newscript_content" > "$newscript_tmp"
