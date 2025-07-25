@@ -1,6 +1,3 @@
 #!/usr/bin/env sh
 
-# Do not use local bin path (causes recursion)
-PATH="$(echo $PATH | sed 's|:/usr/local/bin||g')"
-
-exec nvim -u /usr/local/share/nvim/init.lua "$@"
+exec /usr/bin/nvim -u /usr/local/share/nvim/init.lua "$@"
