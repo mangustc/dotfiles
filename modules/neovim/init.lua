@@ -44,9 +44,8 @@ end ---@diagnostic disable-next-line: undefined-field
 vim.opt.rtp:prepend(lazypath)
 
 local kbds = {
-	filetree_open_close = "<leader>pt",
-	filetree_open_cwd_current_buffer_dir = "<leader>pT",
-	filetree_cwd_current_buffer_dir = "<leader>pc",
+	filetree_open = "<leader>pt",
+	filetree_open_current_buffer = "<leader>pT",
 	telescope_find_files = "<leader>pf",
 	telescope_builtins = "<leader>pp",
 	telescope_grep = "<leader>pg",
@@ -92,6 +91,10 @@ require("lazy").setup({
 				end,
 			},
 			{ "nvim-telescope/telescope-ui-select.nvim" },
+			{
+				"nvim-telescope/telescope-file-browser.nvim",
+				dependencies = { "nvim-telescope/telescope.nvim", "nvim-lua/plenary.nvim" }
+			},
 			{ "nvim-tree/nvim-web-devicons", enabled = vim.g.have_nerd_font },
 		},
 		config = function()
@@ -100,9 +103,13 @@ require("lazy").setup({
 					["ui-select"] = {
 						require("telescope.themes").get_dropdown(),
 					},
+					file_browser = {
+						hijack_netrw = true,
+					},
 				},
 			})
 
+			pcall(require("telescope").load_extension, "file_browser")
 			pcall(require("telescope").load_extension, "fzf")
 			pcall(require("telescope").load_extension, "ui-select")
 
@@ -120,6 +127,9 @@ require("lazy").setup({
 			vim.keymap.set("n", kbds.telescope_config_dir, function()
 				builtin.find_files({ cwd = vim.fn.stdpath("config") })
 			end, { desc = "[S]earch [N]eovim files" })
+
+			vim.keymap.set("n", kbds.filetree_open, ":Telescope file_browser<CR>")
+			vim.keymap.set("n", kbds.filetree_open_current_buffer, ":Telescope file_browser path=%:p:h select_buffer=true<CR>")
 		end,
 	},
 	{
@@ -325,28 +335,6 @@ require("lazy").setup({
 	    },
 	},
 	{
-		"nvim-neo-tree/neo-tree.nvim",
-		version = "*",
-		dependencies = {
-			"nvim-lua/plenary.nvim",
-			"nvim-tree/nvim-web-devicons",
-			"MunifTanjim/nui.nvim",
-		},
-		cmd = "Neotree",
-		keys = {
-			{ kbds.filetree_open_close, ":Neotree reveal<CR>", { desc = "NeoTree reveal", silent = true } },
-		},
-		opts = {
-			filesystem = {
-				window = {
-					mappings = {
-						[kbds.filetree_open_close] = "close_window",
-					},
-				},
-			},
-		},
-	},
-	{
 		"lewis6991/gitsigns.nvim",
 		opts = {
 			signs = {
@@ -426,13 +414,3 @@ vim.keymap.set("n", "N", "Nzzzv", {})
 
 vim.keymap.set("n", "<leader>k", "<cmd>lnext<CR>zz", { silent = true })
 vim.keymap.set("n", "<leader>j", "<cmd>lprev<CR>zz", { silent = true })
-
-vim.keymap.set("n", kbds.filetree_cwd_current_buffer_dir, function()
-	vim.cmd("Neotree close")
-	vim.cmd("cd %:p:h")
-end, {})
-vim.keymap.set("n", kbds.filetree_open_cwd_current_buffer_dir, function()
-	vim.cmd("Neotree close")
-	vim.cmd("cd %:p:h")
-	vim.cmd("Neotree reveal")
-end, {})
