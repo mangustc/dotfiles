@@ -45,7 +45,7 @@ vim.opt.rtp:prepend(lazypath)
 
 local kbds = {
 	filetree_open = "<leader>pt",
-	filetree_open_current_buffer = "<leader>pT",
+	filetree_open_current_buffer = "<leader>pc",
 	telescope_find_files = "<leader>pf",
 	telescope_builtins = "<leader>pp",
 	telescope_grep = "<leader>pg",
