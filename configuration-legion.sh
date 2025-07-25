@@ -99,7 +99,7 @@ pcscpkr
 iTCO_wdt
 sp5100_tco
 "
-config zram
+config zram 8196
 config git
 config steam-session
 config hhd

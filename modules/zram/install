@@ -1,8 +1,14 @@
 #!/usr/bin/env sh
 
+size="$1"
+if [ "$size" = "" ]; then
+	echo "provide zram size (MiB) to module zram"
+	exit 1
+fi
+
 file="$(writetext <<EOF
 [zram0]
-zram-size = min (ram / 2, 8196)
+zram-size = $size
 compression-algorithm = zstd
 EOF
 )"
