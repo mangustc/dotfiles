@@ -20,12 +20,6 @@ vim.opt.list = true
 vim.opt.listchars = { tab = "» ", trail = "·", nbsp = "␣" }
 vim.opt.inccommand = "split"
 vim.opt.hlsearch = true
-vim.keymap.set("n", "<Esc>", "<cmd>nohlsearch<CR>")
-vim.g.loaded_netrwPlugin = 1
-vim.g.loaded_netrw = 1
-vim.g.loaded_netrwSettings = 1
-vim.g.loaded_netrwFileHandlers = 1
-vim.g.loaded_netrw_gitignore = 1
 vim.o.statusline = [[%<%f %h%m%r %y%=%{v:register} %-14.(%l,%c%V%) %P]]
 
 vim.api.nvim_create_autocmd("TextYankPost", {
@@ -78,6 +72,8 @@ local kbds = {
 	harpoon_4 = "<C-s>",
 	harpoon_prev = "<C-S-P>",
 	harpoon_next = "<C-S-N>",
+	buffer_prev = "<C-k>",
+	buffer_next = "<C-j>",
 }
 
 -- other keybindings at the end of the file
@@ -99,10 +95,6 @@ require("lazy").setup({
 				end,
 			},
 			{ "nvim-telescope/telescope-ui-select.nvim" },
-			{
-				"nvim-telescope/telescope-file-browser.nvim",
-				dependencies = { "nvim-telescope/telescope.nvim", "nvim-lua/plenary.nvim" }
-			},
 			{ "nvim-tree/nvim-web-devicons", enabled = vim.g.have_nerd_font },
 		},
 		config = function()
@@ -111,13 +103,9 @@ require("lazy").setup({
 					["ui-select"] = {
 						require("telescope.themes").get_dropdown(),
 					},
-					file_browser = {
-						hijack_netrw = true,
-					},
 				},
 			})
 
-			pcall(require("telescope").load_extension, "file_browser")
 			pcall(require("telescope").load_extension, "fzf")
 			pcall(require("telescope").load_extension, "ui-select")
 
@@ -132,12 +120,6 @@ require("lazy").setup({
 				builtin.oldfiles,
 				{ desc = '[S]earch Recent Files ("." for repeat)' }
 			)
-			vim.keymap.set("n", kbds.telescope_config_dir, function()
-				builtin.find_files({ cwd = vim.fn.stdpath("config") })
-			end, { desc = "[S]earch [N]eovim files" })
-
-			vim.keymap.set("n", kbds.filetree_open, ":Telescope file_browser<CR>")
-			vim.keymap.set("n", kbds.filetree_open_current_buffer, ":Telescope file_browser path=%:p:h select_buffer=true<CR>")
 		end,
 	},
 	{
@@ -406,6 +388,12 @@ require("lazy").setup({
 	},
 })
 
+vim.keymap.set("n", kbds.filetree_open, ":Ex .<CR>")
+vim.keymap.set("n", kbds.filetree_open_current_buffer, ":Ex<CR>")
+
+vim.keymap.set("n", kbds.buffer_next, ":bn<CR>")
+vim.keymap.set("n", kbds.buffer_prev, ":bp<CR>")
+
 -- change macros: "Q" to start or end writing macro to register a, "q" to use macro from register a
 local recording_group = vim.api.nvim_create_augroup("RecordingToggleQ", {})
 vim.api.nvim_create_autocmd({"VimEnter", "RecordingLeave"}, {
@@ -440,3 +428,6 @@ vim.keymap.set("n", "<C-d>", "<C-d>zz", {})
 vim.keymap.set("n", "<C-u>", "<C-u>zz", {})
 vim.keymap.set("n", "n", "nzzzv", {})
 vim.keymap.set("n", "N", "Nzzzv", {})
+
+-- Clear search on escape
+vim.keymap.set("n", "<Esc>", "<cmd>nohlsearch<CR>")
