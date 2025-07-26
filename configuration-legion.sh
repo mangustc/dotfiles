@@ -3,6 +3,7 @@
 # prepare
 DOTFILES_HOST="legion"
 DOTFILES_DIR="$(realpath "$(dirname "$0")")"
+DOTFILES_USER="ivan"
 cd "$DOTFILES_DIR"
 source ./base.sh
 
@@ -121,6 +122,8 @@ config legion-go-sound
 config lsfg
 config konsole
 config pipewire
+
+cmd sudo usermod -G wheel,audio,video,input,tty,kvm,network "$DOTFILES_USER"
 
 # end
 print_orphan_packages
