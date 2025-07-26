@@ -17,7 +17,7 @@ newscript archconf <<EOF
 #!/usr/bin/env sh
 
 cd $dotfiles
-exec nvim ./configuration-$host.sh
+exec \$EDITOR ./configuration-$host.sh
 EOF
 
 newscript archupd <<EOF
@@ -48,4 +48,20 @@ newscript archgit <<EOF
 
 cd $dotfiles
 lazygit
+EOF
+
+newscript archclean <<EOF
+#!/usr/bin/env sh
+
+orphans="\$(paru -Qdtq | xargs)"
+if [ ! "\$orphans" = "" ]; then
+	paru -Rs --noconfirm \$orphans
+fi
+yes | paru -Scc
+EOF
+
+newscript archedit <<EOF
+#!/usr/bin/env sh
+
+\$EDITOR "\$(whereis \$1 | cut -d " " -f 2)"
 EOF
