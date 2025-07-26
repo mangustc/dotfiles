@@ -11,6 +11,7 @@ export GOPATH="$XDG_DATA_HOME/go";
 export NPM_CONFIG_INIT_MODULE="$XDG_CONFIG_HOME/npm/config/npm-init.js";
 export NPM_CONFIG_CACHE="$XDG_CACHE_HOME/npm";
 export NPM_CONFIG_TMP="$XDG_RUNTIME_DIR/npm";
+export EDITOR="nvim"
 
 [[ $- != *i* ]] && return
 
