@@ -70,6 +70,14 @@ local kbds = {
 	cmp_prev_item = "<C-k>",
 	cmp_confirm = "<C-y>",
 	cmp_complete = "<C-Space>",
+	harpoon_add = "<C-a>",
+	harpoon_menu = "<C-e>",
+	harpoon_1 = "<C-h>",
+	harpoon_2 = "<C-t>",
+	harpoon_3 = "<C-n>",
+	harpoon_4 = "<C-s>",
+	harpoon_prev = "<C-S-P>",
+	harpoon_next = "<C-S-N>",
 }
 
 -- other keybindings at the end of the file
@@ -358,6 +366,26 @@ require("lazy").setup({
 	    opts = {},
 	  },
 	},
+	{
+    "ThePrimeagen/harpoon",
+    branch = "harpoon2",
+    dependencies = { "nvim-lua/plenary.nvim" },
+		config = function()
+			local harpoon = require("harpoon")
+			harpoon:setup()
+
+			vim.keymap.set("n", kbds.harpoon_add, function() harpoon:list():add() end)
+			vim.keymap.set("n", kbds.harpoon_menu, function() harpoon.ui:toggle_quick_menu(harpoon:list()) end)
+
+			vim.keymap.set("n", kbds.harpoon_1, function() harpoon:list():select(1) end)
+			vim.keymap.set("n", kbds.harpoon_2, function() harpoon:list():select(2) end)
+			vim.keymap.set("n", kbds.harpoon_3, function() harpoon:list():select(3) end)
+			vim.keymap.set("n", kbds.harpoon_4, function() harpoon:list():select(4) end)
+
+			vim.keymap.set("n", kbds.harpoon_prev, function() harpoon:list():prev() end)
+			vim.keymap.set("n", kbds.harpoon_next, function() harpoon:list():next() end)
+		end,
+}
 }, {
 	ui = {
 		icons = vim.g.have_nerd_font and {} or {
@@ -378,6 +406,7 @@ require("lazy").setup({
 	},
 })
 
+-- change macros: "Q" to start or end writing macro to register a, "q" to use macro from register a
 local recording_group = vim.api.nvim_create_augroup("RecordingToggleQ", {})
 vim.api.nvim_create_autocmd({"VimEnter", "RecordingLeave"}, {
   group = recording_group,
@@ -411,6 +440,3 @@ vim.keymap.set("n", "<C-d>", "<C-d>zz", {})
 vim.keymap.set("n", "<C-u>", "<C-u>zz", {})
 vim.keymap.set("n", "n", "nzzzv", {})
 vim.keymap.set("n", "N", "Nzzzv", {})
-
-vim.keymap.set("n", "<leader>k", "<cmd>lnext<CR>zz", { silent = true })
-vim.keymap.set("n", "<leader>j", "<cmd>lprev<CR>zz", { silent = true })
