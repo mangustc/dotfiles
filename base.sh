@@ -76,8 +76,8 @@ export -f trim_pkgs_file
 print_orphan_packages() {
 	echo "Current orphan packages (not in modules, not in packages-$DOTFILES_HOST):"
 	grep -v -F -x -f <(echo -e "$(cat ./packages-$DOTFILES_HOST)\n$MODULE_PACKAGES") <<< "$(paru -Qe | cut -d ' ' -f 1)"
-	echo "Current overlapping packages (between packages-$DOTFILES_HOST and modules):"
-	comm -12 <(echo "$(trim_pkgs_str "$MODULE_PACKAGES")") <(trim_pkgs_file ./packages-$DOTFILES_HOST)
+	# echo "Current overlapping packages (between packages-$DOTFILES_HOST and modules):"
+	# comm -12 <(echo "$(trim_pkgs_str "$MODULE_PACKAGES")") <(trim_pkgs_file ./packages-$DOTFILES_HOST)
 }
 export -f print_orphan_packages
 
