@@ -4,5 +4,8 @@ DefaultProfile=dotfiles.profile
 [General]
 ConfigVersion=1
 
+[Shortcut Schemes]
+Current Scheme=dotfiles
+
 [UiSettings]
 ColorScheme=
