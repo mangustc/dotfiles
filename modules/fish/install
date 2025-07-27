@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 
-cmd sudo chsh -s /bin/bash $USER
+cmd sudo chsh -s /bin/bash "$(whoami)"
 cmd sudo chsh -s /bin/bash
 
 cmd sudo rm -rf /etc/fish
