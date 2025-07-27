@@ -1,3 +1,0 @@
-#!/usr/bin/env sh
-
-exec /usr/bin/nvim -u /usr/local/share/nvim/init.lua "$@"
