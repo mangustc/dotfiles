@@ -1,7 +1,8 @@
 #!/usr/bin/env sh
 
 export DOTFILES_SAVE_DIR="$DOTFILES_DIR/save/$(date +%Y-%m-%d_%H-%M-%S)"
-export DOTFILES_MODULE_PACKAGES=""
+export DOTFILES_MODULE_NAME="$DOTFILES_HOST"
+DOTFILES_MODULE_PACKAGES=""
 mkdir -p "$DOTFILES_SAVE_DIR"
 
 # echo as error
@@ -96,7 +97,7 @@ config() {
 	cd "$DOTFILES_DIR/modules/$DOTFILES_MODULE_NAME"
 	pkgs="$(trim_pkgs_file ./packages)"
 	install_pkgs "$pkgs"
-	export DOTFILES_MODULE_PACKAGES="$(trim_pkgs_str "$DOTFILES_MODULE_PACKAGES$(echo -e "\n$pkgs")")"
+	DOTFILES_MODULE_PACKAGES="$(trim_pkgs_str "$DOTFILES_MODULE_PACKAGES$(echo -e "\n$pkgs")")"
 	chmod 755 ./install
 	./install "${@:2}"
 	if [ $? -eq 1 ]; then
