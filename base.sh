@@ -1,9 +1,8 @@
 #!/usr/bin/env sh
 
-export save_dir="$DOTFILES_DIR/save/$(date +%Y-%m-%d_%H-%M-%S)"
-export MODULE_PACKAGES=""
-mkdir -p "$save_dir"
-# chmod -R +x $DOTFILES_DIR
+export DOTFILES_SAVE_DIR="$DOTFILES_DIR/save/$(date +%Y-%m-%d_%H-%M-%S)"
+export DOTFILES_MODULE_PACKAGES=""
+mkdir -p "$DOTFILES_SAVE_DIR"
 
 # echo as error
 errcho() {
@@ -13,9 +12,8 @@ export -f errcho
 
 # prints command to log
 cmd() {
-	"$@"
-
-	echo "cmd ($module_name): $@" >> "$save_dir/log"
+	echo "cmd ($DOTFILES_MODULE_NAME): $@" | tee -a "$DOTFILES_SAVE_DIR/log"
+	"$@" | tee -a "$DOTFILES_SAVE_DIR/log"
 }
 export -f cmd
 
@@ -41,7 +39,7 @@ export -f newscript
 # create file with content and return temporary file path
 writetext() {
 	writetext_content="$1"
-	writetext_tmp="$(mktemp "/tmp/writetext.XXXXXXX")"
+	writetext_tmp="$(mktemp "/tmp/writetext.XXXXXXXXXXXXX")"
 
 	if [ "$1" = "" ]; then
 		cat > "$writetext_tmp"
@@ -75,9 +73,9 @@ export -f trim_pkgs_file
 # print orphan and overlapping packages. should be used at the end of configuration-HOST.sh
 print_orphan_packages() {
 	echo "Current orphan packages (not in modules, not in packages-$DOTFILES_HOST):"
-	grep -v -F -x -f <(echo -e "$(cat ./packages-$DOTFILES_HOST)\n$MODULE_PACKAGES") <<< "$(paru -Qe | cut -d ' ' -f 1)"
+	grep -v -F -x -f <(echo -e "$(cat ./packages-$DOTFILES_HOST)\n$DOTFILES_MODULE_PACKAGES") <<< "$(paru -Qe | cut -d ' ' -f 1)"
 	# echo "Current overlapping packages (between packages-$DOTFILES_HOST and modules):"
-	# comm -12 <(echo "$(trim_pkgs_str "$MODULE_PACKAGES")") <(trim_pkgs_file ./packages-$DOTFILES_HOST)
+	# comm -12 <(echo "$(trim_pkgs_str "$DOTFILES_MODULE_PACKAGES")") <(trim_pkgs_file ./packages-$DOTFILES_HOST)
 }
 export -f print_orphan_packages
 
@@ -93,18 +91,18 @@ export -f install_pkgs
 
 # by module name, install a module and its packages. You can also pass arguments if possible by a module
 config() {
-	export module_name="$1"
-	echo -e "\ninstalling module ${module_name}:"
-	cd "$DOTFILES_DIR/modules/$module_name"
+	export DOTFILES_MODULE_NAME="$1"
+	echo -e "\ninstalling module ${DOTFILES_MODULE_NAME}:"
+	cd "$DOTFILES_DIR/modules/$DOTFILES_MODULE_NAME"
 	pkgs="$(trim_pkgs_file ./packages)"
 	install_pkgs "$pkgs"
-	export MODULE_PACKAGES="$(trim_pkgs_str "$MODULE_PACKAGES$(echo -e "\n$pkgs")")"
+	export DOTFILES_MODULE_PACKAGES="$(trim_pkgs_str "$DOTFILES_MODULE_PACKAGES$(echo -e "\n$pkgs")")"
 	chmod 755 ./install
 	./install "${@:2}"
 	if [ $? -eq 1 ]; then
-		echo -e "FAILED TO INSTALL MODULE ${module_name}"
+		echo -e "FAILED TO INSTALL MODULE ${DOTFILES_MODULE_NAME}"
 	else
-		echo -e "successfully installed module ${module_name}"
+		echo -e "successfully installed module ${DOTFILES_MODULE_NAME}"
 	fi
 	cd "$DOTFILES_DIR"
 }
