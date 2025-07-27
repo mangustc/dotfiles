@@ -18,25 +18,6 @@ cmd() {
 }
 export -f cmd
 
-# create new script inside /usr/local/bin with name and content
-newscript() {
-	newscript_name="$1"
-
-	if [ "$2" = "" ]; then
-		newscript_content="$(cat)"
-	elif [ ! "$3" = "" ]; then
-		errcho "writetext accepts only two arguments: name, content or a heredoc"
-		return 1
-	else
-		newscript_content="$2"
-	fi
-
-	newscript_tmp="/tmp/$newscript_name"
-	echo "$newscript_content" > "$newscript_tmp"
-	cmd sudo install -D -m 755 "$newscript_tmp" "/usr/local/bin/$newscript_name"
-}
-export -f newscript
-
 # create file with content and return temporary file path
 writetext() {
 	writetext_content="$1"
@@ -54,6 +35,24 @@ writetext() {
 	echo "$writetext_tmp"
 }
 export -f writetext
+
+# create new script inside /usr/local/bin with name and content
+newscript() {
+	newscript_name="$1"
+
+	if [ "$2" = "" ]; then
+		newscript_content="$(cat)"
+	elif [ ! "$3" = "" ]; then
+		errcho "newscript accepts only two arguments: name, (content or a heredoc)"
+		return 1
+	else
+		newscript_content="$2"
+	fi
+
+	newscript_tmp="$(writetext "$newscript_content")"
+	cmd sudo install -D -m 755 "$newscript_tmp" "/usr/local/bin/$newscript_name"
+}
+export -f newscript
 
 # remove empty lines from string
 rm_empty() {
