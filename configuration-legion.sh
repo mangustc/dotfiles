@@ -3,7 +3,6 @@
 # prepare
 DOTFILES_HOST="legion"
 DOTFILES_DIR="$(realpath "$(dirname "$0")")"
-DOTFILES_USER="ivan"
 cd "$DOTFILES_DIR"
 source ./base.sh
 
@@ -123,7 +122,7 @@ config lsfg
 config konsole
 config pipewire
 
-cmd sudo usermod -G wheel,audio,video,input,tty,kvm,network "$DOTFILES_USER"
+cmd sudo usermod -G wheel,audio,video,input,tty,kvm,network "$(whoami)"
 
 # end
 print_orphan_packages
