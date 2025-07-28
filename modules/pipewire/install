@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+#!/usr/bin/env -S sh -e
 
 cmd install -Dm644 ./00-crackling-fix.conf ~/.config/pipewire/pipewire.conf.d/00-crackling-fix.conf
 cmd install -Dm644 ./00-crackling-fix-pulse.conf ~/.config/pipewire/pipewire-pulse.conf.d/00-crackling-fix.conf

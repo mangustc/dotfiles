@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+#!/usr/bin/env -S sh -e
 
 if [ "$1" = "nopasswd" ]; then
 	pam="$(writetext <<EOF

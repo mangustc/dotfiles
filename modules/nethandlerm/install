@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+#!/usr/bin/env -S sh -e
 
 cmd sudo install -D -m 644 ./nethandler.service /etc/systemd/system/nethandler.service
 cmd sudo rm -rf /usr/local/share/nethandler

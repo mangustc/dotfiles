@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+#!/usr/bin/env -S sh -e
 
 cmd rm -f ~/.gitconfig
 cmd install -D -m 644 ./config ~/.config/git/config

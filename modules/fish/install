@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+#!/usr/bin/env -S sh -e
 
 cmd sudo chsh -s /bin/bash "$(whoami)"
 cmd sudo chsh -s /bin/bash

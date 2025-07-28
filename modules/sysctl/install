@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+#!/usr/bin/env -S sh -e
 
 file="$(writetext "$1")"
 cmd sudo install "$file" /etc/sysctl.d/99-dotfiles.conf

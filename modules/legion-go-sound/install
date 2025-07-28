@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+#!/usr/bin/env -S sh -e
 
 cmd sudo install -D -m 644 ./sound-fix.service /etc/systemd/user/sound-fix.service
 cmd systemctl --user enable --now sound-fix.service
