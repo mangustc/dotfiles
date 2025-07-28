@@ -48,7 +48,6 @@ EOF
 )" /etc/mkinitcpio.d/linux-bazzite.preset
 
 cmd sudo ln -sf /usr/share/zoneinfo/Asia/Tomsk /etc/localtime
-cmd sudo hwclock --systohc
 
 cmd sudo install -Dm644 "$(writetext <<EOF
 en_CA.UTF-8 UTF-8
