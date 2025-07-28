@@ -1,5 +1,10 @@
 #!/usr/bin/env sh
 
+if [ "$(whoami)" = "root" ]; then
+	echo "DO NOT RUN THIS SCRIPT AS ROOT!!!!"
+	exit 1
+fi
+
 export DOTFILES_SAVE_DIR="$DOTFILES_DIR/save/$(date +%Y-%m-%d_%H-%M-%S)"
 export DOTFILES_MODULE_NAME="$DOTFILES_HOST"
 DOTFILES_MODULE_PACKAGES=""
