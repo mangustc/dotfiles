@@ -7,14 +7,19 @@ mkdir -p "$DOTFILES_SAVE_DIR"
 
 # echo as error
 errcho() {
-	>&2 echo $@;
+	>&2 echo $@
 }
 export -f errcho
 
 # prints command to log
 cmd() {
 	echo "cmd ($DOTFILES_MODULE_NAME): $@" | tee -a "$DOTFILES_SAVE_DIR/log"
-	"$@" | tee -a "$DOTFILES_SAVE_DIR/log"
+	"$@" 2>&1 | tee -a "$DOTFILES_SAVE_DIR/log"
+
+	cmd_output="$("$@")"
+	cmd_status="$?"
+	echo "$cmd_output" | sed '${/^$/d;}' | tee -a "$DOTFILES_SAVE_DIR/log"
+	return $cmd_status
 }
 export -f cmd
 
@@ -92,7 +97,7 @@ export -f install_pkgs
 # by module name, install a module and its packages. You can also pass arguments if possible by a module
 config() {
 	export DOTFILES_MODULE_NAME="$1"
-	echo -e "\ninstalling module ${DOTFILES_MODULE_NAME}:"
+	echo -e "\ninstalling module $DOTFILES_MODULE_NAME:"
 	cd "$DOTFILES_DIR/modules/$DOTFILES_MODULE_NAME"
 	pkgs="$(trim_pkgs_file ./packages)"
 	install_pkgs "$pkgs"
@@ -100,9 +105,12 @@ config() {
 	chmod 755 ./install
 	./install "${@:2}"
 	if [ $? -eq 1 ]; then
-		echo -e "FAILED TO INSTALL MODULE ${DOTFILES_MODULE_NAME}"
+		echo -e "FAILED TO INSTALL MODULE $DOTFILES_MODULE_NAME"
 	else
-		echo -e "successfully installed module ${DOTFILES_MODULE_NAME}"
+		echo -e "successfully installed module $DOTFILES_MODULE_NAME"
 	fi
 	cd "$DOTFILES_DIR"
 }
+
+trap "echo 'Interrupt signal received. Exiting...' | tee -a '$DOTFILES_SAVE_DIR/log'; exit" SIGINT
+
