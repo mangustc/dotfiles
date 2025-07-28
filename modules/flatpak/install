@@ -2,8 +2,8 @@
 
 desired_flatpaks="$(rm_empty "$1" | xargs)"
 
-newscript "flatpak-update" << EOF
-#!/usr/bin/env -S sh -e
+newscript flatpak-update << EOF
+#!/usr/bin/env sh
 
 echo "Adding flathub repo if not exists"
 flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo

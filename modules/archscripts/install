@@ -14,14 +14,14 @@ if [ "$host" = "" ]; then
 fi
 
 newscript archconf <<EOF
-#!/usr/bin/env -S sh -e
+#!/usr/bin/env sh
 
 cd $dotfiles
 exec \$EDITOR ./configuration-$host.sh
 EOF
 
 newscript archupd <<EOF
-#!/usr/bin/env -S sh -e
+#!/usr/bin/env sh
 
 if [ "\$1" = 'upgrade' ]; then
 	paru -Syu
@@ -39,20 +39,20 @@ fi
 EOF
 
 newscript archexport <<EOF
-#!/usr/bin/env -S sh -e
+#!/usr/bin/env sh
 
 echo "\$(paru -Qe | cut -d ' ' -f 1)" > $dotfiles/packages-$host
 EOF
 
 newscript archgit <<EOF
-#!/usr/bin/env -S sh -e
+#!/usr/bin/env sh
 
 cd $dotfiles
 lazygit
 EOF
 
 newscript archclean <<EOF
-#!/usr/bin/env -S sh -e
+#!/usr/bin/env sh
 
 orphans="\$(paru -Qdtq | xargs)"
 if [ ! "\$orphans" = "" ]; then
@@ -62,7 +62,7 @@ yes | paru -Scc
 EOF
 
 newscript archedit <<EOF
-#!/usr/bin/env -S sh -e
+#!/usr/bin/env sh
 
 \$EDITOR "\$(whereis \$1 | cut -d " " -f 2)"
 EOF
