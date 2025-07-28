@@ -75,6 +75,7 @@ ACTION=="add", SUBSYSTEM=="hid", ATTRS{idVendor}=="17ef", ATTRS{idProduct}=="61e
 EOF
 )" /etc/udev/rules.d/99-disable-legion-mouse.rules
 
+cmd sudo usermod -G wheel,audio,video,input,tty,kvm,network "$(whoami)"
 
 config networkmanager
 config neovim
@@ -120,8 +121,6 @@ config legion-go-sound
 config lsfg
 config konsole
 config pipewire
-
-cmd sudo usermod -G wheel,audio,video,input,tty,kvm,network "$(whoami)"
 
 # end
 print_orphan_packages
