@@ -48,6 +48,11 @@ EOF
 )" /etc/mkinitcpio.d/linux-bazzite.preset
 
 cmd sudo ln -sf /usr/share/zoneinfo/Asia/Tomsk /etc/localtime
+cmd sudo install -Dm644 "$(writetext <<EOF
+[Login]
+HandlePowerKey=sleep
+EOF
+)" /etc/systemd/logind.conf
 
 cmd sudo install -Dm644 "$(writetext <<EOF
 en_CA.UTF-8 UTF-8
