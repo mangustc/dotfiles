@@ -2,7 +2,7 @@
 
 cmd sudo install -D -m 644 ./sound-fix.service /etc/systemd/user/sound-fix.service
 cmd systemctl --user enable --now sound-fix.service
-cmd install -D -m 644 ./99-mic-denoised.conf ~/.config/pipewire/pipewire.conf.d/99-mic-denoised.conf
+cmd install -D -m 644 ./mic-denoised.conf ~/.config/pipewire/pipewire.conf.d/mic-denoised.conf
 
 cmd install -Dm 644 ./multiwayCor48.wav ~/.config/pipewire/multiwayCor48.wav
 cmd install -Dm 644 "$(writetext <<EOF
