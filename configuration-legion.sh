@@ -12,7 +12,7 @@ install_pkgs "$(trim_pkgs_file ./packages-legion)"
 # systemd-boot
 cmd sudo install -Dm644 "$(writetext <<EOF
 timeout 0
-default bazzite.conf
+default arch.conf
 console-mode keep
 EOF
 )" /boot/loader/loader.conf
@@ -20,14 +20,14 @@ cmd sudo install -Dm644 "$(writetext <<EOF
 title Arch Linux
 linux /vmlinuz-linux
 initrd /initramfs-linux.img
-options root=LABEL=arch-root rw
+options root=LABEL=arch-root rw nowatchdog fbcon=vc:2-6 amdgpu.sg_display=0 drm.edid_firmware=DP-3:edid/v226hql.bin zswap.enabled=1 zswap.compressor=zstd
 EOF
 )" /boot/loader/entries/arch.conf
 cmd sudo install -Dm644 "$(writetext <<EOF
 title Arch Linux - Bazzite kernel
 linux /vmlinuz-linux-bazzite
 initrd /initramfs-linux-bazzite.img
-options root=LABEL=arch-root rw nowatchdog fbcon=vc:2-6 amdgpu.sg_display=0 drm.edid_firmware=DP-3:edid/v226hql.bin
+options root=LABEL=arch-root rw nowatchdog fbcon=vc:2-6 amdgpu.sg_display=0 drm.edid_firmware=DP-3:edid/v226hql.bin zswap.enabled=1 zswap.compressor=zstd
 EOF
 )" /boot/loader/entries/bazzite.conf
 
@@ -82,6 +82,7 @@ EOF
 
 cmd sudo usermod -G wheel,audio,video,input,tty,kvm,network "$(whoami)"
 
+config acpi_call
 config networkmanager
 config neovim
 config fish
@@ -110,7 +111,7 @@ pcscpkr
 iTCO_wdt
 sp5100_tco
 "
-config zram 8196
+config swap 8G
 config git
 config steam-session
 config hhd
