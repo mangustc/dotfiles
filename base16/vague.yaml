@@ -1,0 +1,19 @@
+scheme: "Vague kitty"
+author: "vague2k, ported by skewb1k"
+base00: "141415" # background / ----
+base01: "252530" # selection_background / ---
+base02: "606079" # inactive_tab_foreground / --
+base03: "7fa563" # comment or dim color, using green color2 (approximate) / -
+base04: "bb9dbd" # magenta / +
+base05: "cdcdcd" # foreground / ++
+base06: "d7d7d7" # white bright / +++
+base07: "cdcdcd" # cursor and active_tab_foreground, light fg / ++++
+base08: "d8647e" # red / red
+base09: "f3be7c" # yellow (using yellow color3) / orange
+base0A: "f5cb96" # bright yellow / yellow
+base0B: "99b782" # bright green / green
+base0C: "bebeda" # bright cyan / aqua/cyan
+base0D: "8ba9c1" # bright blue / blue
+base0E: "c9b1ca" # bright magenta (purple) / purple
+base0F: "606079" # brown - no direct brown, reused inactive color8 / brown
+
