@@ -82,15 +82,8 @@ EOF
 
 cmd sudo usermod -G wheel,audio,video,input,tty,kvm,network "$(whoami)"
 
+config swap 8G
 config acpi_call
-config networkmanager
-config neovim
-config fish
-config dualsense
-config nethandlerm
-config mangohud
-config ssh-agent
-config archscripts $DOTFILES_DIR $DOTFILES_HOST
 config sysctl "
 net.ipv4.tcp_mtu_probing = true
 net.ipv4.tcp_fin_timeout = 5
@@ -111,7 +104,16 @@ pcscpkr
 iTCO_wdt
 sp5100_tco
 "
-config swap 8G
+config brightness
+config pipewire
+config networkmanager
+config nethandlerm
+config ssh-agent
+config neovim
+config fish
+config dualsense
+config mangohud
+config archscripts $DOTFILES_DIR $DOTFILES_HOST
 config git
 config steam-session
 config hhd
@@ -122,11 +124,9 @@ net.rpcs3.RPCS3
 "
 config sddm nopasswd
 config scripts
-config brightness
 config legion-go-sound
 config lsfg
 config konsole
-config pipewire
 
 # end
 print_orphan_packages
