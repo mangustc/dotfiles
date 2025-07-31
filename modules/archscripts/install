@@ -23,8 +23,13 @@ EOF
 newscript archupd <<EOF
 #!/usr/bin/env sh
 
-if [ "\$1" = 'upgrade' ]; then
-	paru -Syu
+if ! [ "\$1" = "" ]; then
+	if [ "\$1" = 'upgrade' ]; then
+		paru -Syu
+	else
+		>&2 echo "option [\$1] does not exist. Available options: [upgrade]"
+		exit 1
+	fi
 fi
 
 cd $dotfiles
