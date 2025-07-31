@@ -2,8 +2,10 @@ base-devel
 git
 clang
 llvm
+rustup
 cmake
 ninja
-spirv-headers
 vulkan-headers
 vulkan-icd-loader
+gtk4
+libadwaita
