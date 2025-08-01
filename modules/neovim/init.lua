@@ -80,6 +80,7 @@ vim.pack.add({
 	{ src = "https://github.com/ThePrimeagen/harpoon", version = "harpoon2", },
 	{ src = "https://github.com/nvim-telescope/telescope-fzf-native.nvim", },
 	{ src = "https://github.com/nvim-telescope/telescope.nvim", },
+	{ src = "https://github.com/Saghen/blink.cmp", version = "v1.6.0" },
 })
 
 vim.cmd("colorscheme vague")
@@ -136,7 +137,7 @@ vim.api.nvim_create_autocmd('LspAttach', {
 			-- Create a keymap for vim.lsp.buf.implementation ...
 		end
 		if client:supports_method('textDocument/completion') then
-			vim.lsp.completion.enable(true, client.id, args.buf, { autotrigger = true })
+			-- vim.lsp.completion.enable(true, client.id, args.buf, { autotrigger = true })
 		end
 	end,
 })
@@ -146,6 +147,7 @@ vim.lsp.enable({
 	"lua_ls",
 	"bashls",
 })
+require("blink.cmp").setup({})
 
 local harpoon = require("harpoon")
 harpoon:setup()
