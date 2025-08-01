@@ -14,6 +14,26 @@ pulse.properties = {
 }
 EOF
 )" ~/.config/pipewire/pipewire-pulse.conf.d/crackling-fix.conf
+
+# https://github.com/CachyOS/CachyOS-Settings/blob/8ac073c3a528f458d58d803775c399d7b845b2c6/usr/lib/modprobe.d/20-audio-pm.conf
+cmd sudo install -Dm644 "$(writetext <<EOF
+options snd_hda_intel power_save=0
+EOF
+)" /etc/modprobe.d/audio-pm.conf
+# https://github.com/CachyOS/CachyOS-Settings/blob/8ac073c3a528f458d58d803775c399d7b845b2c6/usr/lib/udev/rules.d/20-audio-pm.rules
+cmd sudo install -Dm644 "$(writetext << 'EOF'
+SUBSYSTEM=="power_supply", ENV{POWER_SUPPLY_ONLINE}=="0", TEST=="/sys/module/snd_hda_intel", \
+    RUN+="/bin/sh -c 'echo $$(cat /run/udev/snd-hda-intel-powersave 2>/dev/null || \
+        echo 10) > /sys/module/snd_hda_intel/parameters/power_save'"
+
+SUBSYSTEM=="power_supply", ENV{POWER_SUPPLY_ONLINE}=="1", TEST=="/sys/module/snd_hda_intel", \
+    RUN+="/bin/sh -c '[[ $$(cat /sys/module/snd_hda_intel/parameters/power_save) != 0 ]] && \
+        echo $$(cat /sys/module/snd_hda_intel/parameters/power_save) > /run/udev/snd-hda-intel-powersave; \
+        echo 0 > /sys/module/snd_hda_intel/parameters/power_save'"
+EOF
+)" /etc/udev/rules.d/20-audio-pm.rules
+
+
 cmd install -Dm644 "$(writetext <<EOF
 monitor.alsa.rules = [
   {
