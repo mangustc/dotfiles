@@ -2,15 +2,15 @@
 
 cmd install -Dm644 "$(writetext <<EOF
 context.properties = {
-	default.clock.min-quantum = 2048
+	default.clock.min-quantum = 4096
 }
 EOF
 )" ~/.config/pipewire/pipewire.conf.d/crackling-fix.conf
 cmd install -Dm644 "$(writetext <<EOF
 pulse.properties = {
-	pulse.min.req = 2048/48000
-	pulse.min.frag = 2048/48000
-	pulse.min.quantum = 2048/48000
+	pulse.min.req = 4096/48000
+	pulse.min.frag = 4096/48000
+	pulse.min.quantum = 4096/48000
 }
 EOF
 )" ~/.config/pipewire/pipewire-pulse.conf.d/crackling-fix.conf
