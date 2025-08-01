@@ -1,8 +1,8 @@
 #!/usr/bin/env sh
 
 # prepare
-DOTFILES_HOST="legion"
-DOTFILES_DIR="$(realpath "$(dirname "$0")")"
+export DOTFILES_HOST="legion"
+export DOTFILES_DIR="$(realpath "$(dirname "$0")")"
 cd "$DOTFILES_DIR"
 source ./base.sh
 

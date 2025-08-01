@@ -7,7 +7,7 @@ fi
 
 export DOTFILES_SAVE_DIR="$DOTFILES_DIR/save/$(date +%Y-%m-%d_%H-%M-%S)"
 export DOTFILES_MODULE_NAME="$DOTFILES_HOST"
-DOTFILES_MODULE_PACKAGES=""
+export DOTFILES_MODULE_PACKAGES=""
 mkdir -p "$DOTFILES_SAVE_DIR"
 
 # echo as error
