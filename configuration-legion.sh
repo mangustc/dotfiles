@@ -75,8 +75,9 @@ EOF
 )" /etc/fstab
 
 # disable legion go mouse since i have an adhd scrollwheel
-cmd sudo install -Dm644 "$(writetext <<EOF
-ACTION=="add", SUBSYSTEM=="hid", ATTRS{idVendor}=="17ef", ATTRS{idProduct}=="61eb", RUN+="/bin/sh -c 'echo 1 > \"\$(dirname \"\$(head /sys/bus/hid/drivers/hid-multitouch/*:17EF:61EB.*/input/input*/name | grep -B 1 Mouse | head -n 1 | cut -d \" \" -f 2)\")/inhibited\"'"
+cmd sudo install -Dm644 "$(writetext <<'EOF'
+ACTION=="add", SUBSYSTEM=="hid", ATTRS{idVendor}=="17ef", ATTRS{idProduct}=="61eb", \
+	RUN+="/bin/sh -c 'echo 1 > \"$(dirname \"$(head /sys/bus/hid/drivers/hid-multitouch/*:17EF:61EB.*/input/input*/name | grep -B 1 Mouse | head -n 1 | cut -d \" \" -f 2)\")/inhibited\"'"
 EOF
 )" /etc/udev/rules.d/99-disable-legion-mouse.rules
 
