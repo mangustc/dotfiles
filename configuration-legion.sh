@@ -109,6 +109,7 @@ config pipewire
 config networkmanager
 config nethandlerm
 config ssh-agent
+config plasma
 config neovim
 config fish
 config dualsense

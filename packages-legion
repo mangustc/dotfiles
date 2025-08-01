@@ -9,9 +9,7 @@ lib32-vulkan-radeon
 linux
 linux-bazzite-bin
 linux-firmware
-plasma-meta
 qt5-declarative
-wl-clipboard
 paru-bin
 7zip
 unrar
@@ -20,23 +18,16 @@ ntfs-3g
 
 # progs
 btop
-dolphin
 eza
 lazygit
 man-db
 man-pages
 tealdeer
-kate
 mpv
-gwenview
-okular
 obsidian
 zen-browser-bin
 discord
 qbittorrent
-ark
-maliit-keyboard
-kwalletmanager
 gparted
 vial-appimage
 
