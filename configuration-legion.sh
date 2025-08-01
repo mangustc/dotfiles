@@ -5,6 +5,7 @@ export DOTFILES_HOST="legion"
 export DOTFILES_DIR="$(realpath "$(dirname "$0")")"
 cd "$DOTFILES_DIR"
 source ./base.sh
+config base
 
 # config
 install_pkgs "$(trim_pkgs_file ./packages-legion)"
@@ -47,27 +48,12 @@ default_image="/boot/initramfs-linux-bazzite.img"
 EOF
 )" /etc/mkinitcpio.d/linux-bazzite.preset
 
-cmd sudo ln -sf /usr/share/zoneinfo/Asia/Tomsk /etc/localtime
 cmd sudo install -Dm644 "$(writetext <<EOF
 [Login]
 HandlePowerKey=sleep
 EOF
 )" /etc/systemd/logind.conf
 
-cmd sudo install -Dm644 "$(writetext <<EOF
-en_CA.UTF-8 UTF-8
-en_CA ISO-8859-1
-en_US.UTF-8 UTF-8
-en_US ISO-8859-1
-ru_RU.KOI8-R KOI8-R
-ru_RU.UTF-8 UTF-8
-ru_RU ISO-8859-5
-EOF
-)" /etc/locale.gen
-
-cmd sudo install -Dm644 "$(writetext "LANG=en_US.UTF-8")" /etc/locale.conf
-cmd sudo install -Dm644 "$(writetext "KEYMAP=dvorak")" /etc/vconsole.conf
-cmd sudo install -Dm644 "$(writetext "arch")" /etc/hostname
 cmd sudo install -Dm644 "$(writetext <<EOF
 LABEL=arch-root     	/         	ext4      	rw,relatime	0 1
 LABEL=arch-boot     	/boot     	vfat      	rw,relatime,fmask=0022,dmask=0022,codepage=437,iocharset=ascii,shortname=mixed,utf8,errors=remount-ro	0 2
@@ -80,8 +66,6 @@ ACTION=="add", SUBSYSTEM=="hid", ATTRS{idVendor}=="17ef", ATTRS{idProduct}=="61e
 	RUN+="/bin/sh -c 'echo 1 > \"$(dirname \"$(head /sys/bus/hid/drivers/hid-multitouch/*:17EF:61EB.*/input/input*/name | grep -B 1 Mouse | head -n 1 | cut -d \" \" -f 2)\")/inhibited\"'"
 EOF
 )" /etc/udev/rules.d/99-disable-legion-mouse.rules
-
-cmd sudo usermod -G wheel,audio,video,input,tty,kvm,network "$(whoami)"
 
 config swap 8G
 config acpi_call
