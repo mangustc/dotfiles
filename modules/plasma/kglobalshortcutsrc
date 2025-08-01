@@ -302,7 +302,7 @@ _launch=Meta+Alt+Return\tMeta+Alt+'
 _launch=Meta+Alt+Left\tMeta+Alt+,
 
 [services][net.local.chres-3.desktop]
-_launch=Meta+Alt+Right\TMeta+Alt+.
+_launch=Meta+Alt+Right\tMeta+Alt+.
 
 [services][net.local.terminal.desktop]
 _launch=Meta+T
