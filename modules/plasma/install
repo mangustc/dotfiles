@@ -39,7 +39,7 @@ StartupNotify=false
 Type=Application
 X-KDE-GlobalAccel-CommandShortcut=true
 EOF
-)" ~/.local/share/applications/net.local.chlayout-gaming.desktop
+)" ~/.local/share/applications/net.local.chlayout-default.desktop
 cmd install -Dm755 "$(writetext <<EOF
 [Desktop Entry]
 Exec=chlayout gaming
