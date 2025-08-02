@@ -1,8 +1,17 @@
 #!/usr/bin/env -S sh -e
 
+cmd sudo install -Dm644 "$(writetext <<'EOF'
+@audio - rtprio 98
+EOF
+)" /etc/security/limits.d/20-rt-audio.conf
+
 cmd install -Dm644 "$(writetext <<EOF
 context.properties = {
-	default.clock.min-quantum = 4096
+	default.clock.min-quantum = 512
+	default.clock.quantum = 4096
+	default.clock.max-quantum = 8192
+	default.clock.rate = 48000
+	default.clock.allowed-rates = [ 48000 ]
 }
 EOF
 )" ~/.config/pipewire/pipewire.conf.d/crackling-fix.conf
