@@ -1,5 +1,10 @@
 #!/usr/bin/env -S sh -e
 
+if ! [ -d ~/.local/share/kwin/scripts/krohnkite ]; then
+	cmd kpackagetool6 -t KWin/Script -i ./krohnkite.kwinscript
+fi
+cmd kpackagetool6 -t KWin/Script -u ./krohnkite.kwinscript
+
 newscript "chlayout" <<EOF
 #!/usr/bin/env sh
 
