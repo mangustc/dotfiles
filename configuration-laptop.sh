@@ -73,6 +73,7 @@ config pipewire
 config networkmanager
 config nethandlerm
 config ssh-agent
+config tlp
 config plasma
 config neovim
 config fish
