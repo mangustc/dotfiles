@@ -27,14 +27,16 @@ passwd ivan
 
 bootctl install
 
-pacman -S --needed base-devel
+pacman -S --needed base-devel git sudo
 cd /home/ivan
+sudo -u ivan git clone https://github.com/mangustc/dotfiles
 sudo -u ivan mkdir git
 cd ./git
 sudo -u ivan git clone https://aur.archlinux.org/paru-bin.git
 cd paru-bin
-makepkg -si
+sudo -u ivan makepkg -si
 
+cd /home/ivan/dotfiles
 echo "logging in as ivan"
-su ivan
 echo "now install configuration using ./configuration-HOST.sh"
+exec su ivan
