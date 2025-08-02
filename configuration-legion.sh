@@ -21,32 +21,16 @@ cmd sudo install -Dm644 "$(writetext <<EOF
 title Arch Linux
 linux /vmlinuz-linux
 initrd /initramfs-linux.img
-options root=LABEL=arch-root rw nowatchdog fbcon=vc:2-6 amdgpu.sg_display=0 drm.edid_firmware=DP-3:edid/v226hql.bin zswap.enabled=1 zswap.compressor=zstd
+options root=LABEL=arch-root rw nowatchdog fbcon=vc:2-6 amdgpu.sg_display=0 zswap.enabled=1 zswap.compressor=zstd drm.edid_firmware=DP-3:edid/v226hql.bin
 EOF
 )" /boot/loader/entries/arch.conf
-cmd sudo install -Dm644 "$(writetext <<EOF
-title Arch Linux - Bazzite kernel
-linux /vmlinuz-linux-bazzite
-initrd /initramfs-linux-bazzite.img
-options root=LABEL=arch-root rw nowatchdog fbcon=vc:2-6 amdgpu.sg_display=0 drm.edid_firmware=DP-3:edid/v226hql.bin zswap.enabled=1 zswap.compressor=zstd
-EOF
-)" /boot/loader/entries/bazzite.conf
 
-# mkinitcpio
-cmd sudo install -Dm644 ./v226hql/v226hql.bin /usr/lib/firmware/edid/v226hql.bin
-cmd sudo install -Dm644 ./v226hql/v226hql.conf /etc/mkinitcpio.conf.d/v226hql.conf
 cmd sudo install -Dm644 "$(writetext <<EOF
 ALL_kver="/boot/vmlinuz-linux"
 PRESETS=('default')
 default_image="/boot/initramfs-linux.img"
 EOF
 )" /etc/mkinitcpio.d/linux.preset
-cmd sudo install -Dm644 "$(writetext <<EOF
-ALL_kver="/boot/vmlinuz-linux-bazzite"
-PRESETS=('default')
-default_image="/boot/initramfs-linux-bazzite.img"
-EOF
-)" /etc/mkinitcpio.d/linux-bazzite.preset
 
 cmd sudo install -Dm644 "$(writetext <<EOF
 [Login]
@@ -94,6 +78,7 @@ config pipewire
 config networkmanager
 config nethandlerm
 config ssh-agent
+config v226hql
 config plasma
 config neovim
 config fish
