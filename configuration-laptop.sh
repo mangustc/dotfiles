@@ -76,7 +76,6 @@ config ssh-agent
 config plasma
 config neovim
 config fish
-config mangohud
 config archscripts "$DOTFILES_DIR" "$DOTFILES_HOST"
 config git
 config bluetooth
