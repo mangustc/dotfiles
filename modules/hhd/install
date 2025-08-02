@@ -1,3 +1,4 @@
 #!/usr/bin/env -S sh -e
 
+cmd sudo systemctl daemon-reload
 cmd sudo systemctl enable --now hhd@$(whoami)

@@ -55,4 +55,5 @@ EOF
 )"
 cmd sudo install -D -m 644 "$conf" /etc/sddm.conf.d/dotfiles.conf
 cmd sudo install -D -m 644 "$pam" /etc/pam.d/sddm
+cmd sudo systemctl daemon-reload
 cmd sudo systemctl enable sddm.service
