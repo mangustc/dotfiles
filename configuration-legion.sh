@@ -8,9 +8,11 @@ source ./base.sh
 config base
 
 # config
-install_pkgs "$(trim_pkgs_file ./packages-legion)"
+install_pkgs "$(trim_pkgs_file "./packages-$DOTFILES_HOST")"
 
 # systemd-boot
+config swap 8G
+config v226hql
 cmd sudo install -Dm644 "$(writetext <<EOF
 timeout 0
 default arch.conf
@@ -51,7 +53,6 @@ ACTION=="add", SUBSYSTEM=="hid", ATTRS{idVendor}=="17ef", ATTRS{idProduct}=="61e
 EOF
 )" /etc/udev/rules.d/99-disable-legion-mouse.rules
 
-config swap 8G
 config acpi_call
 config sysctl "
 net.ipv4.tcp_mtu_probing = true
@@ -79,7 +80,6 @@ config pipewire
 config networkmanager
 config nethandlerm
 config ssh-agent
-config v226hql
 config plasma
 config neovim
 config fish
