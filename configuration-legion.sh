@@ -73,6 +73,7 @@ pcscpkr
 iTCO_wdt
 sp5100_tco
 "
+config earlyoom
 config brightness
 config pipewire
 config networkmanager
