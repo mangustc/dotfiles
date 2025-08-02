@@ -30,5 +30,4 @@ What=/swapfile
 WantedBy=swap.target
 EOF
 )" /etc/systemd/system/swapfile.swap
-cmd sudo systemctl daemon-reload
 cmd sudo systemctl enable --now swapfile.swap
