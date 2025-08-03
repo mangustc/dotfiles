@@ -1,0 +1,69 @@
+#!/usr/bin/env -S sh -e
+
+cmd sudo install -D -m 644 ./sound-fix.service /etc/systemd/user/sound-fix.service
+cmd sudo systemctl daemon-reload
+cmd systemctl --user enable sound-fix.service
+cmd install -D -m 644 ./mic-denoised.conf ~/.config/pipewire/pipewire.conf.d/mic-denoised.conf
+
+cmd install -Dm 644 ./multiwayCor48.wav ~/.config/pipewire/multiwayCor48.wav
+cmd install -Dm 644 "$(writetext <<EOF
+# Convolver Configuration for Pipewire
+#
+# This configuration applies separate left and right convolver effects using the corresponding impulse response files
+# to the entire system audio output.
+
+context.modules = [
+    { name = libpipewire-module-filter-chain
+        args = {
+            node.description = "Legion GO"
+            media.name       = "Legion GO"
+            filter.graph = {
+                nodes = [
+                    {
+                        type  = builtin
+                        label = convolver
+                        name  = convFL
+                        config = {
+                            filename = "$HOME/.config/pipewire/multiwayCor48.wav"
+                            channel  = 0
+                        }
+                    }
+                    {
+                        type  = builtin
+                        label = convolver
+                        name  = convFR
+                        config = {
+                            filename = "$HOME/.config/pipewire/multiwayCor48.wav"
+                            channel  = 1
+                        }
+                    }
+                ]
+                inputs = [ "convFL:In" "convFR:In" ]
+                outputs = [ "convFL:Out" "convFR:Out" ]
+            }
+            capture.props = {
+                node.name      = "Legion GO"
+                media.class    = "Audio/Sink"
+                priority.driver = 1000
+                priority.session = 1000
+                audio.channels = 2
+                audio.position = [ FL FR ]
+            }
+            playback.props = {
+                node.name      = "Legion GO corrected"
+                node.passive   = true
+                audio.channels = 2
+                audio.position = [ FL FR ]
+                node.target = "alsa_output.pci-0000_c2_00.6.analog-stereo"
+            }
+        }
+    }
+]
+
+# wav file is 48000 khz, so you must set allowed-rates accordingly
+context.properties = {
+    default.clock.allowed-rates = [ 48000 ]
+}
+EOF
+)" ~/.config/pipewire/pipewire.conf.d/convolver.conf
+

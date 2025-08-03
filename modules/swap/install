@@ -1,0 +1,33 @@
+#!/usr/bin/env -S sh
+
+size="$1"
+if [ "$size" = "" ]; then
+	echo 'provide size of the swap file in G (integer). Example: "4G"'
+	exit 1
+fi
+
+if [ ! -f /swapfile ]; then
+	cmd sudo mkswap -U clear --size "$size" --file /swapfile
+else
+	file_size="$(stat -c %s /swapfile)"
+	if [ ! "$file_size" = "$(( ${size:0:-1} * 1073741824 ))" ]; then
+		if [ "$(swapon --show | grep "/swapfile" | cut -d ' ' -f 1)" = "/swapfile" ]; then
+			cmd sudo swapoff /swapfile
+		fi
+		cmd sudo rm -f /swapfile
+		cmd sudo mkswap -U clear --size "$size" --file /swapfile
+	fi
+fi
+	
+if ! [ "$(swapon --show | grep "/swapfile" | cut -d ' ' -f 1)" = "/swapfile" ]; then
+	cmd sudo swapon /swapfile
+fi
+cmd sudo install -Dm 644 "$(writetext <<EOF
+[Swap]
+What=/swapfile
+
+[Install]
+WantedBy=swap.target
+EOF
+)" /etc/systemd/system/swapfile.swap
+cmd sudo systemctl enable swapfile.swap

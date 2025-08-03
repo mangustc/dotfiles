@@ -1,0 +1,3 @@
+#!/usr/bin/env -S sh -e
+
+cmd sudo find ./scripts -type f -exec install -D -m 755 {} /usr/local/bin \;

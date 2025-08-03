@@ -1,0 +1,10 @@
+#!/usr/bin/env -S sh -e
+
+cmd sudo chsh -s /bin/bash "$(whoami)"
+cmd sudo chsh -s /bin/bash
+
+cmd sudo rm -rf /etc/fish
+cmd sudo install -D -m 755 ./config.fish /etc/fish/config.fish
+cmd sudo install -D -m 755 ./bash.bashrc /etc/bash.bashrc
+
+

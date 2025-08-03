@@ -1,0 +1,14 @@
+[Unit]
+Description=SSH Agent
+DefaultDependencies=no
+After=network.target
+
+[Service]
+Type=simple
+Environment="SSH_AUTH_SOCK=%t/ssh-agent.sock"
+ExecStart=/usr/bin/ssh-agent -D -a $SSH_AUTH_SOCK
+SuccessExitStatus=2
+
+[Install]
+WantedBy=default.target
+

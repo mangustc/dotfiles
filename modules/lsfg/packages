@@ -1,0 +1,11 @@
+base-devel
+git
+clang
+llvm
+rustup
+cmake
+ninja
+vulkan-headers
+vulkan-icd-loader
+gtk4
+libadwaita

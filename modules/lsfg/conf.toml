@@ -1,0 +1,111 @@
+version = 1
+
+[global]
+
+[[game]]
+exe = "lsfg2025p"
+multiplier = 2
+flow_scale = 0.25
+performance_mode = true
+
+[[game]]
+exe = "lsfg2030p"
+multiplier = 2
+flow_scale = 0.3
+performance_mode = true
+
+[[game]]
+exe = "lsfg2040p"
+multiplier = 2
+flow_scale = 0.4
+performance_mode = true
+
+[[game]]
+exe = "lsfg2050p"
+multiplier = 2
+flow_scale = 0.5
+performance_mode = true
+
+[[game]]
+exe = "lsfg2060p"
+multiplier = 2
+flow_scale = 0.6
+performance_mode = true
+
+[[game]]
+exe = "lsfg2070p"
+multiplier = 2
+flow_scale = 0.7
+performance_mode = true
+
+[[game]]
+exe = "lsfg2080p"
+multiplier = 2
+flow_scale = 0.8
+performance_mode = true
+
+[[game]]
+exe = "lsfg2090p"
+multiplier = 2
+flow_scale = 0.9
+performance_mode = true
+
+[[game]]
+exe = "lsfg2100p"
+multiplier = 2
+flow_scale = 1
+performance_mode = true
+
+[[game]]
+exe = "lsfg2025"
+multiplier = 2
+flow_scale = 0.25
+performance_mode = false
+
+[[game]]
+exe = "lsfg2030"
+multiplier = 2
+flow_scale = 0.3
+performance_mode = false
+
+[[game]]
+exe = "lsfg2040"
+multiplier = 2
+flow_scale = 0.4
+performance_mode = false
+
+[[game]]
+exe = "lsfg2050"
+multiplier = 2
+flow_scale = 0.5
+performance_mode = false
+
+[[game]]
+exe = "lsfg2060"
+multiplier = 2
+flow_scale = 0.6
+performance_mode = false
+
+[[game]]
+exe = "lsfg2070"
+multiplier = 2
+flow_scale = 0.7
+performance_mode = false
+
+[[game]]
+exe = "lsfg2080"
+multiplier = 2
+flow_scale = 0.8
+performance_mode = false
+
+[[game]]
+exe = "lsfg2090"
+multiplier = 2
+flow_scale = 0.9
+performance_mode = false
+
+[[game]]
+exe = "lsfg2100"
+multiplier = 2
+flow_scale = 1
+performance_mode = false

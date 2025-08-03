@@ -1,0 +1,16 @@
+#!/usr/bin/env -S sh -e
+
+size="$1"
+if [ "$size" = "" ]; then
+	echo "provide zram size (MiB) to module zram"
+	exit 1
+fi
+
+file="$(writetext <<EOF
+[zram0]
+zram-size = $size
+compression-algorithm = zstd
+EOF
+)"
+sudo install -D -m 644 "$file" /etc/systemd/zram-generator.conf
+cmd sudo install -D -m 644 ./99-vm-zram-parameters.conf /etc/sysctl.d/99-vm-zram-parameters.conf

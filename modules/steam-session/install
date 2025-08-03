@@ -1,0 +1,14 @@
+#!/usr/bin/env -S sh -e
+
+cmd install -D -m 644 ./steam.desktop ~/.local/share/applications/steam.desktop
+cmd sudo install -D -m 644 ./steam-session.desktop /usr/share/wayland-sessions/steam-session.desktop
+cmd sudo install -D -m 755 ./steam-session /usr/local/bin/steam-session
+cmd sudo install -D -m 755 ./steamos-factory-reset-config /usr/local/bin/steamos-factory-reset-config
+cmd sudo install -D -m 755 ./steamos-firmware-update /usr/local/bin/steamos-firmware-update
+cmd sudo install -D -m 755 ./steamos-reboot /usr/local/bin/steamos-reboot
+cmd sudo install -D -m 755 ./steamos-reset-tool /usr/local/bin/steamos-reset-tool
+cmd sudo install -D -m 755 ./steamos-select-branch /usr/local/bin/steamos-select-branch
+cmd sudo install -D -m 755 ./steamos-session-select /usr/local/bin/steamos-session-select
+cmd sudo install -D -m 755 ./steamos-update /usr/local/bin/steamos-update
+cmd sudo install -D -m 755 ./steamos-wifi-set-backend /usr/local/bin/steamos-wifi-set-backend
+cmd sudo install -D -m 755 ./jupiter-biosupdate /usr/local/bin/jupiter-biosupdate

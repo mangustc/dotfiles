@@ -1,0 +1,12 @@
+[Unit]
+Description=Legion GO sound fix
+After=pipewire.service pipewire-pulse.service wireplumber.service
+Requires=pipewire.service pipewire-pulse.service wireplumber.service
+
+[Service]
+ExecStart=/bin/sh -c 'pactl subscribe | while read -r line; do pactl set-source-volume alsa_input.pci-0000_c2_00.6.analog-stereo 50%; pactl set-source-mute alsa_input.pci-0000_c2_00.6.analog-stereo false; pactl set-sink-volume alsa_output.pci-0000_c2_00.6.analog-stereo 100%; pactl set-sink-mute alsa_output.pci-0000_c2_00.6.analog-stereo false; done'
+Restart=always
+
+[Install]
+WantedBy=default.target
+

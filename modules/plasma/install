@@ -1,0 +1,100 @@
+#!/usr/bin/env -S sh -e
+
+if ! [ -d ~/.local/share/kwin/scripts/krohnkite ]; then
+	cmd kpackagetool6 -t KWin/Script -i ./krohnkite.kwinscript
+fi
+cmd kpackagetool6 -t KWin/Script -u ./krohnkite.kwinscript
+
+newscript "chlayout" <<EOF
+#!/usr/bin/env sh
+
+if [ "\$1" = "default" ]; then
+	if ([ ! "\$KDE_SESSION_UID" == "" ] || [ "\$XDG_CURRENT_DESKTOP" == "KDE" ]) && ([ ! "\$WAYLAND_DISPLAY" == "" ] || [ "\$XDG_SESSION_TYPE" == "wayland" ]); then
+		kwriteconfig6 --file ~/.config/kxkbrc --group Layout --key LayoutList "us,ru"
+		kwriteconfig6 --file ~/.config/kxkbrc --group Layout --key VariantList "dvorak,"
+		kwriteconfig6 --file ~/.config/kxkbrc --group Layout --key Options "terminate:ctrl_alt_bksp,grp:caps_toggle"
+		kwriteconfig6 --file ~/.config/kxkbrc --group Layout --key ResetOldOptions "true"
+		kwriteconfig6 --file ~/.config/kxkbrc --group Layout --key Use "true"
+		dbus-send --session --type=signal --dest=org.kde.keyboard /Layouts org.kde.keyboard.reloadConfig
+	else
+		setxkbmap -layout us,ru -variant dvorak, -option "grp:caps_toggle" -option "terminate:ctrl_alt_bksp"
+	fi
+elif [ "\$1" = "gaming" ]; then
+	if ([ ! "\$KDE_SESSION_UID" == "" ] || [ "\$XDG_CURRENT_DESKTOP" == "KDE" ]) && ([ ! "\$WAYLAND_DISPLAY" == "" ] || [ "\$XDG_SESSION_TYPE" == "wayland" ]); then
+		kwriteconfig6 --file ~/.config/kxkbrc --group Layout --key LayoutList "us"
+		kwriteconfig6 --file ~/.config/kxkbrc --group Layout --key VariantList ""
+		kwriteconfig6 --file ~/.config/kxkbrc --group Layout --key Options "terminate:ctrl_alt_bksp"
+		kwriteconfig6 --file ~/.config/kxkbrc --group Layout --key ResetOldOptions "true"
+		kwriteconfig6 --file ~/.config/kxkbrc --group Layout --key Use "true"
+		dbus-send --session --type=signal --dest=org.kde.keyboard /Layouts org.kde.keyboard.reloadConfig
+	else
+		setxkbmap -layout us -option "terminate:ctrl_alt_bksp"
+	fi
+else
+	echo "Unknown option: \"$1\""
+fi
+EOF
+
+cmd install -Dm755 "$(writetext <<EOF
+[Desktop Entry]
+Exec=chlayout default
+Name=default layout
+NoDisplay=true
+StartupNotify=false
+Type=Application
+X-KDE-GlobalAccel-CommandShortcut=true
+EOF
+)" ~/.local/share/applications/net.local.chlayout-default.desktop
+cmd install -Dm755 "$(writetext <<EOF
+[Desktop Entry]
+Exec=chlayout gaming
+Name=gaming layout
+NoDisplay=true
+StartupNotify=false
+Type=Application
+X-KDE-GlobalAccel-CommandShortcut=true
+EOF
+)" ~/.local/share/applications/net.local.chlayout-gaming.desktop
+
+cmd install -Dm755 "$(writetext <<EOF
+[Desktop Entry]
+Exec=konsole
+Name=terminal
+NoDisplay=true
+StartupNotify=false
+Type=Application
+X-KDE-GlobalAccel-CommandShortcut=true
+EOF
+)" ~/.local/share/applications/net.local.terminal.desktop
+
+cmd install -Dm755 "$(writetext <<EOF
+[Desktop Entry]
+Exec=kscreen-doctor output.DP-3.mode.1920x1080@70
+Name=chres 1
+NoDisplay=true
+StartupNotify=false
+Type=Application
+X-KDE-GlobalAccel-CommandShortcut=true
+EOF
+)" ~/.local/share/applications/net.local.chres-1.desktop
+cmd install -Dm755 "$(writetext <<EOF
+[Desktop Entry]
+Exec=kscreen-doctor output.DP-3.mode.1600x900@76
+Name=chres 2
+NoDisplay=true
+StartupNotify=false
+Type=Application
+X-KDE-GlobalAccel-CommandShortcut=true
+EOF
+)" ~/.local/share/applications/net.local.chres-2.desktop
+cmd install -Dm755 "$(writetext <<EOF
+[Desktop Entry]
+Exec=kscreen-doctor output.DP-3.mode.1280x720@76
+Name=chres 3
+NoDisplay=true
+StartupNotify=false
+Type=Application
+X-KDE-GlobalAccel-CommandShortcut=true
+EOF
+)" ~/.local/share/applications/net.local.chres-3.desktop
+cmd install -Dm600 ./kglobalshortcutsrc ~/.config/kglobalshortcutsrc

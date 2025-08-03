@@ -1,0 +1,6 @@
+hhd
+adjustor
+hhd-ui
+scx-scheds
+# required for "reboot into windows" button to work
+efibootmgr

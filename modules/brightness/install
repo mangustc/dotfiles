@@ -1,0 +1,3 @@
+#!/usr/bin/env -S sh -e
+
+cmd sudo install -D -m 644 ./99-brightness.rules /etc/udev/rules.d/99-brightness.rules

@@ -1,0 +1,5 @@
+#!/usr/bin/env -S sh -e
+
+cmd sudo rm -rf /etc/xdg/kitty
+cmd sudo install -D -m 644 ./kitty.conf /etc/xdg/kitty/kitty.conf
+

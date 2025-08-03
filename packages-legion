@@ -1,0 +1,41 @@
+# system
+base
+amd-ucode
+base-devel
+sudo
+vulkan-radeon
+lib32-mesa
+lib32-vulkan-radeon
+linux
+linux-firmware
+qt5-declarative
+paru-bin
+7zip
+unrar
+unzip
+ntfs-3g
+sbctl
+
+# progs
+btop
+eza
+lazygit
+man-db
+man-pages
+tealdeer
+mpv
+obsidian
+zen-browser-bin
+discord
+qbittorrent
+gparted
+vial-appimage
+
+# gaming
+# ryujinx
+# rpcs3-bin
+protonplus
+wine
+
+# programming
+android-studio

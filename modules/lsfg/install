@@ -1,0 +1,4 @@
+#!/usr/bin/env -S sh -e
+
+cmd install -D -m 644 ./conf.toml ~/.config/lsfg-vk/conf.toml
+cmd sudo install -D -m 755 ./lsfg-run /usr/local/bin/lsfg-run

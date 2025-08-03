@@ -1,0 +1,78 @@
+#!/usr/bin/env -S sh -e
+
+dotfiles="$1"
+host="$2"
+
+if [ "$dotfiles" = "" ]; then
+	echo "pass a dotfiles directory and a host name"
+	exit 1
+fi
+
+if [ "$host" = "" ]; then
+	echo "pass a host name"
+	exit 1
+fi
+
+newscript archconf <<EOF
+#!/usr/bin/env sh
+
+cd $dotfiles
+exec \$EDITOR ./configuration-$host.sh
+EOF
+
+newscript archupd <<EOF
+#!/usr/bin/env sh
+
+if ! [ "\$1" = "" ]; then
+	if [ "\$1" = 'upgrade' ]; then
+		paru -Syu
+	else
+		>&2 echo "option [\$1] does not exist. Available options: [upgrade]"
+		exit 1
+	fi
+fi
+
+cd $dotfiles
+./configuration-$host.sh
+
+if [ "\$1" = 'upgrade' ]; then
+	sudo mkinitcpio -P
+	sudo locale-gen
+	sudo bootctl update
+	sudo hwclock --systohc
+fi
+EOF
+
+newscript archexport <<EOF
+#!/usr/bin/env sh
+
+echo "\$(paru -Qe | cut -d ' ' -f 1)" > $dotfiles/packages-$host
+EOF
+
+newscript archgit <<EOF
+#!/usr/bin/env sh
+
+cd $dotfiles
+lazygit
+EOF
+
+newscript archclean <<EOF
+#!/usr/bin/env sh
+
+orphans="\$(paru -Qdtq | xargs)"
+if [ ! "\$orphans" = "" ]; then
+	paru -Rs --noconfirm \$orphans
+fi
+yes | paru -Scc
+EOF
+
+newscript archedit <<EOF
+#!/usr/bin/env sh
+
+if [ "\$EDITOR" = "" ]; then
+	EDITOR="nvim"
+fi
+
+command="\$(whereis "\$1" | cut -d " " -f 2)"
+\$EDITOR "\$command"
+EOF

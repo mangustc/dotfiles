@@ -1,0 +1,13 @@
+#!/usr/bin/env -S sh -e
+
+cmd rm -f ~/.gitconfig
+cmd install -D -m 644 "$(writetext <<'EOF'
+[user]
+	email = letalbark@gmail.com
+	name = Ivan Lifanov
+[init]
+	defaultBranch = main
+[core]
+	quotepath = false
+EOF
+)" ~/.config/git/config
