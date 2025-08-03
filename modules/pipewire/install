@@ -7,22 +7,31 @@ EOF
 
 cmd install -Dm644 "$(writetext <<EOF
 context.properties = {
-	default.clock.min-quantum = 512
-	default.clock.quantum = 4096
-	default.clock.max-quantum = 8192
 	default.clock.rate = 48000
 	default.clock.allowed-rates = [ 48000 ]
+	default.clock.min-quantum = 512
+	default.clock.quantum = 1024
+	default.clock.max-quantum = 2048
+	default.clock.quantum-limit = 2048
 }
 EOF
 )" ~/.config/pipewire/pipewire.conf.d/crackling-fix.conf
 cmd install -Dm644 "$(writetext <<EOF
 pulse.properties = {
-	pulse.min.req = 4096/48000
-	pulse.min.frag = 4096/48000
-	pulse.min.quantum = 4096/48000
+	pulse.min.req = 1024/48000
+	pulse.min.frag = 1024/48000
+	pulse.min.quantum = 1024/48000
+	pulse.default.req = 2048/48000
 }
 EOF
 )" ~/.config/pipewire/pipewire-pulse.conf.d/crackling-fix.conf
+cmd install -Dm644 "$(writetext <<EOF
+jack.properties = {
+	node.latency = 1024/48000
+	node.quantum = 1024/48000
+}
+EOF
+)" ~/.config/pipewire/jack.conf.d/crackling-fix.conf
 
 # https://github.com/CachyOS/CachyOS-Settings/blob/8ac073c3a528f458d58d803775c399d7b845b2c6/usr/lib/modprobe.d/20-audio-pm.conf
 cmd sudo install -Dm644 "$(writetext <<EOF
