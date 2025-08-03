@@ -1,32 +1,19 @@
 # dotfiles
 
-## why?
-
-My goal is:
-
-- to use the same dotfiles repository for multiple arch linux devices such as my laptop and legion go.
-- store and configure system configuration as conventional methods do not allow editing system configuration.
-
-## how?
-
-- separate configuration to different modules.
-- each module can accept arguments to specify configuration individually for each host.
-- each module has an install script that can be written in whatever way you want.
-- provide simple functions that make the proccess of applying a configuration easier.
+My collection of installer scripts with adjacent pacman/AUR package list for Arch Linux. Aside from that shell functions are provided to make configuration simpler.
 
 ## prerequisites
 
-- RUN ONLY AS USER, ROOT IS NOT TESTED. reason: this configuration uses sudo to escalate privileges if needed.
 - Arch linux.
 - paru installed.
-- connected to network.
-- partition table as follows: root partition labeled arch-root, boot partition labeled arch-boot.
+- internet connection.
+- partition table as follows: root partition labeled `arch-root`, boot partition labeled `arch-boot`.
 
 ## usage
 
 run `configuration-HOST.sh`.
 
-Afterwards, if archscripts module is installed you can use archupd and archconf.
+Afterwards, if archscripts module is installed you can use `archupd` and `archconf`.
 
 ## structure
 
@@ -46,16 +33,17 @@ Afterwards, if archscripts module is installed you can use archupd and archconf.
 Each configuration should start as follows:
 
 ```sh
-DOTFILES_HOST="your-host-name"
-DOTFILES_DIR="your-dotfiles-dir"
+export DOTFILES_HOST="your-host-name"
+export DOTFILES_DIR="your-dotfiles-dir"
 cd "$(DOTFILES_DIR)"
 source ./base.sh
+config base
 ```
 
 ### base.sh
 
-This file contains bash functions that simplify config creation.
+This file contains shell functions that simplify config creation.
 
 ### modules
 
-each module has install scripts which can be anything you want. Also it is possible to define a package list in `packages` file.
+Each module has an `install` script which can be anything you want. Also it is possible to define a package list in `packages` file.
