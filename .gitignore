@@ -1,0 +1,8 @@
+**/nethandler
+**/fish/fish_variables
+**/nvim/lazy-lock.json
+**/supervise
+**/sysctl.d/README
+**/local.d/README
+**/laptop-mode/conf.d/board-specific/README*
+**/.keep_sys-kernel_installkernel-0

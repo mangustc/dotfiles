@@ -1,0 +1,5 @@
+#!/bin/sh
+
+export PS1=""
+. "${HOME}/.profile"
+syncv "${HOME}/storage/obsidian/main-vault"

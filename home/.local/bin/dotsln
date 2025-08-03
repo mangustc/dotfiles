@@ -1,0 +1,54 @@
+#!/bin/sh
+
+SOURCE_DIR="${HOME}/dotfiles/home/.config"
+DEST_DIR="${HOME}/.config"
+mkdir -p ${DEST_DIR}
+for FILEPATH in ${SOURCE_DIR}/*; do
+    FILENAME=$(basename ${FILEPATH})
+    rm -rfv "${DEST_DIR}/${FILENAME}"
+    ln -sv "${SOURCE_DIR}/${FILENAME}" "${DEST_DIR}/${FILENAME}"
+    echo -e "Linked ${SOURCE_DIR}/${FILENAME} to ${DEST_DIR}/${FILENAME}\n"
+done
+
+SOURCE_DIR="${HOME}/dotfiles/home/.local"
+DEST_DIR="${HOME}/.local"
+mkdir -p ${DEST_DIR}
+for FILEPATH in ${SOURCE_DIR}/*; do
+    FILENAME=$(basename ${FILEPATH})
+    rm -rfv "${DEST_DIR}/${FILENAME}"
+    ln -sv "${SOURCE_DIR}/${FILENAME}" "${DEST_DIR}/${FILENAME}"
+    echo -e "Linked ${SOURCE_DIR}/${FILENAME} to ${DEST_DIR}/${FILENAME}\n"
+done
+
+
+SOURCE_DIR="${HOME}/dotfiles/home/.shortcuts"
+DEST_DIR="${HOME}/.shortcuts"
+mkdir -p ${DEST_DIR}
+for FILEPATH in ${SOURCE_DIR}/*; do
+    FILENAME=$(basename ${FILEPATH})
+    rm -rfv "${DEST_DIR}/${FILENAME}"
+    cp -rfv "${SOURCE_DIR}/${FILENAME}" "${DEST_DIR}/${FILENAME}"
+    echo -e "Replaced ${SOURCE_DIR}/${FILENAME} to ${DEST_DIR}/${FILENAME}\n"
+done
+
+SOURCE_DIR="${HOME}/dotfiles/home"
+DEST_DIR="${HOME}"
+
+for FILEPATH in ${SOURCE_DIR}/.*; do
+    FILENAME=$(basename ${FILEPATH})
+    if [ ${FILENAME} = ".shortcuts" ] || [ ${FILENAME} = ".local" ] || [ ${FILENAME} = ".config" ]|| [ ${FILENAME} = "." ]|| [ ${FILENAME} = ".." ]; then
+        continue
+    fi
+    if [ -f "${DEST_DIR}/${FILENAME}" ]; then
+        echo -e "File ${DEST_DIR}/${FILENAME} already exists\n"
+        continue
+    fi
+    if [ -d "${DEST_DIR}/${FILENAME}" ]; then
+        echo -e "Directory ${DEST_DIR}/${FILENAME} already exists\n"
+        continue
+    fi
+    ln -sv "${SOURCE_DIR}/${FILENAME}" "${DEST_DIR}/${FILENAME}"
+    echo -e "Linked ${SOURCE_DIR}/${FILENAME} to ${DEST_DIR}/${FILENAME}\n"
+done
+
+ln -sv "/storage/emulated/0" "${HOME}/storage"

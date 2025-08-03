@@ -1,0 +1,7 @@
+[user]
+	email = letalbark@gmail.com
+	name = Ivan Lifanov
+[core]
+	quotepath = false
+[safe]
+	directory = /storage/emulated/0/obsidian/main-vault

@@ -1,0 +1,6 @@
+#!/bin/sh
+
+export PS1=""
+. "${HOME}/.profile"
+cd "${HOME}/storage/obsidian/main-vault"
+git fetch && git pull && git add -A && git commit -m "upd" && git push -u origin main
