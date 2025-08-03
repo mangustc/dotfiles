@@ -33,6 +33,10 @@ PRESETS=('default')
 default_image="/boot/initramfs-linux.img"
 EOF
 )" /etc/mkinitcpio.d/linux.preset
+cmd sudo install -Dm644 "$(writetext <<'EOF'
+MODULES=(ntsync)
+EOF
+)" /etc/mkinitcpio.conf.d/ntsync.conf
 
 cmd sudo install -Dm644 "$(writetext <<EOF
 [Login]
