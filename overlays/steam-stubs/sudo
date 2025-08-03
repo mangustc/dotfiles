@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+>&2 printf "[JOVIAN] %s: stub called with: %s\n" "${0##*/}" "$(printf "%q " "$@")"
+
+declare -a final
+
+positional=""
+for value in "$@"; do
+    if [[ -n "$positional" ]]; then
+        final+=("$value")
+    elif [[ "$value" == "-n" ]]; then
+        :
+    else
+        positional="y"
+        final+=("$value")
+    fi
+done
+
+>&2 printf "[JOVIAN] %s: parsed command: %s\n" "${0##*/}" "$(printf "%q " "${final[@]}")"
+
+exec "${final[@]}"
