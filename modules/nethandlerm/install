@@ -1,5 +1,10 @@
 #!/usr/bin/env -S sh -e
 
+if ! [ -d ./nethandler ]; then
+	echo "Place nethandler directory in nethandler module directory" >&2
+	exit 1
+fi
+
 cmd sudo install -D -m 644 ./nethandler.service /etc/systemd/system/nethandler.service
 cmd sudo rm -rf /usr/local/share/nethandler
 cmd sudo cp -rf ./nethandler /usr/local/share
