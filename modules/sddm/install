@@ -1,6 +1,31 @@
 #!/usr/bin/env -S sh -e
 
-if [ "$1" = "nopasswd" ]; then
+usage() {
+	cat <<EOF
+Example: config $DOTFILES_MODULE_NAME --nopasswd
+EOF
+}
+usage_err() {
+	if ! [ "$1" = "" ]; then
+		echo "$1" >&2
+	fi
+	usage
+	exit 1
+}
+
+while [ $# -gt 0 ]; do
+	case $1 in
+		--nopasswd)
+			nopasswd=true
+			;;
+		*)
+			usage_err "Invalid option: $1"
+			;;
+	esac
+	shift
+done
+
+if [ $nopasswd ]; then
 	pam="$(writetext <<EOF
 #%PAM-1.0
 

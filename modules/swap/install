@@ -1,10 +1,32 @@
 #!/usr/bin/env -S sh
 
-size="$1"
-if [ "$size" = "" ]; then
-	echo 'provide size of the swap file in G (integer). Example: "4G"'
+usage() {
+	cat <<EOF
+Example: config $DOTFILES_MODULE_NAME --size 8G
+EOF
+}
+usage_err() {
+	if ! [ "$1" = "" ]; then
+		echo "$1" >&2
+	fi
+	usage
 	exit 1
-fi
+}
+
+while [ $# -gt 0 ]; do
+	case $1 in
+		--size)
+			[ "$2" = "" ] && usage_err "Argument not specified"
+			size="$2"
+			shift
+			;;
+		*)
+			usage_err "Invalid option: $1"
+			;;
+	esac
+	shift
+done
+[ "$size" = "" ] && usage_err
 
 if [ ! -f /swapfile ]; then
 	cmd sudo mkswap -U clear --size "$size" --file /swapfile

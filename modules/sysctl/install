@@ -1,5 +1,37 @@
 #!/usr/bin/env -S sh -e
 
-file="$(writetext "$1")"
+usage() {
+	cat <<EOF
+Example: config $DOTFILES_MODULE_NAME --opts "
+net.ipv4.tcp_mtu_probing = true
+net.ipv4.tcp_fin_timeout = 5
+kernel.split_lock_mitigate = 0
+"
+EOF
+}
+usage_err() {
+	if ! [ "$1" = "" ]; then
+		echo "$1" >&2
+	fi
+	usage
+	exit 1
+}
+
+while [ $# -gt 0 ]; do
+	case $1 in
+		--opts)
+			if ! [ "$2" = "" ]; then
+				opts="$2"
+				shift
+			fi
+			;;
+		*)
+			usage_err "Invalid option: $1"
+			;;
+	esac
+	shift
+done
+
+file="$(writetext "$opts")"
 cmd sudo install "$file" /etc/sysctl.d/99-dotfiles.conf
 

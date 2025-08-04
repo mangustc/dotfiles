@@ -12,7 +12,7 @@ install_pkgs "$(trim_pkgs_file "./packages-$DOTFILES_HOST")"
 
 # systemd-boot
 config v226hql
-config swap 8G
+config swap --size 8G
 cmd sudo install -Dm644 "$(writetext <<EOF
 timeout 0
 default arch.conf
@@ -47,7 +47,7 @@ EOF
 )" /etc/fstab
 
 config acpi_call
-config sysctl "
+config sysctl --opts "
 net.ipv4.tcp_mtu_probing = true
 net.ipv4.tcp_fin_timeout = 5
 kernel.split_lock_mitigate = 0
@@ -62,7 +62,7 @@ kernel.sched_migration_cost_ns = 50000
 kernel.sched_nr_migrate = 128
 vm.max_map_count = 2147483642
 "
-config module-blacklist "
+config module-blacklist --modules "
 pcscpkr
 iTCO_wdt
 sp5100_tco
@@ -77,10 +77,10 @@ config tlp
 config plasma
 config neovim
 config fish
-config archscripts "$DOTFILES_DIR" "$DOTFILES_HOST"
+config archscripts --dotfiles "$DOTFILES_DIR" --host "$DOTFILES_HOST"
 config git
 config bluetooth
-config flatpak "
+config flatpak --flatpaks "
 "
 config sddm
 config scripts

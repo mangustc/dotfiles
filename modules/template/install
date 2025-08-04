@@ -1,2 +1,34 @@
 #!/usr/bin/env -S sh -e
 
+usage() {
+	cat <<EOF
+Example: config $DOTFILES_MODULE_NAME
+EOF
+}
+usage_err() {
+	if ! [ "$1" = "" ]; then
+		echo "$1" >&2
+	fi
+	usage
+	exit 1
+}
+
+while [ $# -gt 0 ]; do
+	case $1 in
+		--arga)
+			arga=true
+			;;
+		--argb)
+			[ "$2" = "" ] && usage_err "Argument not specified"
+			argb="$2"
+			shift
+			;;
+		*)
+			usage_err "Invalid option: $1"
+			;;
+	esac
+	shift
+done
+[ "$argb" = "" ] && usage_err "Flag not specified"
+
+

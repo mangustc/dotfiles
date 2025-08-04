@@ -1,6 +1,36 @@
 #!/usr/bin/env -S sh -e
 
-modules="$(rm_empty "$1")"
+usage() {
+	cat <<EOF
+Example: config $DOTFILES_MODULE_NAME --modules "
+pcscpkr
+iTCO_wdt
+sp5100_tco
+"
+EOF
+}
+usage_err() {
+	if ! [ "$1" = "" ]; then
+		echo "$1" >&2
+	fi
+	usage
+	exit 1
+}
 
-file="$(writetext "$(echo "$modules" | sed 's|^|blacklist |')")"
+while [ $# -gt 0 ]; do
+	case $1 in
+		--modules)
+			if ! [ "$2" = "" ]; then
+				modules="$(rm_empty "$2" | sed 's|^|blacklist |')"
+				shift
+			fi
+			;;
+		*)
+			usage_err "Invalid option: $1"
+			;;
+	esac
+	shift
+done
+
+file="$(writetext "$modules")"
 cmd sudo install -D -m 644 "$file" /etc/modprobe.d/dotfiles.conf

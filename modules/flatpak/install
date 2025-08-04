@@ -1,6 +1,35 @@
 #!/usr/bin/env -S sh -e
 
-desired_flatpaks="$(rm_empty "$1" | xargs)"
+usage() {
+	cat <<EOF
+Example: config $DOTFILES_MODULE_NAME --flatpaks "
+io.github.ryubing.Ryujinx
+net.rpcs3.RPCS3
+"
+EOF
+}
+usage_err() {
+	if ! [ "$1" = "" ]; then
+		echo "$1" >&2
+	fi
+	usage
+	exit 1
+}
+
+while [ $# -gt 0 ]; do
+	case $1 in
+		--flatpaks)
+			if ! [ "$2" = "" ]; then
+				flatpaks="$(rm_empty "$2" | xargs)"
+				shift
+			fi
+			;;
+		*)
+			usage_err "Invalid option: $1"
+			;;
+	esac
+	shift
+done
 
 newscript flatpak-update << EOF
 #!/usr/bin/env sh
@@ -10,13 +39,13 @@ flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flat
 installedFlatpaks=\$(flatpak list --app --columns=application)
 
 for installed in \$installedFlatpaks; do
-	if ! echo $desired_flatpaks | grep -q \$installed; then
+	if ! echo $flatpaks | grep -q \$installed; then
 		echo \"Removing \$installed\"
 		flatpak uninstall -y --noninteractive \$installed
 	fi
 done
 
-for app in $desired_flatpaks; do
+for app in $flatpaks; do
 	echo "Installing \$app"
 	flatpak install -y flathub \$app
 done
