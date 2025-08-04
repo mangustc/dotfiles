@@ -33,8 +33,12 @@ writetext() {
 	writetext_content="$1"
 	writetext_tmp="$(mktemp "/tmp/writetext.XXXXXXXXXXXXX")"
 
-	if [ "$1" = "" ]; then
-		cat > "$writetext_tmp"
+	if [ "$writetext_content" = "" ]; then
+		if read -t 0; then
+			cat > "$writetext_tmp"
+		else
+			echo "$writetext_content" > "$writetext_tmp"
+		fi
 	elif [ ! "$2" = "" ]; then
 		errcho "writetext accepts only one argument or a heredoc"
 		return 1
