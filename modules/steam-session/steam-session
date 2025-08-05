@@ -79,7 +79,8 @@ touch ~/.steam/root/config/SteamAppData.vdf || true
 # 	sleep 5
 # done) &
 udiskie-mount -a &
-gamescope --steam \
+gamescope \
+	--steam \
 	--mangoapp \
 	--force-orientation left \
 	--prefer-output '*,eDP-1' \
@@ -87,6 +88,7 @@ gamescope --steam \
 	--default-touch-mode 4 \
 	--hide-cursor-delay 3000 \
 	--fade-out-duration 200 \
+	--force-composition \
 	-- steam \
 		-steamos3 \
 		-steamdeck
