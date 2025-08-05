@@ -47,3 +47,11 @@ This file contains shell functions that simplify config creation.
 ### modules
 
 Each module has an `install` script which can be anything you want. Also it is possible to define a package list in `packages` file.
+
+## quirks and fixes
+
+### steam-session
+
+First, try launching steam from a desktop environment, avoiding steam-session. Afterwards, when all steam files are downloaded try launching gamescope steam-session.
+
+If color management does not work with both gamepad and mouse input or touching gamepad disables it, you may enable `Developer Mode` in steam settings and then enabling `Force composite`.
