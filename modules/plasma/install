@@ -98,3 +98,32 @@ X-KDE-GlobalAccel-CommandShortcut=true
 EOF
 )" ~/.local/share/applications/net.local.chres-3.desktop
 cmd install -Dm600 ./kglobalshortcutsrc ~/.config/kglobalshortcutsrc
+
+cmd install -D -m 600 "$(writetext <<'EOF'
+[General]
+FreeFloating=true
+
+[Plugins]
+baloosearchEnabled=false
+browserhistoryEnabled=false
+browsertabsEnabled=false
+calculatorEnabled=false
+helprunnerEnabled=false
+krunner_appstreamEnabled=false
+krunner_bookmarksrunnerEnabled=false
+krunner_charrunnerEnabled=false
+krunner_colorsEnabled=false
+krunner_dictionaryEnabled=false
+krunner_katesessionsEnabled=false
+krunner_konsoleprofilesEnabled=false
+krunner_placesrunnerEnabled=false
+krunner_recentdocumentsEnabled=false
+krunner_spellcheckEnabled=false
+krunner_webshortcutsEnabled=false
+org.kde.datetimeEnabled=false
+unitconverterEnabled=false
+
+[Plugins][Favorites]
+plugins=krunner_sessions,krunner_powerdevil,krunner_services,krunner_systemsettings
+EOF
+)" ~/.config/krunnerrc
