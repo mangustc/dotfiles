@@ -3,6 +3,7 @@ base
 amd-ucode
 base-devel
 sudo
+mesa
 vulkan-radeon
 lib32-mesa
 lib32-vulkan-radeon
