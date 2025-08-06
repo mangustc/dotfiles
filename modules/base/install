@@ -17,4 +17,4 @@ ru_RU ISO-8859-5
 EOF
 )" /etc/locale.gen
 
-cmd sudo usermod -G wheel,audio,video,input,tty,kvm,network "$(whoami)"
+cmd sudo usermod -aG wheel,audio,video,input,tty,kvm,network "$(whoami)"
