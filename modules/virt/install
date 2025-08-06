@@ -1,0 +1,85 @@
+#!/usr/bin/env -S sh -e
+
+usage() {
+	cat <<EOF
+Example: config $DOTFILES_MODULE_NAME
+EOF
+}
+usage_err() {
+	if ! [ "$1" = "" ]; then
+		echo "$1" >&2
+	fi
+	usage
+	exit 1
+}
+
+while [ $# -gt 0 ]; do
+	case $1 in
+		*)
+			usage_err "Invalid option: $1"
+			;;
+	esac
+	shift
+done
+
+cmd sudo systemctl enable libvirtd
+set +e
+cmd sudo virsh net-start default
+cmd sudo virsh net-autostart default
+set -e
+cmd sudo usermod -aG kvm,input,libvirt "$(whoami)"
+
+cmd sudo install -D -m 755 "$(writetext <<'EOF'
+#!/bin/bash
+
+GUEST_NAME="$1"
+HOOK_NAME="$2"
+STATE_NAME="$3"
+MISC="${@:4}"
+
+BASEDIR="$(dirname $0)"
+
+HOOKPATH="$BASEDIR/qemu.d/$GUEST_NAME/$HOOK_NAME/$STATE_NAME"
+set -e # If a script exits with an error, we should as well.
+
+if [ -f "$HOOKPATH" ]; then
+eval \""$HOOKPATH"\" "$@"
+elif [ -d "$HOOKPATH" ]; then
+while read file; do
+  eval \""$file"\" "$@"
+done <<< "$(find -L "$HOOKPATH" -maxdepth 1 -type f -executable -print;)"
+fi
+EOF
+)" /etc/libvirt/hooks/qemu
+
+cmd sudo install -D -m 755 "$(writetext <<'EOF'
+#!/bin/bash
+set -x
+
+echo efi-framebuffer.0 > /sys/bus/platform/drivers/efi-framebuffer/unbind
+modprobe -r amdgpu
+# modprobe -r snd_hda_intel
+
+# systemctl set-property --runtime -- system.slice AllowedCPUs=5
+# systemctl set-property --runtime -- user.slice AllowedCPUs=5
+# systemctl set-property --runtime -- init.scope AllowedCPUs=5
+# echo performance | tee /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor
+# echo performance | tee /sys/devices/system/cpu/cpu*/cpufreq/energy_performance_preference
+EOF
+)" /etc/libvirt/hooks/qemu.d/win-passthrough/prepare/begin/start.sh
+
+cmd sudo install -D -m 755 "$(writetext <<'EOF'
+#!/bin/bash
+set -x
+
+# systemctl set-property --runtime -- system.slice AllowedCPUs=0-5
+# systemctl set-property --runtime -- user.slice AllowedCPUs=0-5
+# systemctl set-property --runtime -- init.scope AllowedCPUs=0-5
+# echo powersave | tee /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor
+# echo balance_performance | tee /sys/devices/system/cpu/cpu*/cpufreq/energy_performance_preference
+
+echo "efi-framebuffer.0" > /sys/bus/platform/drivers/efi-framebuffer/bind
+modprobe amdgpu
+# modprobe snd_hda_intel
+EOF
+)" /etc/libvirt/hooks/qemu.d/win-passthrough/release/end/stop.sh
