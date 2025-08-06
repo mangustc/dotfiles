@@ -2,7 +2,7 @@ base-devel
 git
 clang
 llvm
-rustup
+rust
 cmake
 ninja
 vulkan-headers
