@@ -1,12 +1,12 @@
 #!/usr/bin/env -S sh -e
 
-cmd sudo install -Dm644 ./pacman.conf /etc/pacman.conf
+cmd sudo install -D -m 644 ./pacman.conf /etc/pacman.conf
 
 cmd sudo ln -sf /usr/share/zoneinfo/Asia/Tomsk /etc/localtime
-cmd sudo install -Dm644 "$(writetext "LANG=en_US.UTF-8")" /etc/locale.conf
-cmd sudo install -Dm644 "$(writetext "KEYMAP=dvorak")" /etc/vconsole.conf
-cmd sudo install -Dm644 "$(writetext "arch")" /etc/hostname
-cmd sudo install -Dm644 "$(writetext <<EOF
+cmd sudo install -D -m 644 "$(writetext "LANG=en_US.UTF-8")" /etc/locale.conf
+cmd sudo install -D -m 644 "$(writetext "KEYMAP=dvorak")" /etc/vconsole.conf
+cmd sudo install -D -m 644 "$(writetext "arch")" /etc/hostname
+cmd sudo install -D -m 644 "$(writetext <<EOF
 en_CA.UTF-8 UTF-8
 en_CA ISO-8859-1
 en_US.UTF-8 UTF-8

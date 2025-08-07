@@ -1,6 +1,6 @@
 #!/usr/bin/env -S sh -e
 
-cmd sudo install -Dm 644 "$(writetext <<EOF
+cmd sudo install -D -m 644 "$(writetext <<EOF
 MODULES=(acpi_call)
 EOF
 )" /etc/mkinitcpio.conf.d/acpi_call.conf

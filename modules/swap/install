@@ -44,7 +44,7 @@ fi
 if ! [ "$(swapon --show | grep "/swapfile" | cut -d ' ' -f 1)" = "/swapfile" ]; then
 	cmd sudo swapon /swapfile
 fi
-cmd sudo install -Dm 644 "$(writetext <<EOF
+cmd sudo install -D -m 644 "$(writetext <<EOF
 [Swap]
 What=/swapfile
 

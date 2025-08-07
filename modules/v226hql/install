@@ -1,8 +1,8 @@
 #!/usr/bin/env -S sh -e
 
-cmd sudo install -Dm644 "$(writetext <<'EOF'
+cmd sudo install -D -m 644 "$(writetext <<'EOF'
 FILES=(/usr/lib/firmware/edid/v226hql.bin)
 EOF
 )" /etc/mkinitcpio.conf.d/v226hql.conf
 
-cmd sudo install -Dm644 ./v226hql.bin /usr/lib/firmware/edid/v226hql.bin
+cmd sudo install -D -m 644 ./v226hql.bin /usr/lib/firmware/edid/v226hql.bin

@@ -1,9 +1,9 @@
 #!/usr/bin/env -S sh -e
 
 cmd rm -rf ~/.local/share/konsole
-cmd install -Dm644 ./vague.colorscheme ~/.local/share/konsole/vague.colorscheme
-cmd install -Dm644 ./dotfiles.profile ~/.local/share/konsole/dotfiles.profile
-cmd install -Dm644 ./shortcuts/dotfiles ~/.local/share/konsole/shortcuts/dotfiles
+cmd install -D -m 644 ./vague.colorscheme ~/.local/share/konsole/vague.colorscheme
+cmd install -D -m 644 ./dotfiles.profile ~/.local/share/konsole/dotfiles.profile
+cmd install -D -m 644 ./shortcuts/dotfiles ~/.local/share/konsole/shortcuts/dotfiles
 
-cmd install -Dm644 ./konsolerc ~/.config/konsolerc
-cmd install -Dm644 ./konsolesshconfig ~/.config/konsolesshconfig
+cmd install -D -m 644 ./konsolerc ~/.config/konsolerc
+cmd install -D -m 644 ./konsolesshconfig ~/.config/konsolesshconfig

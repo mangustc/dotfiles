@@ -13,13 +13,13 @@ install_pkgs "$(trim_pkgs_file "./packages-$DOTFILES_HOST")"
 # systemd-boot
 config swap --size 8G
 config v226hql
-cmd sudo install -Dm644 "$(writetext <<EOF
+cmd sudo install -D -m 644 "$(writetext <<EOF
 timeout 0
 default arch.conf
 console-mode keep
 EOF
 )" /boot/loader/loader.conf
-cmd sudo install -Dm644 "$(writetext <<EOF
+cmd sudo install -D -m 644 "$(writetext <<EOF
 title Arch Linux
 linux /vmlinuz-linux
 initrd /initramfs-linux.img
@@ -27,31 +27,31 @@ options root=LABEL=arch-root rw nowatchdog fbcon=vc:2-6 amdgpu.sg_display=0 zswa
 EOF
 )" /boot/loader/entries/arch.conf
 
-cmd sudo install -Dm644 "$(writetext <<EOF
+cmd sudo install -D -m 644 "$(writetext <<EOF
 ALL_kver="/boot/vmlinuz-linux"
 PRESETS=('default')
 default_image="/boot/initramfs-linux.img"
 EOF
 )" /etc/mkinitcpio.d/linux.preset
-cmd sudo install -Dm644 "$(writetext <<'EOF'
+cmd sudo install -D -m 644 "$(writetext <<'EOF'
 MODULES=(ntsync)
 EOF
 )" /etc/mkinitcpio.conf.d/ntsync.conf
 
-cmd sudo install -Dm644 "$(writetext <<EOF
+cmd sudo install -D -m 644 "$(writetext <<EOF
 [Login]
 HandlePowerKey=sleep
 EOF
 )" /etc/systemd/logind.conf
 
-cmd sudo install -Dm644 "$(writetext <<EOF
+cmd sudo install -D -m 644 "$(writetext <<EOF
 LABEL=arch-root     	/         	ext4      	rw,relatime	0 1
 LABEL=arch-boot     	/boot     	vfat      	rw,relatime,fmask=0022,dmask=0022,codepage=437,iocharset=ascii,shortname=mixed,utf8,errors=remount-ro	0 2
 EOF
 )" /etc/fstab
 
 # disable legion go mouse since i have an adhd scrollwheel
-cmd sudo install -Dm644 "$(writetext <<'EOF'
+cmd sudo install -D -m 644 "$(writetext <<'EOF'
 ACTION=="add", SUBSYSTEM=="hid", ATTRS{idVendor}=="17ef", ATTRS{idProduct}=="61eb", \
 	RUN+="/bin/sh -c 'echo 1 > \"$(dirname \"$(head /sys/bus/hid/drivers/hid-multitouch/*:17EF:61EB.*/input/input*/name | grep -B 1 Mouse | head -n 1 | cut -d \" \" -f 2)\")/inhibited\"'"
 EOF

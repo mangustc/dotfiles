@@ -1,11 +1,11 @@
 #!/usr/bin/env -S sh -e
 
-cmd sudo install -Dm644 "$(writetext <<'EOF'
+cmd sudo install -D -m 644 "$(writetext <<'EOF'
 @audio - rtprio 98
 EOF
 )" /etc/security/limits.d/20-rt-audio.conf
 
-cmd install -Dm644 "$(writetext <<EOF
+cmd install -D -m 644 "$(writetext <<EOF
 context.properties = {
 	default.clock.rate = 48000
 	default.clock.allowed-rates = [ 48000 ]
@@ -16,7 +16,7 @@ context.properties = {
 }
 EOF
 )" ~/.config/pipewire/pipewire.conf.d/crackling-fix.conf
-cmd install -Dm644 "$(writetext <<EOF
+cmd install -D -m 644 "$(writetext <<EOF
 pulse.properties = {
 	pulse.min.req = 1024/48000
 	pulse.min.frag = 1024/48000
@@ -25,7 +25,7 @@ pulse.properties = {
 }
 EOF
 )" ~/.config/pipewire/pipewire-pulse.conf.d/crackling-fix.conf
-cmd install -Dm644 "$(writetext <<EOF
+cmd install -D -m 644 "$(writetext <<EOF
 jack.properties = {
 	node.latency = 1024/48000
 	node.quantum = 1024/48000
@@ -34,12 +34,12 @@ EOF
 )" ~/.config/pipewire/jack.conf.d/crackling-fix.conf
 
 # https://github.com/CachyOS/CachyOS-Settings/blob/8ac073c3a528f458d58d803775c399d7b845b2c6/usr/lib/modprobe.d/20-audio-pm.conf
-cmd sudo install -Dm644 "$(writetext <<EOF
+cmd sudo install -D -m 644 "$(writetext <<EOF
 options snd_hda_intel power_save=0
 EOF
 )" /etc/modprobe.d/audio-pm.conf
 # https://github.com/CachyOS/CachyOS-Settings/blob/8ac073c3a528f458d58d803775c399d7b845b2c6/usr/lib/udev/rules.d/20-audio-pm.rules
-cmd sudo install -Dm644 "$(writetext << 'EOF'
+cmd sudo install -D -m 644 "$(writetext << 'EOF'
 SUBSYSTEM=="power_supply", ENV{POWER_SUPPLY_ONLINE}=="0", TEST=="/sys/module/snd_hda_intel", \
     RUN+="/bin/sh -c 'echo $$(cat /run/udev/snd-hda-intel-powersave 2>/dev/null || \
         echo 10) > /sys/module/snd_hda_intel/parameters/power_save'"
@@ -52,7 +52,7 @@ EOF
 )" /etc/udev/rules.d/20-audio-pm.rules
 
 
-cmd install -Dm644 "$(writetext <<EOF
+cmd install -D -m 644 "$(writetext <<EOF
 monitor.alsa.rules = [
   {
     matches = [
