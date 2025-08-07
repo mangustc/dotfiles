@@ -57,6 +57,12 @@ ACTION=="add", SUBSYSTEM=="hid", ATTRS{idVendor}=="17ef", ATTRS{idProduct}=="61e
 EOF
 )" /etc/udev/rules.d/99-disable-legion-mouse.rules
 
+cmd sudo install -D -m 644 "$(writetext <<'EOF'
+export AMD_VULKAN_ICD=RADV
+export MESA_SHADER_CACHE_MAX_SIZE=12G
+EOF
+)" /etc/profile.d/increase-shadercache.sh
+
 config acpi_call
 config sysctl --opts "
 net.ipv4.tcp_mtu_probing = true
