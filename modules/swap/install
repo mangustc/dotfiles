@@ -1,4 +1,5 @@
 #!/usr/bin/env -S sh
+set -e
 
 usage() {
 	cat <<EOF
@@ -28,6 +29,7 @@ while [ $# -gt 0 ]; do
 done
 [ "$size" = "" ] && usage_err
 
+set +e
 if [ ! -f /swapfile ]; then
 	cmd sudo mkswap -U clear --size "$size" --file /swapfile
 else
@@ -44,6 +46,8 @@ fi
 if ! [ "$(swapon --show | grep "/swapfile" | cut -d ' ' -f 1)" = "/swapfile" ]; then
 	cmd sudo swapon /swapfile
 fi
+set -e
+
 cmd sudo install -D -m 644 "$(writetext <<EOF
 [Swap]
 What=/swapfile
@@ -52,4 +56,5 @@ What=/swapfile
 WantedBy=swap.target
 EOF
 )" /etc/systemd/system/swapfile.swap
+cmd sudo systemctl daemon-reload
 cmd sudo systemctl enable swapfile.swap
