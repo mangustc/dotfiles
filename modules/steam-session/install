@@ -1,4 +1,5 @@
-#!/usr/bin/env -S sh -e
+#!/usr/bin/env sh
+set -e
 
 cmd install -D -m 644 ./steam.desktop ~/.local/share/applications/steam.desktop
 cmd sudo install -D -m 644 ./steam-session.desktop /usr/share/wayland-sessions/steam-session.desktop

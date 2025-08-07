@@ -1,4 +1,5 @@
-#!/usr/bin/env -S sh -e
+#!/usr/bin/env sh
+set -e
 
 cmd rm -f ~/.gitconfig
 cmd install -D -m 644 "$(writetext <<'EOF'

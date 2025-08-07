@@ -1,3 +1,4 @@
-#!/usr/bin/env -S sh -e
+#!/usr/bin/env sh
+set -e
 
 cmd sudo systemctl enable tlp.service

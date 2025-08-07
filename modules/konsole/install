@@ -1,4 +1,5 @@
-#!/usr/bin/env -S sh -e
+#!/usr/bin/env sh
+set -e
 
 cmd rm -rf ~/.local/share/konsole
 cmd install -D -m 644 ./vague.colorscheme ~/.local/share/konsole/vague.colorscheme

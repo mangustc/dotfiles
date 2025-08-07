@@ -1,4 +1,5 @@
-#!/usr/bin/env -S sh -e
+#!/usr/bin/env sh
+set -e
 
 if ! [ -d ~/.local/share/kwin/scripts/krohnkite ]; then
 	cmd kpackagetool6 -t KWin/Script -i ./krohnkite.kwinscript
