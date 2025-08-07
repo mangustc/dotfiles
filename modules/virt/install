@@ -30,6 +30,11 @@ set -e
 cmd sudo usermod -aG kvm,input,libvirt "$(whoami)"
 
 cmd sudo install -D -m 755 "$(writetext <<'EOF'
+export LIBVIRT_DEFAULT_URI="qemu:///system"
+EOF
+)" /etc/profile.d/virt.sh
+
+cmd sudo install -D -m 755 "$(writetext <<'EOF'
 #!/bin/bash
 
 GUEST_NAME="$1"

@@ -2,3 +2,8 @@
 
 cmd sudo install -D -m 755 ./init.lua /root/.config/nvim/init.lua
 cmd install -Dm 755 ./init.lua ~/.config/nvim/init.lua
+
+cmd sudo install -D -m 755 "$(writetext <<'EOF'
+export EDITOR="nvim"
+EOF
+)" /etc/profile.d/neovim.sh
