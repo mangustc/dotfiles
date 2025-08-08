@@ -1,4 +1,74 @@
 #!/usr/bin/env sh
 set -e
 
-cmd install -D -m 644 ./conf.toml ~/.config/lsfg-vk/conf.toml
+newscript "lsfg-run" <<'EOF'
+#!/usr/bin/env sh
+set -e
+
+usage() {
+	cat <<END
+Usage: $(basename "$0") [FLAGS] -- COMMAND
+Flags:
+	[--help | -h] - show this message
+	[--multiplier | -m] NUM - set frame multiplier
+	[--flow | -f] NUM - set flow scale
+	[--no-perf | -n] - disable performance_mode
+END
+}
+usage_err() {
+	if ! [ "$1" = "" ]; then
+		echo "$1" >&2
+	fi
+	usage
+	exit 1
+}
+
+multiplier="2"
+flow="1.0"
+performance_mode="true"
+while [ $# -gt 0 ]; do
+	case $1 in
+		--help | -h)
+			usage
+			exit 0
+			;;
+		--performance-mode | -p)
+			[ "$2" = "" ] && usage_err "Argument not specified"
+			performance_mode="$2"
+			shift
+			;;
+		--multiplier | -m)
+			[ "$2" = "" ] && usage_err "Argument not specified"
+			multiplier="$2"
+			shift
+			;;
+		--flow | -f)
+			[ "$2" = "" ] && usage_err "Argument not specified"
+			flow="$2"
+			shift
+			;;
+		--)
+			[ "$2" = "" ] && usage_err "Command not specified"
+			shift
+			break
+			;;
+		*)
+			usage_err "Invalid option: $1"
+			;;
+	esac
+	shift
+done
+
+export LSFG_PROCESS="lsfg-run-command"
+cat > ~/.config/lsfg-vk/conf.toml <<END
+version = 1
+[global]
+[[game]]
+exe = "$LSFG_PROCESS"
+multiplier = $multiplier
+flow_scale = $flow
+performance_mode = $performance_mode
+END
+
+exec "$@"
+EOF
