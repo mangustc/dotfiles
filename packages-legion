@@ -37,6 +37,9 @@ vial-appimage
 # rpcs3-bin
 protonplus
 wine
+jre21-openjdk
+jre8-openjdk
+prismlauncher
 
 # programming
 android-studio
