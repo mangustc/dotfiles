@@ -6,11 +6,11 @@ if ! [ -d ~/.local/share/kwin/scripts/krohnkite ]; then
 fi
 cmd kpackagetool6 -t KWin/Script -u ./krohnkite.kwinscript
 
-newscript "chlayout" <<EOF
+newscript "chlayout" <<'EOF'
 #!/usr/bin/env sh
 
-if [ "\$1" = "default" ]; then
-	if ([ ! "\$KDE_SESSION_UID" == "" ] || [ "\$XDG_CURRENT_DESKTOP" == "KDE" ]) && ([ ! "\$WAYLAND_DISPLAY" == "" ] || [ "\$XDG_SESSION_TYPE" == "wayland" ]); then
+if [ "$1" = "default" ]; then
+	if ([ ! "$KDE_SESSION_UID" == "" ] || [ "$XDG_CURRENT_DESKTOP" == "KDE" ]) && ([ ! "$WAYLAND_DISPLAY" == "" ] || [ "$XDG_SESSION_TYPE" == "wayland" ]); then
 		kwriteconfig6 --file ~/.config/kxkbrc --group Layout --key LayoutList "us,ru"
 		kwriteconfig6 --file ~/.config/kxkbrc --group Layout --key VariantList "dvorak,"
 		kwriteconfig6 --file ~/.config/kxkbrc --group Layout --key Options "terminate:ctrl_alt_bksp,grp:caps_toggle"
@@ -20,8 +20,8 @@ if [ "\$1" = "default" ]; then
 	else
 		setxkbmap -layout us,ru -variant dvorak, -option "grp:caps_toggle" -option "terminate:ctrl_alt_bksp"
 	fi
-elif [ "\$1" = "gaming" ]; then
-	if ([ ! "\$KDE_SESSION_UID" == "" ] || [ "\$XDG_CURRENT_DESKTOP" == "KDE" ]) && ([ ! "\$WAYLAND_DISPLAY" == "" ] || [ "\$XDG_SESSION_TYPE" == "wayland" ]); then
+elif [ "$1" = "gaming" ]; then
+	if ([ ! "$KDE_SESSION_UID" == "" ] || [ "$XDG_CURRENT_DESKTOP" == "KDE" ]) && ([ ! "$WAYLAND_DISPLAY" == "" ] || [ "$XDG_SESSION_TYPE" == "wayland" ]); then
 		kwriteconfig6 --file ~/.config/kxkbrc --group Layout --key LayoutList "us"
 		kwriteconfig6 --file ~/.config/kxkbrc --group Layout --key VariantList ""
 		kwriteconfig6 --file ~/.config/kxkbrc --group Layout --key Options "terminate:ctrl_alt_bksp"
@@ -32,8 +32,83 @@ elif [ "\$1" = "gaming" ]; then
 		setxkbmap -layout us -option "terminate:ctrl_alt_bksp"
 	fi
 else
-	echo "Unknown option: \"$1\""
+	echo "Unknown option: [$1]" >&2
+	exit 1
 fi
+EOF
+
+newscript "chres" <<'EOF'
+#!/usr/bin/env sh
+set -e
+
+usage() {
+	cat <<END
+Usage: $(basename "$0") [FLAGS]
+Flags:
+	[--resolution | -r] RESOLUTION (Example: 1920x1080)
+	[--freq | -f] REFRESH_RATE (Example: 60)
+	[--output | -o] OUTPUT_NAME (Example: DP-3)
+END
+}
+usage_err() {
+	if ! [ "$1" = "" ]; then
+		echo "$1" >&2
+	fi
+	usage
+	exit 1
+}
+
+output="DP-3"
+while [ $# -gt 0 ]; do
+	case $1 in
+		--resolution | -r)
+			[ "$2" = "" ] && usage_err "Argument not specified"
+			resolution="$2"
+			shift
+			;;
+		--freq | -f)
+			[ "$2" = "" ] && usage_err "Argument not specified"
+			freq="$2"
+			shift
+			;;
+		--output | -o)
+			[ "$2" = "" ] && usage_err "Argument not specified"
+			output="$2"
+			shift
+			;;
+		*)
+			usage_err "Invalid option: $1"
+			;;
+	esac
+	shift
+done
+[ $output = "" ] && usage_err "Output is required"
+
+if [ "$resolution" = "" ]; then
+	jq_prompt="
+		.outputs[]
+		| select(.name == \"$output\")
+		as \$output
+		| \$output.modes[]
+		| select(.id == \$output.currentModeId)
+		| \"\(.size.width)x\(.size.height)\"
+	"
+	resolution="$(kscreen-doctor --json | jq -r "$jq_prompt")"
+fi
+
+resolution_width="$(echo "$resolution" | cut -d 'x' -f 1)"
+resolution_height="$(echo "$resolution" | cut -d 'x' -f 2)"
+if [ "$freq" = "" ]; then
+	jq_prompt="
+		.outputs[]
+		| select(.name == \"$output\")
+		| .modes
+		| map(select(.size.width == $resolution_width and .size.height == $resolution_height) | .refreshRate)
+		| max
+	"
+	freq="$(kscreen-doctor --json | jq -r "$jq_prompt" | cut -d '.' -f 1)"
+fi
+kscreen-doctor "output.$output.mode.$resolution@$freq"
 EOF
 
 cmd install -D -m 755 "$(writetext <<EOF
@@ -70,7 +145,7 @@ EOF
 
 cmd install -D -m 755 "$(writetext <<EOF
 [Desktop Entry]
-Exec=kscreen-doctor output.DP-3.mode.1920x1080@70
+Exec=chres -r 1920x1080
 Name=chres 1
 NoDisplay=true
 StartupNotify=false
@@ -80,7 +155,7 @@ EOF
 )" ~/.local/share/applications/net.local.chres-1.desktop
 cmd install -D -m 755 "$(writetext <<EOF
 [Desktop Entry]
-Exec=kscreen-doctor output.DP-3.mode.1600x900@76
+Exec=chres -r 1600x900
 Name=chres 2
 NoDisplay=true
 StartupNotify=false
@@ -90,7 +165,7 @@ EOF
 )" ~/.local/share/applications/net.local.chres-2.desktop
 cmd install -D -m 755 "$(writetext <<EOF
 [Desktop Entry]
-Exec=kscreen-doctor output.DP-3.mode.1280x720@76
+Exec=chres -r 1280x720
 Name=chres 3
 NoDisplay=true
 StartupNotify=false
@@ -98,6 +173,36 @@ Type=Application
 X-KDE-GlobalAccel-CommandShortcut=true
 EOF
 )" ~/.local/share/applications/net.local.chres-3.desktop
+cmd install -D -m 755 "$(writetext <<EOF
+[Desktop Entry]
+Exec=chres -f 60
+Name=chres 4
+NoDisplay=true
+StartupNotify=false
+Type=Application
+X-KDE-GlobalAccel-CommandShortcut=true
+EOF
+)" ~/.local/share/applications/net.local.chres-4.desktop
+cmd install -D -m 755 "$(writetext <<EOF
+[Desktop Entry]
+Exec=chres -f 70
+Name=chres 5
+NoDisplay=true
+StartupNotify=false
+Type=Application
+X-KDE-GlobalAccel-CommandShortcut=true
+EOF
+)" ~/.local/share/applications/net.local.chres-5.desktop
+cmd install -D -m 755 "$(writetext <<EOF
+[Desktop Entry]
+Exec=chres -f 76
+Name=chres 6
+NoDisplay=true
+StartupNotify=false
+Type=Application
+X-KDE-GlobalAccel-CommandShortcut=true
+EOF
+)" ~/.local/share/applications/net.local.chres-6.desktop
 cmd install -D -m 600 ./kglobalshortcutsrc ~/.config/kglobalshortcutsrc
 
 cmd install -D -m 600 "$(writetext <<'EOF'
