@@ -50,6 +50,19 @@ Each module has an `install` script which can be anything you want. Also it is p
 
 ## quirks and fixes
 
+## Steam client
+
+Disable `Shader Pre-Caching` in Settings-Downloads. Modern PCs should be OK without without this feature. Also you can increase shader cache size:
+
+```sh
+# AMD GPU
+export AMD_VULKAN_ICD=RADV
+export MESA_SHADER_CACHE_MAX_SIZE=12G
+
+# NVIDIA GPU
+export __GL_SHADER_DISK_CACHE_SIZE=12000000000
+```
+
 ### steam-session
 
 First, try launching steam from a desktop environment, avoiding steam-session. Afterwards, when all steam files are downloaded try launching gamescope steam-session.
