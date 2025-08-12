@@ -9,6 +9,7 @@ lib32-mesa
 lib32-vulkan-radeon
 linux
 linux-firmware
+linux-headers
 qt5-declarative
 paru-bin
 7zip
