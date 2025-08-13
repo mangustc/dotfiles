@@ -10,5 +10,7 @@ cmd install -D -m 644 "$(writetext <<'EOF'
 	defaultBranch = main
 [core]
 	quotepath = false
+[pull]
+	rebase = true
 EOF
 )" ~/.config/git/config
