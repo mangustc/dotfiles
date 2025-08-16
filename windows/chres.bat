@@ -28,4 +28,3 @@ goto End
 
 :End
 echo Exiting...
-pause
