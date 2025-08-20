@@ -1,7 +1,7 @@
 <gui name="konsole" version="1">
   <ActionProperties>
-    <Action name="edit_copy" shortcut="; "/>
-    <Action name="edit_paste" shortcut="; "/>
+    <Action name="edit_copy" shortcut="Alt+C; Ctrl+Shift+C"/>
+    <Action name="edit_paste" shortcut="Alt+V; Ctrl+Shift+V"/>
     <Action name="enlarge-font" shortcut="Alt++; Alt+="/>
     <Action name="shrink-font" shortcut="Alt+-; Alt+_"/>
     <Action name="reset-font-size" shortcut="Alt+0"/>
