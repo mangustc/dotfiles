@@ -1,0 +1,72 @@
+keybinds clear-defaults=true {
+    normal {
+        bind "Alt left" { GoToPreviousTab; }
+        bind "Alt down" { GoToNextTab; }
+        bind "Alt up" { GoToPreviousTab; }
+        bind "Alt right" { GoToNextTab; }
+        bind "Alt 1" { GoToTab 1; }
+        bind "Alt 2" { GoToTab 2; }
+        bind "Alt 3" { GoToTab 3; }
+        bind "Alt 4" { GoToTab 4; }
+        bind "Alt 5" { GoToTab 5; }
+        bind "Alt 6" { GoToTab 6; }
+        bind "Alt 7" { GoToTab 7; }
+        bind "Alt 8" { GoToTab 8; }
+        bind "Alt 9" { GoToTab 9; }
+        bind "Alt h" { GoToPreviousTab; }
+        bind "Alt j" { GoToNextTab; }
+        bind "Alt k" { GoToPreviousTab; }
+        bind "Alt l" { GoToNextTab; }
+        bind "Alt t" { NewTab; }
+        bind "Alt x" { CloseTab; }
+        bind "Alt tab" { ToggleTab; }
+
+        bind "Alt /" { SwitchToMode "EnterSearch"; SearchInput 0; }
+    }
+    shared {
+        bind "Alt d" { HalfPageScrollDown; }
+        bind "Alt u" { HalfPageScrollUp; }
+    }
+    shared_except "normal" {
+        bind "Enter" "Esc" { SwitchToMode "Normal"; }
+    }
+    search {
+        bind "Ctrl c" { ScrollToBottom; SwitchToMode "Normal"; }
+        bind "j" "Down" { ScrollDown; }
+        bind "k" "Up" { ScrollUp; }
+        bind "l" "Right" { PageScrollDown; }
+        bind "h" "Left" { PageScrollUp; }
+        bind "d" { HalfPageScrollDown; }
+        bind "u" { HalfPageScrollUp; }
+        bind "n" { Search "down"; }
+        bind "N" { Search "up"; }
+        bind "c" { SearchToggleOption "CaseSensitivity"; }
+        bind "w" { SearchToggleOption "Wrap"; }
+        bind "o" { SearchToggleOption "WholeWord"; }
+    }
+    entersearch {
+        bind "Enter" { SwitchToMode "Search"; }
+    }
+}
+default_mode "normal"
+
+themes {
+    vague {
+        fg "#cdcdcd"
+        bg "#606079"
+        black "#141415"
+        red "#d8647e"
+        green "#99b782"
+        yellow "#f5cb96"
+        blue "#8ba9c1"
+        magenta "#c9b1ca"
+        cyan "#bebeda"
+        white "#cdcdcd"
+        orange "#f3be7c"
+    }
+}
+theme "vague"
+simplified_ui true
+
+show_startup_tips false
+show_release_notes false

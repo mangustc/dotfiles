@@ -1,12 +1,41 @@
 #!/usr/bin/env sh
 set -e
 
+usage() {
+	cat <<EOF
+Example: config $DOTFILES_MODULE_NAME [FLAGS]
+Flags:
+	[ --zellij ] - run zellij on interactive shell
+EOF
+}
+usage_err() {
+	if ! [ "$1" = "" ]; then
+		echo "$1" >&2
+	fi
+	usage
+	exit 1
+}
+
+while [ $# -gt 0 ]; do
+	case $1 in
+		--zellij)
+			zellij=true
+			;;
+		*)
+			usage_err "Invalid option: $1"
+			;;
+	esac
+	shift
+done
+
 cmd sudo chsh -s /bin/bash "$(whoami)"
 cmd sudo chsh -s /bin/bash
 
 cmd sudo rm -rf /etc/fish
 cmd sudo install -D -m 755 ./config.fish /etc/fish/config.fish
-cmd sudo install -D -m 755 "$(writetext <<'EOF'
+
+if [ "$zellij" = "" ]; then
+	cmd sudo install -D -m 755 "$(writetext <<'EOF'
 [[ $- != *i* ]] && return
 
 if [[ $(ps --no-header --pid=$PPID --format=comm) != "fish" && -z ${BASH_EXECUTION_STRING} && ${SHLVL} == 1 ]]
@@ -15,6 +44,22 @@ then
 	exec fish $LOGIN_OPTION
 fi
 EOF
-)" /etc/bash.bashrc
+	)" /etc/bash.bashrc
+else
+	cmd sudo install -D -m 755 "$(writetext <<'EOF'
+[[ $- != *i* ]] && return
+
+if [[ $(ps --no-header --pid=$PPID --format=comm) != "fish" && -z ${BASH_EXECUTION_STRING} && ${SHLVL} == 1 ]]
+then
+	if [ -z "${ZELLIJ}" ]; then
+		exec zellij
+	else
+		shopt -q login_shell && LOGIN_OPTION='--login' || LOGIN_OPTION=''
+		exec fish $LOGIN_OPTION
+	fi
+fi
+EOF
+	)" /etc/bash.bashrc
+fi
 
 

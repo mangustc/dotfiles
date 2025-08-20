@@ -92,7 +92,7 @@ config nethandlerm
 config ssh-agent
 config plasma
 config neovim
-config fish
+config fish --zellij
 config dualsense
 config mangohud
 config archscripts --dotfiles "$DOTFILES_DIR" --host "$DOTFILES_HOST"
@@ -109,6 +109,7 @@ config scripts
 config legion-go-sound
 config lsfg
 config konsole
+config zellij
 
 # end
 print_orphan_packages

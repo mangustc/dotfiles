@@ -1,0 +1,32 @@
+#!/usr/bin/env sh
+set -e
+
+usage() {
+	cat <<EOF
+Example: config $DOTFILES_MODULE_NAME
+EOF
+}
+usage_err() {
+	if ! [ "$1" = "" ]; then
+		echo "$1" >&2
+	fi
+	usage
+	exit 1
+}
+
+while [ $# -gt 0 ]; do
+	case $1 in
+		*)
+			usage_err "Invalid option: $1"
+			;;
+	esac
+	shift
+done
+
+cmd rm -rf ~/.config/zellij
+cmd install -D -m 644 ./zellij/config.kdl ~/.config/zellij/config.kdl
+cmd install -D -m 644 ./zellij/layouts/default.kdl ~/.config/zellij/layouts/default.kdl
+
+cmd sudo rm -rf /root/.config/zellij
+cmd sudo install -D -m 644 ./zellij/config.kdl /root/.config/zellij/config.kdl
+cmd sudo install -D -m 644 ./zellij/layouts/default.kdl /root/.config/zellij/layouts/default.kdl

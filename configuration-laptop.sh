@@ -76,7 +76,7 @@ config ssh-agent
 config tlp
 config plasma
 config neovim
-config fish
+config fish --zellij
 config archscripts --dotfiles "$DOTFILES_DIR" --host "$DOTFILES_HOST"
 config git
 config bluetooth
@@ -85,6 +85,7 @@ config flatpak --flatpaks "
 config sddm
 config scripts
 config konsole
+config zellij
 
 # end
 print_orphan_packages
