@@ -1,5 +1,5 @@
-scheme: "Vague kitty"
-author: "vague2k, ported by skewb1k"
+scheme: "vague"
+author: "vague2k"
 base00: "141415" # background / ----
 base01: "252530" # selection_background / ---
 base02: "606079" # inactive_tab_foreground / --
