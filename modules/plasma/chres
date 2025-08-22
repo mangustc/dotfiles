@@ -1,0 +1,80 @@
+#!/usr/bin/env sh
+set -e
+
+usage() {
+	cat <<END
+Usage: $(basename "$0") [FLAGS]
+Flags:
+	[--resolution | -r] RESOLUTION (Example: 1920x1080)
+	[--freq | -f] REFRESH_RATE (Example: 60)
+	[--output | -o] OUTPUT_NAME (Example: DP-3)
+	[--cli]
+Notes:
+	If REFRESH_RATE is not set it will set RESOLUTION highest possible refresh rate mode
+END
+}
+usage_err() {
+	if ! [ "$1" = "" ]; then
+		echo "$1" >&2
+	fi
+	usage
+	exit 1
+}
+
+output="DP-3"
+while [ $# -gt 0 ]; do
+	case $1 in
+		--resolution | -r)
+			[ "$2" = "" ] && usage_err "Argument not specified"
+			resolution="$2"
+			shift
+			;;
+		--freq | -f)
+			[ "$2" = "" ] && usage_err "Argument not specified"
+			freq="$2"
+			shift
+			;;
+		--output | -o)
+			[ "$2" = "" ] && usage_err "Argument not specified"
+			output="$2"
+			shift
+			;;
+		--cli)
+			cli=true
+			shift
+			;;
+		*)
+			usage_err "Invalid option: $1"
+			;;
+	esac
+	shift
+done
+[ $output = "" ] && usage_err "Output is required"
+
+if [ "$resolution" = "" ]; then
+	jq_prompt="
+		.outputs[]
+		| select(.name == \"$output\")
+		as \$output
+		| \$output.modes[]
+		| select(.id == \$output.currentModeId)
+		| \"\(.size.width)x\(.size.height)\"
+	"
+	resolution="$(kscreen-doctor --json | jq -r "$jq_prompt")"
+fi
+
+resolution_width="$(echo "$resolution" | cut -d 'x' -f 1)"
+resolution_height="$(echo "$resolution" | cut -d 'x' -f 2)"
+if [ "$freq" = "" ]; then
+	jq_prompt="
+		.outputs[]
+		| select(.name == \"$output\")
+		| .modes
+		| map(select(.size.width == $resolution_width and .size.height == $resolution_height) | .refreshRate)
+		| max
+		| round
+	"
+	freq="$(kscreen-doctor --json | jq -r "$jq_prompt")"
+fi
+kscreen-doctor "output.$output.mode.$resolution@$freq"
+
