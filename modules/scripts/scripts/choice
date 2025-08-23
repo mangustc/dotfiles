@@ -36,6 +36,7 @@ while [ $# -gt 0 ]; do
 	esac
 	shift
 done
+echo "*) Any other key to quit"
 read -p "Choose command: " -n 1 char
 echo ""
 eval "command=\"\$cmd$char\""
