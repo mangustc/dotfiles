@@ -1,0 +1,42 @@
+#!/usr/bin/env sh
+set -e
+
+usage() {
+	cat <<END
+Usage: $(basename "$0") [FLAGS]
+Flags:
+	[--cmd | -c] KEY COMMAND (Example: 1 "kscreen-doctor 'output.DP-3.mode.1920x1080@60'")
+END
+}
+usage_err() {
+	if ! [ "$1" = "" ]; then
+		echo "$1" >&2
+	fi
+	usage
+	exit 1
+}
+
+echo "Commands:"
+while [ $# -gt 0 ]; do
+	case $1 in
+		--cmd | -c)
+			[ "$2" = "" ] && usage_err "Key and command not specified"
+			[ "$3" = "" ] && usage_err "Command not specified"
+
+			[ "$(echo "$2" | wc -m)" = "2" ] || usage_err "Key should be a single character"
+			
+			eval "cmd$2=\"\$3\""
+			echo "$2) $(eval echo "\$cmd$2")"
+			
+			shift 2
+			;;
+		*)
+			usage_err "Invalid option: $1"
+			;;
+	esac
+	shift
+done
+read -p "Choose command: " -n 1 char
+echo ""
+eval "command=\"\$cmd$char\""
+eval $command
