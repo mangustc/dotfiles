@@ -37,8 +37,6 @@ else
 fi
 EOF
 
-cmd sudo install -D -m 755 ./chres /usr/local/bin/chres
-
 cmd install -D -m 755 "$(writetext <<EOF
 [Desktop Entry]
 Exec=chlayout default
@@ -73,64 +71,15 @@ EOF
 
 cmd install -D -m 755 "$(writetext <<EOF
 [Desktop Entry]
-Exec=chres -r 1920x1080
-Name=chres 1
-NoDisplay=true
+Exec=choice --cmd 1 "kscreen-doctor output.DP-3.mode.1920x1080@70" --cmd 2 "kscreen-doctor output.DP-3.mode.1600x900@76" --cmd 3 "kscreen-doctor output.DP-3.mode.1280x720@76" --cmd 4 "kscreen-doctor output.DP-3.mode.960x540@76"
+Name=choice chres
+NoDisplay=false
+Terminal=true
 StartupNotify=false
 Type=Application
 X-KDE-GlobalAccel-CommandShortcut=true
 EOF
-)" ~/.local/share/applications/net.local.chres-1.desktop
-cmd install -D -m 755 "$(writetext <<EOF
-[Desktop Entry]
-Exec=chres -r 1600x900
-Name=chres 2
-NoDisplay=true
-StartupNotify=false
-Type=Application
-X-KDE-GlobalAccel-CommandShortcut=true
-EOF
-)" ~/.local/share/applications/net.local.chres-2.desktop
-cmd install -D -m 755 "$(writetext <<EOF
-[Desktop Entry]
-Exec=chres -r 1280x720
-Name=chres 3
-NoDisplay=true
-StartupNotify=false
-Type=Application
-X-KDE-GlobalAccel-CommandShortcut=true
-EOF
-)" ~/.local/share/applications/net.local.chres-3.desktop
-cmd install -D -m 755 "$(writetext <<EOF
-[Desktop Entry]
-Exec=chres -f 60
-Name=chres 4
-NoDisplay=true
-StartupNotify=false
-Type=Application
-X-KDE-GlobalAccel-CommandShortcut=true
-EOF
-)" ~/.local/share/applications/net.local.chres-4.desktop
-cmd install -D -m 755 "$(writetext <<EOF
-[Desktop Entry]
-Exec=chres -f 70
-Name=chres 5
-NoDisplay=true
-StartupNotify=false
-Type=Application
-X-KDE-GlobalAccel-CommandShortcut=true
-EOF
-)" ~/.local/share/applications/net.local.chres-5.desktop
-cmd install -D -m 755 "$(writetext <<EOF
-[Desktop Entry]
-Exec=chres -f 76
-Name=chres 6
-NoDisplay=true
-StartupNotify=false
-Type=Application
-X-KDE-GlobalAccel-CommandShortcut=true
-EOF
-)" ~/.local/share/applications/net.local.chres-6.desktop
+)" ~/.local/share/applications/net.local.choice-chres.desktop
 cmd install -D -m 600 ./kglobalshortcutsrc ~/.config/kglobalshortcutsrc
 
 cmd install -D -m 600 "$(writetext <<'EOF'

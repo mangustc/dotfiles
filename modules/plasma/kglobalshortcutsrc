@@ -290,28 +290,13 @@ switch to previous activity=none,,Switch to Previous Activity
 toggle do not disturb=none,,Toggle do not disturb
 
 [services][net.local.chlayout-default.desktop]
-_launch=Meta+Ctrl+Alt+2
-
-[services][net.local.chlayout-gaming.desktop]
-_launch=Meta+Ctrl+Alt+3
-
-[services][net.local.chres-1.desktop]
-_launch=Meta+Ctrl+Alt+4
-
-[services][net.local.chres-2.desktop]
 _launch=Meta+Ctrl+Alt+5
 
-[services][net.local.chres-3.desktop]
+[services][net.local.chlayout-gaming.desktop]
 _launch=Meta+Ctrl+Alt+6
 
-[services][net.local.chres-4.desktop]
-_launch=Meta+Ctrl+Alt+7
-
-[services][net.local.chres-5.desktop]
-_launch=Meta+Ctrl+Alt+8
-
-[services][net.local.chres-6.desktop]
-_launch=Meta+Ctrl+Alt+9
+[services][net.local.choice-chres.desktop]
+_launch=Meta+Ctrl+Alt+2
 
 [services][net.local.terminal.desktop]
 _launch=Meta+Tab\tMeta+T
