@@ -16,7 +16,7 @@ usage_err() {
 	exit 1
 }
 
-echo "Commands:"
+echo "Commands:" >&2
 while [ $# -gt 0 ]; do
 	case $1 in
 		--cmd | -c)
@@ -26,7 +26,7 @@ while [ $# -gt 0 ]; do
 			[ "$(echo "$2" | wc -m)" = "2" ] || usage_err "Key should be a single character"
 			
 			eval "cmd$2=\"\$3\""
-			echo "$2) $(eval echo "\$cmd$2")"
+			echo "$2) $(eval echo "\$cmd$2")" >&2
 			
 			shift 2
 			;;
@@ -36,8 +36,8 @@ while [ $# -gt 0 ]; do
 	esac
 	shift
 done
-echo "*) Any other key to quit"
+echo "*) Any other key to quit" >&2
 read -p "Choose command: " -n 1 char
-echo ""
+echo "" >&2
 eval "command=\"\$cmd$char\""
 eval $command
