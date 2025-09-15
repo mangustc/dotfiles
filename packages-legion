@@ -17,6 +17,7 @@ unrar
 unzip
 ntfs-3g
 sbctl
+dosfstools
 
 # progs
 btop
