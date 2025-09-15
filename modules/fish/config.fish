@@ -166,7 +166,7 @@ function fish_prompt
     echo -n -s "$nix_shell_info" (set_color $color_cwd) (prompt_pwd -D 3) $normal (fish_vcs_prompt) $normal " "$prompt_status $suffix " "
 end
 
-alias eza "eza -M --icons=always --no-permissions --group-directories-first --git --color=always"
+alias eza "eza -M -o --icons=always --no-permissions --group-directories-first --git --color=always"
 abbr --position anywhere ns "nix-shell --run fish -p";
 abbr --position anywhere rm "rm -vrf";
 abbr --position anywhere cp "cp -vr";
