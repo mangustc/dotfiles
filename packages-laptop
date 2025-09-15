@@ -13,6 +13,7 @@ qt5-declarative
 paru-bin
 7zip
 unrar
+zip
 unzip
 ntfs-3g
 sbctl
@@ -30,6 +31,17 @@ zen-browser-bin
 discord
 qbittorrent
 gparted
+libreoffice-still
 
 # programming
 android-studio
+dart
+compiler-rt
+clang
+cppdap
+rhash
+cmake
+ninja
+jdk21-openjdk
+go
+ghc
