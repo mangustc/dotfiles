@@ -1,0 +1,15 @@
+[Desktop Entry]
+Comment=
+Exec=/usr/bin/soffice --convert-to pdf '%U' --outdir "$(dirname '%U')"
+Name=Convert to pdf
+Icon=document-send
+Path=
+PrefersNonDefaultGPU=false
+StartupNotify=true
+Terminal=false
+TerminalOptions=
+Type=Application
+X-KDE-SubstituteUID=false
+X-KDE-Username=
+MimeType=application/vnd.openxmlformats-officedocument.wordprocessingml.document;application/vnd.oasis.opendocument.text;
+
