@@ -73,7 +73,7 @@ config pipewire
 config networkmanager
 config nethandlerm
 config ssh-agent
-config tlp
+config ppd
 config plasma
 config neovim
 config fish --zellij
