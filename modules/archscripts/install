@@ -62,6 +62,7 @@ if [ "\$1" = 'upgrade' ]; then
 	sudo locale-gen
 	sudo bootctl update
 	sudo hwclock --systohc
+	command -v sbctl >/dev/null 2>&1 && sudo sbctl sign-all
 fi
 EOF
 
