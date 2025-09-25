@@ -1,9 +1,7 @@
 keybinds clear-defaults=true {
     normal {
-        bind "Alt left" { GoToPreviousTab; }
         bind "Alt down" { GoToNextTab; }
         bind "Alt up" { GoToPreviousTab; }
-        bind "Alt right" { GoToNextTab; }
         bind "Alt 1" { GoToTab 1; }
         bind "Alt 2" { GoToTab 2; }
         bind "Alt 3" { GoToTab 3; }
