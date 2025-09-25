@@ -38,7 +38,7 @@ while [ $# -gt 0 ]; do
 			shift
 			;;
 		*)
-			doc_path="$1"
+			[ "$doc_path" = "" ] && doc_path="$1" || doc_path="$doc_path $1"
 			;;
 	esac
 	shift
