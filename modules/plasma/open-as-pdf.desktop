@@ -1,7 +1,7 @@
 [Desktop Entry]
 Comment=
-Exec=doctopdf '%U' -f
-Name=Convert to pdf
+Exec=doctopdf '%U' -v
+Name=Open as pdf
 Icon=document-send
 Path=
 PrefersNonDefaultGPU=false
