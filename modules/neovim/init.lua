@@ -81,6 +81,7 @@ vim.pack.add({
 	{ src = "https://github.com/nvim-telescope/telescope-fzf-native.nvim", },
 	{ src = "https://github.com/nvim-telescope/telescope.nvim", },
 	{ src = "https://github.com/Saghen/blink.cmp", version = "v1.6.0" },
+	{ src = "https://github.com/nmac427/guess-indent.nvim", },
 })
 
 vim.cmd("colorscheme vague")
@@ -98,6 +99,8 @@ require("gitsigns").setup({
 require("todo-comments").setup({})
 
 require("nvim-autopairs").setup({})
+
+require('guess-indent').setup({})
 
 require("ibl").setup({})
 
@@ -146,6 +149,7 @@ vim.keymap.set("n", "<leader>lf", vim.lsp.buf.format)
 vim.lsp.enable({
 	"lua_ls",
 	"bashls",
+	"hls",
 })
 require("blink.cmp").setup({
 	signature = { enabled = true },
@@ -190,6 +194,7 @@ vim.keymap.set("n", "<leader>f", builtin.find_files, { desc = "[S]earch [F]iles"
 vim.keymap.set("n", "<leader>g", builtin.live_grep, { desc = "[S]earch by [G]rep" })
 vim.keymap.set("n", "<leader>td", builtin.diagnostics, { desc = "[S]earch [D]iagnostics" })
 vim.keymap.set("n", "<leader>pf", builtin.oldfiles, { desc = '[S]earch Recent Files' })
+vim.keymap.set("n", "gtd", vim.diagnostic.open_float)
 
 vim.keymap.set("n", "<leader>pt", ":Ex .<CR>")
 vim.keymap.set("n", "<leader>pc", ":Ex<CR>")
