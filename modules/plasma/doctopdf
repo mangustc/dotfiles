@@ -50,7 +50,7 @@ elif [ ! -f "$doc_path" ]; then
 	usage_err "provided document file does not exist"
 fi
 
-doc_as_pdf_name="$(echo "$doc_path" | cut -d '.' -f 1).pdf"
+doc_as_pdf_name="${doc_path%.*}.pdf"
 if [ "$output" = "" ]; then
 	pdf_path="$doc_as_pdf_name"
 else
