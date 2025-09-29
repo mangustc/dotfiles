@@ -46,6 +46,5 @@ cmake
 ninja
 jdk21-openjdk
 go
-ghc
 android-tools
 android-udev
