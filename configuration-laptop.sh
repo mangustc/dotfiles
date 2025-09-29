@@ -86,6 +86,7 @@ config sddm
 config scripts
 config konsole
 config zellij
+config fonts
 
 # end
 print_orphan_packages
