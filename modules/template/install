@@ -30,6 +30,5 @@ while [ $# -gt 0 ]; do
 	esac
 	shift
 done
-[ "$argb" = "" ] && usage_err "Flag not specified"
 
 
