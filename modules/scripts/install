@@ -1,4 +1,5 @@
 #!/usr/bin/env sh
 set -e
 
-cmd sudo find ./scripts -type f -exec install -D -m 755 {} /usr/local/bin \;
+cmd sudo find ./scripts -type f -exec sh -c 'install -D -m 755 "$1" "/usr/local/bin/$(basename "$1")"' _ {} \;
+

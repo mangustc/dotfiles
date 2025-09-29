@@ -23,5 +23,5 @@ while [ $# -gt 0 ]; do
 	shift
 done
 
-cmd sudo find ./fonts -type f -exec install -D -m 644 '{}' /usr/local/share/fonts \;
+cmd sudo find ./fonts -type f -exec sh -c 'install -D -m 644 "$1" "/usr/local/share/fonts/$(basename "$1")"' _ {} \;
 
