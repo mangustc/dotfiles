@@ -88,5 +88,7 @@ config konsole
 config zellij
 config fonts
 
+cmd install -D -m 644 ./modules/steam-session/steam.desktop ~/.local/share/applications/steam.desktop
+
 # end
 print_orphan_packages
