@@ -1,10 +1,40 @@
 #!/usr/bin/env sh
 set -e
 
-if ! [ -d ~/.local/share/kwin/scripts/krohnkite ]; then
-	cmd kpackagetool6 -t KWin/Script -i ./krohnkite.kwinscript
+if ! [ -d ~/.local/share/kwin/scripts/karousel ]; then
+	cmd kpackagetool6 -t KWin/Script -i ./karousel.tar.gz
 fi
-cmd kpackagetool6 -t KWin/Script -u ./krohnkite.kwinscript
+cmd kpackagetool6 -t KWin/Script -u ./karousel.tar.gz
+
+# write to kwinrc
+kwriteconfig6 --file ~/.config/kwinrc --group Desktops --key Number "5"
+kwriteconfig6 --file ~/.config/kwinrc --group Desktops --key Rows "1"
+
+kwriteconfig6 --file ~/.config/kwinrc --group Effect-windowview --key TouchBorderActivateAll "6"
+
+kwriteconfig6 --file ~/.config/kwinrc --group Plugins --key karouselEnabled "true"
+kwriteconfig6 --file ~/.config/kwinrc --group Plugins --key krohnkiteEnabled "false"
+kwriteconfig6 --file ~/.config/kwinrc --group Plugins --key slideEnabled "false"
+kwriteconfig6 --file ~/.config/kwinrc --group Plugins --key touchpointsEnabled "true"
+
+kwriteconfig6 --file ~/.config/kwinrc --group Script-karousel --key gapsInnerHorizontal "0"
+kwriteconfig6 --file ~/.config/kwinrc --group Script-karousel --key gapsInnerVertical "0"
+kwriteconfig6 --file ~/.config/kwinrc --group Script-karousel --key gapsOuterBottom "0"
+kwriteconfig6 --file ~/.config/kwinrc --group Script-karousel --key gapsOuterLeft "0"
+kwriteconfig6 --file ~/.config/kwinrc --group Script-karousel --key gapsOuterRight "0"
+kwriteconfig6 --file ~/.config/kwinrc --group Script-karousel --key gapsOuterTop "0"
+kwriteconfig6 --file ~/.config/kwinrc --group Script-karousel --key gestureScroll "true"
+
+kwriteconfig6 --file ~/.config/kwinrc --group Script-krohnkite --key binaryTreeLayoutOrder "0"
+kwriteconfig6 --file ~/.config/kwinrc --group Script-krohnkite --key cascadeLayoutOrder "0"
+kwriteconfig6 --file ~/.config/kwinrc --group Script-krohnkite --key columnsLayoutOrder "0"
+kwriteconfig6 --file ~/.config/kwinrc --group Script-krohnkite --key quarterLayoutOrder "0"
+kwriteconfig6 --file ~/.config/kwinrc --group Script-krohnkite --key spiralLayoutOrder "0"
+kwriteconfig6 --file ~/.config/kwinrc --group Script-krohnkite --key spreadLayoutOrder "0"
+kwriteconfig6 --file ~/.config/kwinrc --group Script-krohnkite --key stackedLayoutOrder "0"
+kwriteconfig6 --file ~/.config/kwinrc --group Script-krohnkite --key stairLayoutOrder "0"
+kwriteconfig6 --file ~/.config/kwinrc --group Script-krohnkite --key threeColumnLayoutOrder "0"
+
 
 newscript "chlayout" <<'EOF'
 #!/usr/bin/env sh
