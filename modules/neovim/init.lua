@@ -71,7 +71,7 @@ vim.keymap.set("x", "<leader>p", [["_dP]])
 vim.pack.add({
 	{ src = "https://github.com/nvim-lua/plenary.nvim", },
 	{ src = "https://github.com/neovim/nvim-lspconfig", },
-	{ src = "https://github.com/vague2k/vague.nvim", },
+	{ src = "https://github.com/vague2k/vague.nvim", version = "087ff41d1b4d90e7b64e1c97860700fa6b7f0daf" },
 	{ src = "https://github.com/nvim-treesitter/nvim-treesitter", },
 	{ src = "https://github.com/folke/todo-comments.nvim", },
 	{ src = "https://github.com/lewis6991/gitsigns.nvim", },
@@ -81,7 +81,7 @@ vim.pack.add({
 	{ src = "https://github.com/nvim-telescope/telescope-fzf-native.nvim", },
 	{ src = "https://github.com/nvim-telescope/telescope.nvim", },
 	{ src = "https://github.com/Saghen/blink.cmp", version = "v1.6.0" },
-	{ src = "https://github.com/nmac427/guess-indent.nvim", },
+	{ src = "https://github.com/tpope/vim-sleuth", },
 })
 
 vim.cmd("colorscheme vague")
@@ -99,8 +99,6 @@ require("gitsigns").setup({
 require("todo-comments").setup({})
 
 require("nvim-autopairs").setup({})
-
-require('guess-indent').setup({})
 
 require("ibl").setup({})
 
