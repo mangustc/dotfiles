@@ -1,0 +1,55 @@
+#!/usr/bin/env sh
+set -e
+
+directory="/run/media/$USER/yandex-drive"
+usage() {
+	cat <<EOF
+Example: yandex-drive [FLAGS]
+FLAGS:
+	[-d | --directory] DIRECTORY_PATH - specify directory where to mount. Default: $directory
+	[-u | --unmount] - unmount currently mounted yandex drive
+EOF
+}
+usage_err() {
+	if ! [ "$1" = "" ]; then
+		echo "$1" >&2
+	fi
+	usage
+	exit 1
+}
+
+unmount=false
+while [ $# -gt 0 ]; do
+	case $1 in
+		-u | --unmount)
+			unmount=true
+			;;
+		-d | --directory)
+			[ "$2" = "" ] && usage_err "Argument not specified"
+			directory="$2"
+			shift
+			;;
+		*)
+			usage_err "Invalid option: $1"
+			;;
+	esac
+	shift
+done
+
+if [ $unmount = true ]; then
+	sudo umount "$directory"
+else
+	if [ -d "$directory" ]; then
+		if find "$directory" -maxdepth 1 -type f -print -quit | grep -q .; then
+			echo "Directory '$directory' contains files."
+			exit 1
+		fi
+		sudo rm -rf "$directory"
+	fi
+	sudo mkdir "$directory"
+	sudo chown $USER "$directory"
+
+	sudo mount -t davfs https://webdav.yandex.ru "$directory" -o uid=$USER,gid=$USER,user
+fi
+
+
