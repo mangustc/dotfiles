@@ -46,8 +46,9 @@ else
 		fi
 		sudo rm -rf "$directory"
 	fi
+	sudo mkdir "/run/media/$USER"
 	sudo mkdir "$directory"
-	sudo chown $USER "$directory"
+	sudo chown "$USER" "$directory"
 
 	sudo mount -t davfs https://webdav.yandex.ru "$directory" -o uid=$USER,gid=$USER,user
 fi

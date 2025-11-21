@@ -8,7 +8,7 @@ fi
 
 cmd sudo install -D -m 644 ./nethandler.service /etc/systemd/system/nethandler.service
 cmd sudo rm -rf /usr/local/share/nethandler
-cmd sudo cp -rf ./nethandler /usr/local/share
+cmd sudo cp -rf "$DOTFILES_MODULE_SECRETS/nethandler" /usr/local/share
 sudo chmod 755 /usr/local/share/nethandler/nethandler
 cmd sudo ln -sf /usr/local/share/nethandler/nethandler /usr/local/bin/nethandler
 cmd sudo install -D -m 644 ./nftables.conf /etc/nftables.conf

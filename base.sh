@@ -8,6 +8,7 @@ fi
 export DOTFILES_SAVE_DIR="$DOTFILES_DIR/save/$(date +%Y-%m-%d_%H-%M-%S)"
 export DOTFILES_MODULE_NAME="$DOTFILES_HOST"
 export DOTFILES_MODULE_PACKAGES=""
+export DOTFILES_SECRETS_DIR="$DOTFILES_DIR/secrets"
 mkdir -p "$DOTFILES_SAVE_DIR"
 
 # echo as error
@@ -106,6 +107,10 @@ export -f install_pkgs
 # by module name, install a module and its packages. You can also pass arguments if possible by a module
 config() {
 	export DOTFILES_MODULE_NAME="$1"
+	export DOTFILES_MODULE_SECRETS="$DOTFILES_SECRETS_DIR/$DOTFILES_MODULE_NAME"
+	if [ ! -d "$DOTFILES_MODULE_SECRETS" ]; then
+		mkdir -p "$DOTFILES_MODULE_SECRETS"
+	fi
 	echo -e "\ninstalling module $DOTFILES_MODULE_NAME:"
 	cd "$DOTFILES_DIR/modules/$DOTFILES_MODULE_NAME"
 	pkgs="$(trim_pkgs_file ./packages)"
