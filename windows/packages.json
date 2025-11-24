@@ -35,6 +35,9 @@
 				},
 				{
 					"PackageIdentifier" : "Microsoft.PowerToys"
+				},
+				{
+					"PackageIdentifier" : "KDE.Okular"
 				}
 			],
 			"SourceDetails" : 
