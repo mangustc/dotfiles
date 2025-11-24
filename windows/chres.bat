@@ -2,7 +2,7 @@
 cls
 
 echo Select an option:
-choice /c:1234Q /m "1. 1920x1080@70, 2. 1600x900@76, 3. 1280x720@76, 4. 960x540@76, 5. 1920x1080@60, Q. Quit"
+choice /c:12345Q /m "1. 1920x1080@70, 2. 1600x900@76, 3. 1280x720@76, 4. 960x540@76, 5. 1920x1080@60, Q. Quit"
 
 if %ERRORLEVEL%==1 goto Option1
 if %ERRORLEVEL%==2 goto Option2
