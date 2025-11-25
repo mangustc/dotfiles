@@ -87,7 +87,7 @@ config scripts
 config konsole
 config zellij
 config fonts
-config yandex-drive
+config yandex-disk
 
 cmd install -D -m 644 ./modules/steam-session/steam.desktop ~/.local/share/applications/steam.desktop
 

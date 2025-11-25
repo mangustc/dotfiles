@@ -110,7 +110,7 @@ config legion-go-sound
 config lsfg
 config konsole
 config zellij
-config yandex-drive
+config yandex-disk
 
 # end
 print_orphan_packages
