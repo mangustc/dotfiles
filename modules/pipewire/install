@@ -11,7 +11,7 @@ context.properties = {
 	default.clock.rate = 48000
 	default.clock.allowed-rates = [ 48000 ]
 	default.clock.min-quantum = 512
-	default.clock.quantum = 1024
+	default.clock.quantum = 512
 	default.clock.max-quantum = 2048
 	default.clock.quantum-limit = 2048
 }
@@ -19,17 +19,17 @@ EOF
 )" ~/.config/pipewire/pipewire.conf.d/crackling-fix.conf
 cmd install -D -m 644 "$(writetext <<EOF
 pulse.properties = {
-	pulse.min.req = 1024/48000
-	pulse.min.frag = 1024/48000
-	pulse.min.quantum = 1024/48000
-	pulse.default.req = 2048/48000
+	pulse.min.req = 512/48000
+	pulse.min.frag = 512/48000
+	pulse.min.quantum = 512/48000
+	pulse.default.req = 512/48000
 }
 EOF
 )" ~/.config/pipewire/pipewire-pulse.conf.d/crackling-fix.conf
 cmd install -D -m 644 "$(writetext <<EOF
 jack.properties = {
-	node.latency = 1024/48000
-	node.quantum = 1024/48000
+	node.latency = 512/48000
+	node.quantum = 512/48000
 }
 EOF
 )" ~/.config/pipewire/jack.conf.d/crackling-fix.conf
