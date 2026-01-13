@@ -105,7 +105,7 @@ cmd install -D -m 755 ./open-as-pdf.desktop ~/.local/share/applications/open-as-
 
 cmd install -D -m 755 "$(writetext <<EOF
 [Desktop Entry]
-Exec=choice --cmd 1 "kscreen-doctor output.DP-3.mode.1920x1080@70" --cmd 2 "kscreen-doctor output.DP-3.mode.1600x900@76" --cmd 3 "kscreen-doctor output.DP-3.mode.1280x720@76" --cmd 4 "kscreen-doctor output.DP-3.mode.960x540@76"
+Exec=choice --cmd 1 "kscreen-doctor output.DP-3.mode.1920x1080@70" --cmd 2 "kscreen-doctor output.DP-3.mode.1600x900@76" --cmd 3 "kscreen-doctor output.DP-3.mode.1280x720@76" --cmd 4 "kscreen-doctor output.DP-3.mode.960x540@76" --cmd 5 "kscreen-doctor output.DP-3.mode.1920x1080@60"
 Name=choice chres
 NoDisplay=false
 Terminal=true
