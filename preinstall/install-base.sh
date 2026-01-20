@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 
 cp ./pacman.conf /etc/pacman.conf
-pacman -Syu
+pacman -Syu --needed sudo git base-devel
 
 ln -sf /usr/share/zoneinfo/Asia/Tomsk /etc/localtime
 hwclock --systohc
@@ -27,7 +27,6 @@ passwd ivan
 
 bootctl install
 
-pacman -S --needed base-devel git sudo
 cd /home/ivan
 sudo -u ivan git clone https://github.com/mangustc/dotfiles
 sudo -u ivan mkdir git
