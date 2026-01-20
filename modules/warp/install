@@ -1,0 +1,29 @@
+#!/usr/bin/env sh
+set -e
+
+usage() {
+	cat <<EOF
+Example: config $DOTFILES_MODULE_NAME
+EOF
+}
+usage_err() {
+	if ! [ "$1" = "" ]; then
+		echo "$1" >&2
+	fi
+	usage
+	exit 1
+}
+
+while [ $# -gt 0 ]; do
+	case $1 in
+		*)
+			usage_err "Invalid option: $1"
+			;;
+	esac
+	shift
+done
+
+cmd sudo systemctl enable warp-svc.service
+set +e
+cmd warp-cli registration new
+set -e
