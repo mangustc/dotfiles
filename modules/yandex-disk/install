@@ -30,6 +30,4 @@ dir="$HOME/Yandex.Disk"
 proxy="no"
 EOF
 )" "$HOME/.config/yandex-disk/config.cfg"
-cmd install -D -m 600 "$DOTFILES_MODULE_SECRETS/passwd" "$HOME/.config/yandex-disk/passwd"
-
-systemctl --user enable yandex-disk.service
+echo "Remember to run yandex-disk setup on your first run. Then run: systemctl --user enable yandex-disk.service"
