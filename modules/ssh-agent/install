@@ -9,3 +9,18 @@ cmd sudo install -D -m 755 "$(writetext <<'EOF'
 export SSH_AUTH_SOCK="$XDG_RUNTIME_DIR/ssh-agent.sock"
 EOF
 )" /etc/profile.d/ssh-agent.sh
+
+set +e
+cmd rm -rf ~/.ssh
+cmd mkdir ~/.ssh
+cmd chmod 700 ~/.ssh
+set -e
+
+for file in $DOTFILES_MODULE_SECRETS/.ssh/*; do
+	[ -f "$file" ] || continue
+	base=$(basename "$file")
+	cmd cp "$file" ~/.ssh/
+	if [[ "$base" == *.pub ]]; then chmod 644 ~/.ssh/"$base"
+	elif [[ "$base" == known_hosts ]]; then chmod 644 ~/.ssh/"$base"
+	else chmod 600 ~/.ssh/"$base"; fi
+done
