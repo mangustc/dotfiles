@@ -102,15 +102,15 @@ require("nvim-autopairs").setup({})
 
 require("ibl").setup({})
 
-require("nvim-treesitter.configs").setup({
-	auto_install = true,
-	highlight = {
-		enable = true,
-		additional_vim_regex_highlighting = { 'ruby' },
-	},
-	indent = { enable = true, disable = { 'ruby' } },
-
-})
+-- TODO: This has stopped working in 2026 sometime, have to find another way to auto install parsers
+-- require("nvim-treesitter.configs").setup({
+-- 	auto_install = true,
+-- 	highlight = {
+-- 		enable = true,
+-- 		additional_vim_regex_highlighting = { 'ruby' },
+-- 	},
+-- 	indent = { enable = true, disable = { 'ruby' } },
+-- })
 
 vim.diagnostic.config {
 	severity_sort = true,
