@@ -6,6 +6,11 @@ if ! [ -d ~/.local/share/kwin/scripts/karousel ]; then
 fi
 cmd kpackagetool6 -t KWin/Script -u ./karousel.tar.gz
 
+if ! [ -d ~/.local/share/plasma/plasmoids/org.kde.globalapplet ]; then
+	cmd kpackagetool6 -t Plasma/Applet -i ./org.kde.globalapplet
+fi
+cmd kpackagetool6 -t Plasma/Applet -u ./org.kde.globalapplet
+
 # write to kwinrc
 kwriteconfig6 --file ~/.config/kwinrc --group Desktops --key Number "5"
 kwriteconfig6 --file ~/.config/kwinrc --group Desktops --key Rows "1"

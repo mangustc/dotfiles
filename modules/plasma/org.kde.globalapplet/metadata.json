@@ -1,0 +1,24 @@
+{
+  "KPlugin": {
+    "Authors": [
+      {
+        "Email": "myemail@gmail.com",
+        "Name": "My Name"
+      }
+    ],
+    "Category": "System Information",
+    "Description": "Tray menu that runs scripts",
+    "Icon": "system-run",
+    "Id": "org.kde.globalapplet",
+    "Name": "Script Tray",
+    "Version": "1",
+    "Website": "https://github.com/user/plasmoid-helloworldplugin",
+    "ServiceTypes": ["Plasma/Applet"]
+  },
+  "KPackageStructure": "Plasma/Applet",
+  "X-Plasma-API": "declarativeappletscript",
+  "X-Plasma-MainScript": "ui/main.qml",
+  "X-Plasma-Provides": ["org.kde.plasma.tray"],
+  "X-Plasma-API-Minimum-Version": "6.0"
+}
+
