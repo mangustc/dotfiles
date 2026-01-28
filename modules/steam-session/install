@@ -2,6 +2,7 @@
 set -e
 
 cmd install -D -m 644 ./steam.desktop ~/.local/share/applications/steam.desktop
+cmd install -D -m 644 ./lenovo.legiongo.lcd.lua ~/.config/gamescope/scripts/00-gamescope/displays/lenovo.legiongo.lcd.lua
 cmd sudo install -D -m 644 ./steam-session.desktop /usr/share/wayland-sessions/steam-session.desktop
 cmd sudo install -D -m 755 ./steam-session /usr/local/bin/steam-session
 cmd sudo install -D -m 755 ./steamos-factory-reset-config /usr/local/bin/steamos-factory-reset-config

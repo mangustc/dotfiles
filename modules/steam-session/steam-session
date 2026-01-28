@@ -22,11 +22,11 @@ echo -e "no_display" > "$MANGOHUD_CONFIGFILE"
 # mkdir -p "$(dirname "$RADV_FORCE_VRS_CONFIG_FILE")"
 # echo "1x1" >"$RADV_FORCE_VRS_CONFIG_FILE"
 
-export GAMESCOPE_MODE_SAVE_FILE="${XDG_CONFIG_HOME:-$HOME/.config}/gamescope/modes.cfg"
+export GAMESCOPE_MODE_SAVE_FILE="${XDG_CONFIG_HOME:-$HOME/.config}/gamescope-session/modes.cfg"
 mkdir -p "$(dirname "$GAMESCOPE_MODE_SAVE_FILE")"
 touch "$GAMESCOPE_MODE_SAVE_FILE"
 
-export GAMESCOPE_PATCHED_EDID_FILE="${XDG_CONFIG_HOME:-$HOME/.config}/gamescope/edid.bin"
+export GAMESCOPE_PATCHED_EDID_FILE="${XDG_CONFIG_HOME:-$HOME/.config}/gamescope-session/edid.bin"
 mkdir -p "$(dirname "$GAMESCOPE_PATCHED_EDID_FILE")"
 touch "$GAMESCOPE_PATCHED_EDID_FILE"
 
