@@ -13,6 +13,7 @@ install_pkgs "$(trim_pkgs_file "./packages-$DOTFILES_HOST")"
 # systemd-boot
 config swap --size 8G
 config v226hql
+config legion-go-display
 cmd sudo install -D -m 644 "$(writetext <<EOF
 timeout 0
 default arch.conf
@@ -101,16 +102,14 @@ config steam-session
 config hhd
 config bluetooth
 config flatpak --flatpaks "
-io.github.ryubing.Ryujinx
-net.rpcs3.RPCS3
 "
 config sddm --nopasswd
 config scripts
 config legion-go-sound
-config lsfg
 config konsole
 config zellij
 config yandex-disk
+config warp
 
 # end
 print_orphan_packages
