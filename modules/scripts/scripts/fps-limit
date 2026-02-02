@@ -1,0 +1,22 @@
+#!/usr/bin/env sh
+set -e
+
+usage() {
+	cat <<END
+Usage: $(basename "$0") FPS COMMAND
+END
+}
+usage_err() {
+	if ! [ "$1" = "" ]; then
+		echo "$1" >&2
+	fi
+	usage
+	exit 1
+}
+
+[ "$2" = "" ] && usage_err "Argument not specified"
+
+fps_limit="$1"
+shift
+
+MANGOHUD_CONFIG="fps_limit=$fps_limit,no_display" exec mangohud "$@"
