@@ -75,6 +75,20 @@ PlasmoidItem {
                 executable.exec(`bash -c 'kscreen-doctor output.DP-3.mode.1920x1080@60'`)
             }
         }
+        MenuItem {
+            text: "chlayout default"
+            icon.name: "system-run"
+            onTriggered: {
+                executable.exec(`bash -c 'chlayout default'`)
+            }
+        }
+        MenuItem {
+            text: "chlayout gaming"
+            icon.name: "system-run"
+            onTriggered: {
+                executable.exec(`bash -c 'chlayout gaming'`)
+            }
+        }
     }
 }
 

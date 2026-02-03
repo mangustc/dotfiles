@@ -1,0 +1,8 @@
+[Desktop Entry]
+Exec=konsole
+Name=terminal
+NoDisplay=true
+StartupNotify=false
+Type=Application
+X-KDE-GlobalAccel-CommandShortcut=true
+

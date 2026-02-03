@@ -41,113 +41,12 @@ kwriteconfig6 --file ~/.config/kwinrc --group Script-krohnkite --key stairLayout
 kwriteconfig6 --file ~/.config/kwinrc --group Script-krohnkite --key threeColumnLayoutOrder "0"
 
 
-newscript "chlayout" <<'EOF'
-#!/usr/bin/env sh
-
-if [ "$1" = "default" ]; then
-	if ([ ! "$KDE_SESSION_UID" == "" ] || [ "$XDG_CURRENT_DESKTOP" == "KDE" ]) && ([ ! "$WAYLAND_DISPLAY" == "" ] || [ "$XDG_SESSION_TYPE" == "wayland" ]); then
-		kwriteconfig6 --file ~/.config/kxkbrc --group Layout --key LayoutList "us,ru"
-		kwriteconfig6 --file ~/.config/kxkbrc --group Layout --key VariantList "dvorak,"
-		kwriteconfig6 --file ~/.config/kxkbrc --group Layout --key Options "terminate:ctrl_alt_bksp,grp:caps_toggle"
-		kwriteconfig6 --file ~/.config/kxkbrc --group Layout --key ResetOldOptions "true"
-		kwriteconfig6 --file ~/.config/kxkbrc --group Layout --key Use "true"
-		dbus-send --session --type=signal --dest=org.kde.keyboard /Layouts org.kde.keyboard.reloadConfig
-	else
-		setxkbmap -layout us,ru -variant dvorak, -option "grp:caps_toggle" -option "terminate:ctrl_alt_bksp"
-	fi
-elif [ "$1" = "gaming" ]; then
-	if ([ ! "$KDE_SESSION_UID" == "" ] || [ "$XDG_CURRENT_DESKTOP" == "KDE" ]) && ([ ! "$WAYLAND_DISPLAY" == "" ] || [ "$XDG_SESSION_TYPE" == "wayland" ]); then
-		kwriteconfig6 --file ~/.config/kxkbrc --group Layout --key LayoutList "us"
-		kwriteconfig6 --file ~/.config/kxkbrc --group Layout --key VariantList ""
-		kwriteconfig6 --file ~/.config/kxkbrc --group Layout --key Options "terminate:ctrl_alt_bksp"
-		kwriteconfig6 --file ~/.config/kxkbrc --group Layout --key ResetOldOptions "true"
-		kwriteconfig6 --file ~/.config/kxkbrc --group Layout --key Use "true"
-		dbus-send --session --type=signal --dest=org.kde.keyboard /Layouts org.kde.keyboard.reloadConfig
-	else
-		setxkbmap -layout us -option "terminate:ctrl_alt_bksp"
-	fi
-else
-	echo "Unknown option: [$1]" >&2
-	exit 1
-fi
-EOF
-
-cmd install -D -m 755 "$(writetext <<EOF
-[Desktop Entry]
-Exec=chlayout default
-Name=default layout
-NoDisplay=true
-StartupNotify=false
-Type=Application
-X-KDE-GlobalAccel-CommandShortcut=true
-EOF
-)" ~/.local/share/applications/net.local.chlayout-default.desktop
-cmd install -D -m 755 "$(writetext <<EOF
-[Desktop Entry]
-Exec=chlayout gaming
-Name=gaming layout
-NoDisplay=true
-StartupNotify=false
-Type=Application
-X-KDE-GlobalAccel-CommandShortcut=true
-EOF
-)" ~/.local/share/applications/net.local.chlayout-gaming.desktop
-
-cmd install -D -m 755 "$(writetext <<EOF
-[Desktop Entry]
-Exec=konsole
-Name=terminal
-NoDisplay=true
-StartupNotify=false
-Type=Application
-X-KDE-GlobalAccel-CommandShortcut=true
-EOF
-)" ~/.local/share/applications/net.local.terminal.desktop
-
-cmd sudo install -D -m 755 ./doctopdf /usr/local/bin/doctopdf
-cmd install -D -m 755 ./convert-to-pdf.desktop ~/.local/share/applications/convert-to-pdf.desktop
-cmd install -D -m 755 ./open-as-pdf.desktop ~/.local/share/applications/open-as-pdf.desktop
-
-cmd install -D -m 755 "$(writetext <<EOF
-[Desktop Entry]
-Exec=choice --cmd 1 "kscreen-doctor output.DP-3.mode.1920x1080@70" --cmd 2 "kscreen-doctor output.DP-3.mode.1600x900@76" --cmd 3 "kscreen-doctor output.DP-3.mode.1280x720@76" --cmd 4 "kscreen-doctor output.DP-3.mode.960x540@76" --cmd 5 "kscreen-doctor output.DP-3.mode.1920x1080@60"
-Name=choice chres
-NoDisplay=false
-Terminal=true
-StartupNotify=false
-Type=Application
-X-KDE-GlobalAccel-CommandShortcut=true
-EOF
-)" ~/.local/share/applications/net.local.choice-chres.desktop
+cmd install -D -m 755 ./applications/net.local.terminal.desktop ~/.local/share/applications/net.local.terminal.desktop
+cmd install -D -m 755 ./applications/convert-to-pdf.desktop ~/.local/share/applications/convert-to-pdf.desktop
+cmd install -D -m 755 ./applications/open-as-pdf.desktop ~/.local/share/applications/open-as-pdf.desktop
 cmd install -D -m 600 ./kglobalshortcutsrc ~/.config/kglobalshortcutsrc
+cmd install -D -m 600 ./krunnerrc ~/.config/krunnerrc
 
-cmd install -D -m 600 "$(writetext <<'EOF'
-[General]
-FreeFloating=true
-
-[Plugins]
-baloosearchEnabled=false
-browserhistoryEnabled=false
-browsertabsEnabled=false
-calculatorEnabled=false
-helprunnerEnabled=false
-krunner_appstreamEnabled=false
-krunner_bookmarksrunnerEnabled=false
-krunner_charrunnerEnabled=false
-krunner_colorsEnabled=false
-krunner_dictionaryEnabled=false
-krunner_katesessionsEnabled=false
-krunner_konsoleprofilesEnabled=false
-krunner_placesrunnerEnabled=false
-krunner_recentdocumentsEnabled=false
-krunner_spellcheckEnabled=false
-krunner_webshortcutsEnabled=false
-org.kde.datetimeEnabled=false
-unitconverterEnabled=false
-
-[Plugins][Favorites]
-plugins=krunner_sessions,krunner_powerdevil,krunner_services,krunner_systemsettings
-EOF
-)" ~/.config/krunnerrc
-
+cmd sudo install -D -m 755 ./scripts/doctopdf /usr/local/bin/doctopdf
+cmd sudo install -D -m 755 ./scripts/chlayout /usr/local/bin/chlayout
 cmd sudo install -D -m 644 ./00-keyboard.conf /etc/X11/xorg.conf.d/00-keyboard.conf
