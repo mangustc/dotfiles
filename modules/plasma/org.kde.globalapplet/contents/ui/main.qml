@@ -26,18 +26,37 @@ PlasmoidItem {
         }
     }
 
+    property var warpCheckCMD: `bash -c 'warp-cli status | grep Connected'`
+    property var nethandlerCheckCMD: `bash -c 'systemctl is-active nethandler.service'`
+    property var isWARPEnabled: false
+    property var isNethandlerEnabled: true
+    function updateStatus() {
+        executable.exec(warpCheckCMD)
+        executable.exec(nethandlerCheckCMD)
+    }
+    Timer {
+        id: updateStatusTimer
+        interval: 2000
+        repeat: false
+        onTriggered: updateStatus()
+    }
     Plasma5Support.DataSource {
         id: executable
         engine: "executable"
         connectedSources: []
         onNewData: (source, data) => {
+            if (source == warpCheckCMD) {
+                isWARPEnabled = data["stdout"] == "" ? false : true
+            }
+            if (source == nethandlerCheckCMD) {
+                isNethandlerEnabled = data["stdout"] == "active\n" ? true : false
+            }
             disconnectSource(source)
         }
         function exec(cmd) {
             connectSource(cmd)
         }
     }
-
     fullRepresentation: Column {
         spacing: 5
         MenuItem {
@@ -45,6 +64,7 @@ PlasmoidItem {
             icon.name: "system-run"
             onTriggered: {
                 executable.exec(`bash -c '! [ "$(warp-cli status | grep Connected)" = "" ] && warp-cli disconnect || warp-cli connect'`)
+                updateStatusTimer.start()
             }
         }
         MenuItem {
@@ -52,6 +72,7 @@ PlasmoidItem {
             icon.name: "system-run"
             onTriggered: {
                 executable.exec(`bash -c 'systemctl is-active --quiet "nethandler.service" && systemctl stop nethandler.service || systemctl start nethandler.service'`)
+                updateStatusTimer.start()
             }
         }
         MenuItem {
@@ -88,6 +109,11 @@ PlasmoidItem {
             onTriggered: {
                 executable.exec(`bash -c 'chlayout gaming'`)
             }
+        }
+        MenuItem {
+            text: "WARP: " + isWARPEnabled + ", " + "Nethandler: " + isNethandlerEnabled
+            icon.name: "system-run"
+            onTriggered: updateStatus()
         }
     }
 }
