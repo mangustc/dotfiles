@@ -1,0 +1,14 @@
+[Unit]
+Description=Legion Go power
+After=multi-user.target network.target
+Wants=sys-fs-fuse.mounts
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/usr/bin/python /usr/local/lib/legion-go-power/main.py
+TimeoutStartSec=30
+
+[Install]
+WantedBy=multi-user.target suspend.target
+

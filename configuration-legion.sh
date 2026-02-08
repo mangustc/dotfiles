@@ -99,13 +99,14 @@ config mangohud
 config archscripts --dotfiles "$DOTFILES_DIR" --host "$DOTFILES_HOST"
 config git
 config steam-session
-config hhd
 config bluetooth
 config flatpak --flatpaks "
 "
 config sddm --nopasswd
 config scripts
 config legion-go-sound
+config legion-go-power
+config legion-go-controller
 config konsole
 config zellij
 config yandex-disk

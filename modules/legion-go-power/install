@@ -1,0 +1,10 @@
+#!/usr/bin/env sh
+set -e
+
+cmd sudo install -D -m 644 ./legion-go-power.service /etc/systemd/system/legion-go-power.service
+set +e
+cmd sudo rm -rf /usr/local/lib/legion-go-power
+set -e
+cmd sudo cp -rf ./legion-go-power /usr/local/lib
+cmd sudo systemctl enable legion-go-power.service
+
