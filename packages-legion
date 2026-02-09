@@ -1,8 +1,5 @@
 # system
-base
 amd-ucode
-base-devel
-sudo
 mesa
 vulkan-radeon
 lib32-mesa
@@ -10,22 +7,10 @@ lib32-vulkan-radeon
 linux
 linux-firmware
 linux-headers
-qt5-declarative
 paru
-7zip
-unrar
-unzip
-ntfs-3g
 sbctl
-dosfstools
 
 # progs
-btop
-eza
-lazygit
-man-db
-man-pages
-tealdeer
 mpv
 obsidian
 zen-browser-bin

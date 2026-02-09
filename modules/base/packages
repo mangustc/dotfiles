@@ -1,0 +1,16 @@
+efibootmgr
+base
+base-devel
+sudo
+qt5-declarative
+7zip
+unrar
+unzip
+ntfs-3g
+dosfstools
+man-db
+man-pages
+tealdeer
+lazygit
+eza
+btop
