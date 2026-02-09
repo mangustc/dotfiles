@@ -6,7 +6,7 @@ Wants=sys-fs-fuse.mounts
 [Service]
 Type=oneshot
 RemainAfterExit=yes
-ExecStart=/usr/bin/python /usr/local/lib/legion-go-power/main.py
+ExecStart=/usr/bin/python /usr/local/lib/legion-go-power/main.py %i
 TimeoutStartSec=30
 
 [Install]

@@ -1,0 +1,17 @@
+[lenovo]
+full_fan_speed = false
+fan_curve = [44, 48, 55, 60, 71, 80, 90, 115, 115, 115]
+power_light = false
+charge_limit = true
+tdp_mode = "custom"
+steady_tdp = 22
+fast_tdp = 22
+slow_tdp = 22
+
+[cpu]
+cpu_boost = false
+cpu_governor = "powersave"
+cpu_epp = "balance_performance"
+cpu_min_freq = 0
+scx_scheduler = "scx_lavd"
+
