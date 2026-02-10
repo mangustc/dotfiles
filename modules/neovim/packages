@@ -3,5 +3,6 @@ lua-language-server
 bash-language-server
 typescript-language-server
 vscode-html-languageserver
+vscode-css-languageserver
 base-devel
 pyright

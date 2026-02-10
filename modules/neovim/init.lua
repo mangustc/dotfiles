@@ -150,6 +150,7 @@ vim.lsp.enable({
 	"hls",
 	"ts_ls",
 	"html",
+	"cssls",
 })
 require("blink.cmp").setup({
 	signature = { enabled = true },
