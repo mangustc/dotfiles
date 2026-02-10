@@ -7,9 +7,7 @@ Example: config $DOTFILES_MODULE_NAME
 EOF
 }
 usage_err() {
-	if ! [ "$1" = "" ]; then
-		echo "$1" >&2
-	fi
+	[ "$1" ] && echo "$1" >&2
 	usage
 	exit 1
 }
