@@ -63,7 +63,7 @@ PlasmoidItem {
             text: "Toggle WARP"
             icon.name: "system-run"
             onTriggered: {
-                executable.exec(`bash -c '! [ "$(warp-cli status | grep Connected)" = "" ] && warp-cli disconnect || warp-cli connect'`)
+                executable.exec(`bash -c '! [ "$(warp-cli status | grep Connected)" = "" ] && warp stop || warp start'`)
                 updateStatusTimer.start()
             }
         }

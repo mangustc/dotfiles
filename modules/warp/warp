@@ -1,0 +1,39 @@
+#!/usr/bin/env sh
+
+usage() {
+	cat <<EOF
+Example: $(basename $0) start/stop
+EOF
+}
+usage_err() {
+	! [ "$1" = "" ] && echo "$1" >&2
+	usage
+	exit 1
+}
+
+case "$1" in
+	"")
+		usage_err "No argument provided"
+		;;
+	start)
+		systemctl stop --user warp-taskbar
+		systemctl start warp-svc
+		timeout=30
+		while [ $timeout -gt 0 ] && ! systemctl is-active --quiet warp-svc; do
+			sleep 1
+			timeout=$((timeout - 1))
+		done
+		sleep 3
+		warp-cli registration new
+		warp-cli connect
+		;;
+	stop)
+		systemctl stop --user warp-taskbar
+		warp-cli disconnect
+		systemctl stop warp-svc
+		;;
+	*)
+		usage_err "Wrong argument"
+		;;
+esac
+
