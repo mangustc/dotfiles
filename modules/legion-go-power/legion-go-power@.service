@@ -8,6 +8,7 @@ Type=oneshot
 RemainAfterExit=yes
 ExecStart=/usr/bin/python /usr/local/lib/legion-go-power/main.py %i
 TimeoutStartSec=30
+Nice=-12
 
 [Install]
 WantedBy=multi-user.target suspend.target
