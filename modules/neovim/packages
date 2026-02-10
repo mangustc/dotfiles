@@ -1,5 +1,7 @@
 neovim-nightly-bin
 lua-language-server
 bash-language-server
+typescript-language-server
+vscode-html-languageserver
 base-devel
 pyright

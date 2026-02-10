@@ -71,16 +71,16 @@ vim.keymap.set("x", "<leader>p", [["_dP]])
 vim.pack.add({
 	{ src = "https://github.com/nvim-lua/plenary.nvim", },
 	{ src = "https://github.com/neovim/nvim-lspconfig", },
-	{ src = "https://github.com/vague2k/vague.nvim", version = "087ff41d1b4d90e7b64e1c97860700fa6b7f0daf" },
+	{ src = "https://github.com/vague2k/vague.nvim",                       version = "087ff41d1b4d90e7b64e1c97860700fa6b7f0daf" },
 	{ src = "https://github.com/nvim-treesitter/nvim-treesitter", },
 	{ src = "https://github.com/folke/todo-comments.nvim", },
 	{ src = "https://github.com/lewis6991/gitsigns.nvim", },
 	{ src = "https://github.com/windwp/nvim-autopairs", },
 	{ src = "https://github.com/lukas-reineke/indent-blankline.nvim", },
-	{ src = "https://github.com/ThePrimeagen/harpoon", version = "harpoon2", },
+	{ src = "https://github.com/ThePrimeagen/harpoon",                     version = "harpoon2", },
 	{ src = "https://github.com/nvim-telescope/telescope-fzf-native.nvim", },
 	{ src = "https://github.com/nvim-telescope/telescope.nvim", },
-	{ src = "https://github.com/Saghen/blink.cmp", version = "v1.6.0" },
+	{ src = "https://github.com/Saghen/blink.cmp",                         version = "v1.6.0" },
 	{ src = "https://github.com/tpope/vim-sleuth", },
 })
 
@@ -103,14 +103,14 @@ require("nvim-autopairs").setup({})
 require("ibl").setup({})
 
 -- TODO: This has stopped working in 2026 sometime, have to find another way to auto install parsers
--- require("nvim-treesitter.configs").setup({
--- 	auto_install = true,
--- 	highlight = {
--- 		enable = true,
--- 		additional_vim_regex_highlighting = { 'ruby' },
--- 	},
--- 	indent = { enable = true, disable = { 'ruby' } },
--- })
+require("nvim-treesitter.configs").setup({
+	auto_install = true,
+	highlight = {
+		enable = true,
+		additional_vim_regex_highlighting = { 'ruby' },
+	},
+	indent = { enable = true, disable = { 'ruby' } },
+})
 
 vim.diagnostic.config {
 	severity_sort = true,
@@ -148,6 +148,8 @@ vim.lsp.enable({
 	"lua_ls",
 	"bashls",
 	"hls",
+	"ts_ls",
+	"html",
 })
 require("blink.cmp").setup({
 	signature = { enabled = true },
@@ -180,11 +182,14 @@ vim.keymap.set("n", "<C-s>", function() harpoon:list():select(4) end)
 
 require("telescope").setup({})
 -- TODO: wait until proper build phase in neovim native plugin manager appears
-local fzflib_file = io.open(string.format("%s/%s/build/libfzf.so", os.getenv("HOME"), ".local/share/nvim/site/pack/core/opt/telescope-fzf-native.nvim"), "r")
+local fzflib_file = io.open(
+string.format("%s/%s/build/libfzf.so", os.getenv("HOME"),
+	".local/share/nvim/site/pack/core/opt/telescope-fzf-native.nvim"), "r")
 if fzflib_file then
 	fzflib_file:close()
 else
-	os.execute(string.format("cd %s/%s && make", os.getenv("HOME"), ".local/share/nvim/site/pack/core/opt/telescope-fzf-native.nvim"))
+	os.execute(string.format("cd %s/%s && make", os.getenv("HOME"),
+		".local/share/nvim/site/pack/core/opt/telescope-fzf-native.nvim"))
 end
 require('telescope').load_extension('fzf')
 local builtin = require("telescope.builtin")
