@@ -11,7 +11,6 @@ config base
 install_pkgs "$(trim_pkgs_file "./packages-$DOTFILES_HOST")"
 
 # systemd-boot
-config v226hql
 config swap --size 8G
 cmd sudo install -D -m 644 "$(writetext <<EOF
 timeout 0
@@ -23,7 +22,7 @@ cmd sudo install -D -m 644 "$(writetext <<EOF
 title Arch Linux
 linux /vmlinuz-linux
 initrd /initramfs-linux.img
-options root=LABEL=arch-root rw nowatchdog zswap.enabled=1 zswap.compressor=zstd drm.edid_firmware=HDMI-A-1:edid/v226hql.bin
+options root=LABEL=arch-root rw nowatchdog zswap.enabled=1 zswap.compressor=zstd
 EOF
 )" /boot/loader/entries/arch.conf
 
