@@ -55,12 +55,10 @@ vim.keymap.set("n", "N", "Nzzzv", {})
 vim.keymap.set("n", "<Esc>", "<cmd>nohlsearch<CR>")
 
 -- system clipboard stuff
-vim.keymap.set({ "n", "v" }, "<leader>y", [["+y]])
-vim.keymap.set("n", "<leader>Y", [["+Y]])
-vim.keymap.set("n", "<leader>yy", [["+yy]])
-vim.keymap.set({ "n", "v" }, "<leader>d", [["_d]])
-vim.keymap.set("n", "<leader>p", '"_dp')
-vim.keymap.set("x", "<leader>p", [["_dP]])
+vim.keymap.set({ "n", "v" }, "<leader>y", [["+y]], { desc = "Copy (System clipboard)" })
+vim.keymap.set("n", "<leader>Y", [["+Y]], { desc = "Copy line (System clipboard)" })
+vim.keymap.set("n", "<leader>yy", [["+yy]], { desc = "Copy line (System clipboard)" })
+vim.keymap.set({ "n", "v" }, "<leader>d", [["_d]], { desc = "Delete (System clipboard)" })
 
 
 
@@ -82,6 +80,7 @@ vim.pack.add({
 	{ src = "https://github.com/nvim-telescope/telescope.nvim", },
 	{ src = "https://github.com/Saghen/blink.cmp",                         version = "v1.6.0" },
 	{ src = "https://github.com/tpope/vim-sleuth", },
+	{ src = "https://github.com/folke/which-key.nvim", },
 })
 
 vim.cmd("colorscheme vague")
@@ -143,7 +142,7 @@ vim.api.nvim_create_autocmd('LspAttach', {
 	end,
 })
 vim.cmd("set completeopt+=noselect")
-vim.keymap.set("n", "<leader>lf", vim.lsp.buf.format)
+vim.keymap.set("n", "<leader>lf", vim.lsp.buf.format, { desc = "Format buffer" })
 vim.lsp.enable({
 	"lua_ls",
 	"bashls",
@@ -174,6 +173,7 @@ local harpoon = require("harpoon")
 harpoon:setup()
 vim.keymap.set("n", "<C-j>", ":bn<CR>")
 vim.keymap.set("n", "<C-k>", ":bp<CR>")
+vim.keymap.set("n", "<C-x>", ":bd<CR>")
 vim.keymap.set("n", "<C-o>", function() harpoon:list():add() end)
 vim.keymap.set("n", "<C-e>", function() harpoon.ui:toggle_quick_menu(harpoon:list()) end)
 vim.keymap.set("n", "<C-h>", function() harpoon:list():select(1) end)
@@ -184,8 +184,8 @@ vim.keymap.set("n", "<C-s>", function() harpoon:list():select(4) end)
 require("telescope").setup({})
 -- TODO: wait until proper build phase in neovim native plugin manager appears
 local fzflib_file = io.open(
-string.format("%s/%s/build/libfzf.so", os.getenv("HOME"),
-	".local/share/nvim/site/pack/core/opt/telescope-fzf-native.nvim"), "r")
+	string.format("%s/%s/build/libfzf.so", os.getenv("HOME"),
+		".local/share/nvim/site/pack/core/opt/telescope-fzf-native.nvim"), "r")
 if fzflib_file then
 	fzflib_file:close()
 else
@@ -194,14 +194,19 @@ else
 end
 require('telescope').load_extension('fzf')
 local builtin = require("telescope.builtin")
-vim.keymap.set("n", "<leader>f", builtin.find_files, { desc = "[S]earch [F]iles" })
-vim.keymap.set("n", "<leader>g", builtin.live_grep, { desc = "[S]earch by [G]rep" })
-vim.keymap.set("n", "<leader>td", builtin.diagnostics, { desc = "[S]earch [D]iagnostics" })
-vim.keymap.set("n", "<leader>pf", builtin.oldfiles, { desc = '[S]earch Recent Files' })
-vim.keymap.set("n", "gld", vim.diagnostic.open_float)
+vim.keymap.set("n", "<leader>f", builtin.find_files, { desc = "Search Files" })
+vim.keymap.set("n", "<leader>g", builtin.live_grep, { desc = "Search by Grep" })
+vim.keymap.set("n", "<leader>td", builtin.diagnostics, { desc = "Search Diagnostics" })
+vim.keymap.set("n", "<leader>pf", builtin.oldfiles, { desc = 'Search Recent Files' })
+vim.keymap.set("n", "<leader>ld", vim.diagnostic.open_float, { desc = "Open Diagnostics" })
 
-vim.keymap.set("n", "<leader>pt", ":Ex .<CR>")
-vim.keymap.set("n", "<leader>pc", ":Ex<CR>")
+vim.keymap.set("n", "<leader>pt", ":Ex .<CR>", { desc = "File Browser" })
+vim.keymap.set("n", "<leader>pc", ":Ex<CR>", { desc = "File Browser (buffer)" })
+
+
+require("which-key").setup({})
+vim.keymap.set("n", "<leader>?", function() require("which-key").show({ global = false }) end,
+	{ desc = "Buffer Local Keymaps (which-key)" })
 
 -- native lsp default keybinds:
 -- "grn" is mapped in Normal mode to vim.lsp.buf.rename()
