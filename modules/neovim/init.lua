@@ -101,15 +101,23 @@ require("nvim-autopairs").setup({})
 
 require("ibl").setup({})
 
--- -- TODO: This has stopped working in 2026 sometime, have to find another way to auto install parsers
--- require("nvim-treesitter.configs").setup({
--- 	auto_install = true,
--- 	highlight = {
--- 		enable = true,
--- 		additional_vim_regex_highlighting = { 'ruby' },
--- 	},
--- 	indent = { enable = true, disable = { 'ruby' } },
--- })
+local treesitter_filetypes = {
+	'jsx',
+	'javascript',
+	'tsx',
+	'typescript',
+	'html',
+	'css',
+	'lua'
+}
+require("nvim-treesitter").install(treesitter_filetypes)
+vim.api.nvim_create_autocmd('FileType', {
+	pattern = treesitter_filetypes,
+	callback = function()
+		vim.treesitter.start()
+		vim.bo.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+	end,
+})
 
 vim.diagnostic.config {
 	severity_sort = true,
