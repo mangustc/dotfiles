@@ -6,3 +6,4 @@ vscode-html-languageserver
 vscode-css-languageserver
 base-devel
 pyright
+tree-sitter-cli
