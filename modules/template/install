@@ -15,7 +15,7 @@ usage_err() {
 while [ $# -gt 0 ]; do
 	case $1 in
 		--arga)
-			arga=true
+			arga=1
 			;;
 		--argb)
 			[ "$2" = "" ] && usage_err "Argument not specified"
