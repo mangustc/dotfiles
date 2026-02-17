@@ -10,7 +10,7 @@ PlasmoidItem {
     id: root
     compactRepresentation: Item {
         width: Kirigami.Units.iconSizes.smallMedium
-        height: width
+        height: Kirigami.Units.iconSizes.smallMedium
 
         Kirigami.Icon {
             source: "diag_component"
@@ -57,63 +57,74 @@ PlasmoidItem {
             connectSource(cmd)
         }
     }
-    fullRepresentation: Column {
-        spacing: 5
-        MenuItem {
-            text: "Toggle WARP"
-            icon.name: "system-run"
-            onTriggered: {
-                executable.exec(`bash -c '! [ "$(warp-cli status | grep Connected)" = "" ] && warp stop || warp start'`)
-                updateStatusTimer.start()
+    fullRepresentation: ScrollView {
+        Column {
+            spacing: 5
+            anchors.fill: parent
+            anchors.margins: 10
+            MenuItem {
+                text: "Toggle WARP"
+                icon.name: "system-run"
+                onTriggered: {
+                    executable.exec(`bash -c '! [ "$(warp-cli status | grep Connected)" = "" ] && warp stop || warp start'`)
+                    updateStatusTimer.start()
+                }
             }
-        }
-        MenuItem {
-            text: "Toggle Nethandler"
-            icon.name: "system-run"
-            onTriggered: {
-                executable.exec(`bash -c 'systemctl is-active --quiet "nethandler.service" && systemctl stop nethandler.service || systemctl start nethandler.service'`)
-                updateStatusTimer.start()
+            MenuItem {
+                text: "Toggle Nethandler"
+                icon.name: "system-run"
+                onTriggered: {
+                    executable.exec(`bash -c 'systemctl is-active --quiet "nethandler.service" && systemctl stop nethandler.service || systemctl start nethandler.service'`)
+                    updateStatusTimer.start()
+                }
             }
-        }
-        MenuItem {
-            text: "1920x1080@70"
-            icon.name: "system-run"
-            onTriggered: {
-                executable.exec(`bash -c 'kscreen-doctor output.DP-3.mode.1920x1080@70'`)
+            MenuItem {
+                text: "1920x1080@70"
+                icon.name: "system-run"
+                onTriggered: {
+                    executable.exec(`bash -c 'kscreen-doctor output.DP-3.mode.1920x1080@70'`)
+                }
             }
-        }
-        MenuItem {
-            text: "1600x900@75"
-            icon.name: "system-run"
-            onTriggered: {
-                executable.exec(`bash -c 'kscreen-doctor output.DP-3.mode.1600x900@75'`)
+            MenuItem {
+                text: "1600x900@75"
+                icon.name: "system-run"
+                onTriggered: {
+                    executable.exec(`bash -c 'kscreen-doctor output.DP-3.mode.1600x900@75'`)
+                }
             }
-        }
-        MenuItem {
-            text: "1920x1080@60"
-            icon.name: "system-run"
-            onTriggered: {
-                executable.exec(`bash -c 'kscreen-doctor output.DP-3.mode.1920x1080@60'`)
+            MenuItem {
+                text: "1920x1080@60"
+                icon.name: "system-run"
+                onTriggered: {
+                    executable.exec(`bash -c 'kscreen-doctor output.DP-3.mode.1920x1080@60'`)
+                }
             }
-        }
-        MenuItem {
-            text: "chlayout default"
-            icon.name: "system-run"
-            onTriggered: {
-                executable.exec(`bash -c 'chlayout default'`)
+            MenuItem {
+                text: "chlayout default"
+                icon.name: "system-run"
+                onTriggered: {
+                    executable.exec(`bash -c 'chlayout default'`)
+                }
             }
-        }
-        MenuItem {
-            text: "chlayout gaming"
-            icon.name: "system-run"
-            onTriggered: {
-                executable.exec(`bash -c 'chlayout gaming'`)
+            MenuItem {
+                text: "chlayout gaming"
+                icon.name: "system-run"
+                onTriggered: {
+                    executable.exec(`bash -c 'chlayout gaming'`)
+                }
             }
-        }
-        MenuItem {
-            text: "WARP: " + isWARPEnabled + ", " + "Nethandler: " + isNethandlerEnabled
-            icon.name: "system-run"
-            onTriggered: updateStatus()
+            MenuItem {
+                text: "Reboot to Windows"
+                icon.name: "system-run"
+                onTriggered: {
+                    executable.exec(`bash -c 'pkexec efibootmgr -n $(efibootmgr | grep Windows | cut -c 5-8) && systemctl reboot'`)
+                }
+            }
+            MenuItem {
+                text: "WARP: " + isWARPEnabled + ", " + "Nethandler: " + isNethandlerEnabled
+                icon.name: "system-run"
+                onTriggered: updateStatus()
+            }
         }
     }
 }
