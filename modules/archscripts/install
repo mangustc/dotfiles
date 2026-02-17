@@ -45,19 +45,38 @@ EOF
 newscript archupd <<EOF
 #!/usr/bin/env sh
 
-if ! [ "\$1" = "" ]; then
-	if [ "\$1" = 'upgrade' ]; then
-		paru -Syu
-	else
-		>&2 echo "option [\$1] does not exist. Available options: [upgrade]"
-		exit 1
-	fi
-fi
+usage() {
+	echo "Example: \$(basename \$0) [--upgrade|-u] [--module|-m MODULE_NAME]"
+}
+usage_err() {
+	[ "\$1" ] && echo "\$1" >&2
+	usage
+	exit 1
+}
+
+while [ \$# -gt 0 ]; do
+	case \$1 in
+		--upgrade|-u)
+			upgrade=1
+			;;
+		--module|-m)
+			[ "\$2" = "" ] && usage_err "Argument not specified"
+			module="\$2"
+			shift
+			;;
+		*)
+			usage_err "Invalid option: \$1"
+			;;
+	esac
+	shift
+done
+
+[ "\$upgrade" = 1 ] && paru -Syu
 
 cd $dotfiles
-./configuration-$host.sh
+[ "\$module" = "" ] && ./configuration-$host.sh || ./configuration-$host.sh --module \$module
 
-if [ "\$1" = 'upgrade' ]; then
+if [ "\$upgrade" = 1 ]; then
 	sudo mkinitcpio -P
 	sudo locale-gen
 	sudo bootctl update

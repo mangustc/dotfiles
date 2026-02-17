@@ -1,5 +1,31 @@
 #!/usr/bin/env sh
 
+usage() {
+	cat <<EOF
+Example: ./configuration-$DOTFILES_HOST.sh [--module|-m MODULE_NAME]
+EOF
+}
+usage_err() {
+	[ "$1" ] && echo "$1" >&2
+	usage
+	exit 1
+}
+
+while [ $# -gt 0 ]; do
+	case $1 in
+		--module|-m)
+			[ "$2" = "" ] && usage_err "Argument not specified"
+			export DOTFILES_SPECIFIC_MODULE="$2"
+			shift
+			;;
+		*)
+			usage_err "Invalid option: $1"
+			;;
+	esac
+	shift
+done
+
+
 if [ "$(whoami)" = "root" ]; then
 	echo "DO NOT RUN THIS SCRIPT AS ROOT!!!!"
 	exit 1
@@ -87,6 +113,7 @@ export -f trim_pkgs_file
 
 # print orphan and overlapping packages. should be used at the end of configuration-HOST.sh
 print_orphan_packages() {
+	! [ "$DOTFILES_SPECIFIC_MODULE" = "" ] && return 0
 	echo "Current orphan packages (not in modules, not in packages-$DOTFILES_HOST):"
 	grep -v -F -x -f <(echo -e "$(cat ./packages-$DOTFILES_HOST)\n$DOTFILES_MODULE_PACKAGES") <<< "$(paru -Qe | cut -d ' ' -f 1)"
 	# echo "Current overlapping packages (between packages-$DOTFILES_HOST and modules):"
@@ -107,6 +134,7 @@ export -f install_pkgs
 # by module name, install a module and its packages. You can also pass arguments if possible by a module
 config() {
 	export DOTFILES_MODULE_NAME="$1"
+	! [ "$DOTFILES_SPECIFIC_MODULE" = "" ] && ! [ "$DOTFILES_MODULE_NAME" = "$DOTFILES_SPECIFIC_MODULE" ] && return 0
 	export DOTFILES_MODULE_SECRETS="$DOTFILES_SECRETS_DIR/$DOTFILES_MODULE_NAME"
 	if [ ! -d "$DOTFILES_MODULE_SECRETS" ]; then
 		mkdir -p "$DOTFILES_MODULE_SECRETS"
