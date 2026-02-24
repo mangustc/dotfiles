@@ -81,6 +81,10 @@ vim.pack.add({
 	{ src = "https://github.com/Saghen/blink.cmp",                         version = "v1.6.0" },
 	{ src = "https://github.com/tpope/vim-sleuth", },
 	{ src = "https://github.com/folke/which-key.nvim", },
+
+	-- nvim-tree
+	{ src = "https://github.com/nvim-tree/nvim-web-devicons", },
+	{ src = "https://github.com/nvim-tree/nvim-tree.lua", },
 })
 
 vim.cmd("colorscheme vague")
@@ -177,6 +181,37 @@ require("blink.cmp").setup({
 	},
 })
 
+vim.g.loaded_netrw = 1
+vim.g.loaded_netrwPlugin = 1
+vim.opt.termguicolors = true
+require("nvim-tree").setup({
+	view = {
+		width = 100,
+	},
+	filters = {
+		dotfiles = true,
+	},
+	actions = {
+		open_file = {
+			quit_on_open = true,
+		},
+	},
+})
+vim.keymap.set("n", "<leader>pt", require("nvim-tree.api").tree.open, { desc = "File Browser" })
+vim.keymap.set("n", "<leader>pc", function()
+	local buf = vim.api.nvim_get_current_buf()
+	local file = vim.api.nvim_buf_get_name(buf)
+	if file == "" then
+		require("nvim-tree.api").tree.open()
+	else
+		local dir = vim.fn.fnamemodify(file, ":p:h")
+		require("nvim-tree.api").tree.open({
+			path = dir,
+		})
+	end
+end, { desc = "File Browser (buffer)" })
+
+
 local harpoon = require("harpoon")
 harpoon:setup()
 vim.keymap.set("n", "<C-j>", ":bn<CR>")
@@ -207,10 +242,6 @@ vim.keymap.set("n", "<leader>g", builtin.live_grep, { desc = "Search by Grep" })
 vim.keymap.set("n", "<leader>td", builtin.diagnostics, { desc = "Search Diagnostics" })
 vim.keymap.set("n", "<leader>pf", builtin.oldfiles, { desc = 'Search Recent Files' })
 vim.keymap.set("n", "<leader>ld", vim.diagnostic.open_float, { desc = "Open Diagnostics" })
-
-vim.keymap.set("n", "<leader>pt", ":Ex .<CR>", { desc = "File Browser" })
-vim.keymap.set("n", "<leader>pc", ":Ex<CR>", { desc = "File Browser (buffer)" })
-
 
 require("which-key").setup({})
 vim.keymap.set("n", "<leader>?", function() require("which-key").show({ global = false }) end,
