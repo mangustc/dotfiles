@@ -23,7 +23,7 @@ cmd sudo install -D -m 644 "$(writetext <<EOF
 title Arch Linux
 linux /vmlinuz-linux
 initrd /initramfs-linux.img
-options root=LABEL=arch-root rw nowatchdog fbcon=vc:2-6 amdgpu.sg_display=0 zswap.enabled=1 zswap.compressor=zstd drm.edid_firmware=HDMI-A-1:edid/v226hql.bin
+options root=LABEL=arch-root rw nowatchdog fbcon=vc:2-6 amdgpu.sg_display=0 zswap.enabled=1 zswap.compressor=zstd drm.edid_firmware=HDMI-A-1:edid/v226hql.bin nvidia.NVreg_EnableGpuFirmware=0
 EOF
 )" /boot/loader/entries/arch.conf
 
