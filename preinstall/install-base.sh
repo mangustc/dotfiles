@@ -31,8 +31,8 @@ cd /home/ivan
 sudo -u ivan git clone https://github.com/mangustc/dotfiles
 sudo -u ivan mkdir git
 cd ./git
-sudo -u ivan git clone https://aur.archlinux.org/paru-bin.git
-cd paru-bin
+sudo -u ivan git clone https://aur.archlinux.org/paru.git
+cd paru
 sudo -u ivan makepkg -si
 
 cd /home/ivan/dotfiles
