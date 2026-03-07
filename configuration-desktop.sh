@@ -86,6 +86,7 @@ config sddm --nopasswd
 config scripts
 config konsole
 config yandex-disk
+config desktop-fancontrol
 
 # end
 print_orphan_packages
