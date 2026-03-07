@@ -22,11 +22,7 @@ while [ $# -gt 0 ]; do
 done
 
 cmd sudo install -D -m 644 "$(writetext <<EOF
-# no fan control, but same chip
 options it87 ignore_resource_conflict=1 force_id=0x8689
-
-# fan control works with this, but different chip
-# options it87 ignore_resource_conflict=1  force_id=0x8628
 EOF
 )" /etc/modprobe.d/it87.conf
 
