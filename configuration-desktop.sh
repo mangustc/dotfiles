@@ -86,6 +86,7 @@ config sddm --nopasswd
 config scripts
 config konsole
 config yandex-disk
+config warp
 config desktop-fancontrol
 
 # end
