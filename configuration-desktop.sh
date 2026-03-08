@@ -82,7 +82,7 @@ config archscripts --dotfiles "$DOTFILES_DIR" --host "$DOTFILES_HOST"
 config git
 config flatpak --flatpaks "
 "
-config sddm --nopasswd
+config sddm --nopasswd --autologin
 config scripts
 config konsole
 config yandex-disk
