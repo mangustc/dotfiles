@@ -121,6 +121,13 @@ PlasmoidItem {
                 }
             }
             MenuItem {
+                text: "Start a VM"
+                icon.name: "system-run"
+                onTriggered: {
+                    executable.exec(`bash -c 'virsh start win-passthrough'`)
+                }
+            }
+            MenuItem {
                 text: "WARP: " + isWARPEnabled + ", " + "Nethandler: " + isNethandlerEnabled
                 icon.name: "system-run"
                 onTriggered: updateStatus()

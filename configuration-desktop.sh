@@ -88,6 +88,7 @@ config konsole
 config yandex-disk
 config warp
 config desktop-fancontrol
+config virt
 
 # end
 print_orphan_packages
