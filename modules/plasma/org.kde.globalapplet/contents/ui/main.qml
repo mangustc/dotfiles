@@ -117,7 +117,7 @@ PlasmoidItem {
                 text: "Reboot to Windows"
                 icon.name: "system-run"
                 onTriggered: {
-                    executable.exec(`bash -c 'pkexec efibootmgr -n $(efibootmgr | grep Windows | cut -c 5-8) && systemctl reboot'`)
+                    executable.exec(`bash -c 'pkexec launch-windows'`)
                 }
             }
             MenuItem {

@@ -71,6 +71,7 @@ config pipewire
 config networkmanager
 config nethandlerm
 config ssh-agent
+config launch-windows
 config plasma
 config ppd
 config neovim
