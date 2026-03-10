@@ -2,7 +2,7 @@
 cls
 
 echo Select an option:
-choice /c:12345Q /m "1. 1920x1080@70, 2. 1600x900@76, 3. 1280x720@76, 4. 960x540@76, 5. 1920x1080@60, Q. Quit"
+choice /c:12345Q /m "1. 1920x1080@70, 2. 1600x900@75, 3. 1280x720@75, 4. 960x540@75, 5. 1920x1080@60, Q. Quit"
 
 if %ERRORLEVEL%==1 goto Option1
 if %ERRORLEVEL%==2 goto Option2
@@ -16,15 +16,15 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass -File "%~dp0\Set-ScreenResolut
 goto End
 
 :Option2
-powershell.exe -NoProfile -ExecutionPolicy Bypass -File "%~dp0\Set-ScreenResolution.ps1" -Width 1600 -Height 900 -Frequency 76
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File "%~dp0\Set-ScreenResolution.ps1" -Width 1600 -Height 900 -Frequency 75
 goto End
 
 :Option3
-powershell.exe -NoProfile -ExecutionPolicy Bypass -File "%~dp0\Set-ScreenResolution.ps1" -Width 1280 -Height 720 -Frequency 76
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File "%~dp0\Set-ScreenResolution.ps1" -Width 1280 -Height 720 -Frequency 75
 goto End
 
 :Option4
-powershell.exe -NoProfile -ExecutionPolicy Bypass -File "%~dp0\Set-ScreenResolution.ps1" -Width 960 -Height 540 -Frequency 76
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File "%~dp0\Set-ScreenResolution.ps1" -Width 960 -Height 540 -Frequency 75
 goto End
 
 :Option5
