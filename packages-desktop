@@ -1,0 +1,27 @@
+# system
+amd-ucode
+nvidia-open
+nvidia-utils
+lib32-nvidia-utils
+linux
+linux-firmware
+linux-headers
+paru
+sbctl
+
+# progs
+mpv
+zen-browser-bin
+discord
+qbittorrent
+gparted
+gimp
+libreoffice-still
+
+# gaming
+steam
+protonplus
+wine
+
+# programming
+# android-studio

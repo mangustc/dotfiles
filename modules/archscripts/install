@@ -118,3 +118,10 @@ fi
 command="\$(whereis "\$1" | cut -d " " -f 2)"
 \$EDITOR "\$command"
 EOF
+
+newscript archsync <<'EOF'
+#!/usr/bin/env sh
+
+rate-mirrors arch | sudo tee /etc/pacman.d/mirrorlist
+EOF
+

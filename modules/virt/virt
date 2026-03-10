@@ -1,0 +1,42 @@
+#!/usr/bin/env sh
+set -e
+
+usage() {
+	cat <<EOF
+Example: virt [FLAGS] save
+EOF
+}
+usage_err() {
+	[ "$1" ] && echo "$1" >&2
+	usage
+	exit 1
+}
+
+domain="win-passthrough"
+save_path="$HOME/virt/domains/win-passthrough.xml"
+while [ $# -gt 0 ]; do
+	case $1 in
+		save)
+			save=1
+			;;
+		--save-path)
+			[ "$2" = "" ] && usage_err "Argument not specified"
+			save_path="$2"
+			shift
+			;;
+		--domain | -d)
+			[ "$2" = "" ] && usage_err "Argument not specified"
+			domain="$2"
+			shift
+			;;
+		*)
+			usage_err "Invalid option: $1"
+			;;
+	esac
+	shift
+done
+
+if [ "$save" = "1" ]; then
+	virsh dumpxml "$domain" > /tmp/virt-dumpxml-temp
+	install -v -D -m 644 /tmp/virt-dumpxml-temp "$save_path"
+fi

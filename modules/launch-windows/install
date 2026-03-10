@@ -1,0 +1,34 @@
+#!/usr/bin/env sh
+set -e
+
+usage() {
+	cat <<EOF
+Example: config $DOTFILES_MODULE_NAME
+EOF
+}
+usage_err() {
+	[ "$1" ] && echo "$1" >&2
+	usage
+	exit 1
+}
+
+while [ $# -gt 0 ]; do
+	case $1 in
+		*)
+			usage_err "Invalid option: $1"
+			;;
+	esac
+	shift
+done
+
+cmd sudo install -D -m 755 ./launch-windows /usr/local/bin/launch-windows
+cmd sudo install -D -m 644 "$(writetext <<EOF
+polkit.addRule(function(action, subject) {
+  if (action.id == "org.freedesktop.policykit.exec" &&
+      action.lookup("program") == "/usr/local/bin/launch-windows" &&
+      (subject.isInGroup("wheel"))) {
+    return polkit.Result.YES;
+  }
+});
+EOF
+)" /etc/polkit-1/rules.d/10-launch-windows.rules

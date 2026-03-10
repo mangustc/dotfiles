@@ -16,6 +16,9 @@ usage_err() {
 
 while [ $# -gt 0 ]; do
 	case $1 in
+		--autologin)
+			autologin=true
+			;;
 		--nopasswd)
 			nopasswd=true
 			;;
@@ -26,47 +29,14 @@ while [ $# -gt 0 ]; do
 	shift
 done
 
-if [ $nopasswd ]; then
-	pam="$(writetext <<EOF
-#%PAM-1.0
+cmd sudo install -D -m 644 "$(writetext <<EOF
+$([ $autologin ] && cat <<EOF2
+[Autologin]
+User=$(whoami)
+Session=plasma
+EOF2
+)
 
-auth      sufficient    pam_succeed_if.so user = $(whoami)
-auth        include     system-login
--auth       optional    pam_gnome_keyring.so
--auth       optional    pam_kwallet5.so
-
-account     include     system-login
-
-password    include     system-login
--password   optional    pam_gnome_keyring.so    use_authtok
-
-session     optional    pam_keyinit.so          force revoke
-session     include     system-login
--session    optional    pam_gnome_keyring.so    auto_start
--session    optional    pam_kwallet5.so         auto_start
-EOF
-	)"
-else
-	pam="$(writetext <<EOF
-#%PAM-1.0
-
-auth        include     system-login
--auth       optional    pam_gnome_keyring.so
--auth       optional    pam_kwallet5.so
-
-account     include     system-login
-
-password    include     system-login
--password   optional    pam_gnome_keyring.so    use_authtok
-
-session     optional    pam_keyinit.so          force revoke
-session     include     system-login
--session    optional    pam_gnome_keyring.so    auto_start
--session    optional    pam_kwallet5.so         auto_start
-EOF
-	)"
-fi
-conf="$(writetext <<EOF
 [Wayland]
 EnableHiDPI=true
 CompositorCommand=kwin_wayland --drm --no-lockscreen --no-global-shortcuts --locale1
@@ -78,7 +48,29 @@ EnableHiDPI=true
 DisplayServer=wayland
 GreeterEnvironment=QT_WAYLAND_SHELL_INTEGRATION=layer-shell
 EOF
-)"
-cmd sudo install -D -m 644 "$conf" /etc/sddm.conf.d/dotfiles.conf
-cmd sudo install -D -m 644 "$pam" /etc/pam.d/sddm
+)" /etc/sddm.conf.d/dotfiles.conf
+
+cmd sudo install -D -m 644 "$(writetext <<EOF
+#%PAM-1.0
+
+$([ $nopasswd ] && cat <<EOF2
+auth      sufficient    pam_succeed_if.so user = $(whoami)
+EOF2
+)
+auth        include     system-login
+-auth       optional    pam_gnome_keyring.so
+-auth       optional    pam_kwallet5.so
+
+account     include     system-login
+
+password    include     system-login
+-password   optional    pam_gnome_keyring.so    use_authtok
+
+session     optional    pam_keyinit.so          force revoke
+session     include     system-login
+-session    optional    pam_gnome_keyring.so    auto_start
+-session    optional    pam_kwallet5.so         auto_start
+EOF
+)" /etc/pam.d/sddm
+
 cmd sudo systemctl enable sddm.service
