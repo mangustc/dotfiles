@@ -11,7 +11,7 @@ config base
 install_pkgs "$(trim_pkgs_file "./packages-$DOTFILES_HOST")"
 
 # systemd-boot
-config swap --size 8G
+config swap --size 16G
 config v226hql
 cmd sudo install -D -m 644 "$(writetext <<EOF
 timeout 0
