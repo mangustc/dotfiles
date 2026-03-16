@@ -33,9 +33,10 @@ fi
 
 export DOTFILES_SAVE_DIR="$DOTFILES_DIR/save/$(date +%Y-%m-%d_%H-%M-%S)"
 export DOTFILES_MODULE_NAME="$DOTFILES_HOST"
-export DOTFILES_MODULE_PACKAGES=""
+export DOTFILES_MODULE_PACKAGES_FILE="$DOTFILES_SAVE_DIR/pkgs"
 export DOTFILES_SECRETS_DIR="$DOTFILES_DIR/secrets"
 mkdir -p "$DOTFILES_SAVE_DIR"
+touch "$DOTFILES_MODULE_PACKAGES_FILE"
 
 # echo as error
 errcho() {
@@ -115,7 +116,7 @@ export -f trim_pkgs_file
 print_orphan_packages() {
 	! [ "$DOTFILES_SPECIFIC_MODULE" = "" ] && return 0
 	echo "Current orphan packages (not in modules, not in packages-$DOTFILES_HOST):"
-	grep -v -F -x -f <(echo -e "$(cat ./packages-$DOTFILES_HOST)\n$DOTFILES_MODULE_PACKAGES") <<< "$(paru -Qe | cut -d ' ' -f 1)"
+	grep -v -F -x -f <(echo -e "$(cat ./packages-$DOTFILES_HOST)\n$(cat "$DOTFILES_MODULE_PACKAGES_FILE")") <<< "$(paru -Qe | cut -d ' ' -f 1)"
 	# echo "Current overlapping packages (between packages-$DOTFILES_HOST and modules):"
 	# comm -12 <(echo "$(trim_pkgs_str "$DOTFILES_MODULE_PACKAGES")") <(trim_pkgs_file ./packages-$DOTFILES_HOST)
 }
@@ -123,11 +124,13 @@ export -f print_orphan_packages
 
 # installes packages from a string of package names
 install_pkgs() {
-	install_pkgs_paru=""
-	install_pkgs_list="$(trim_pkgs_str "$1" | grep -v -F -x -f <(echo "$(paru -Q | cut -d ' ' -f 1)"))"
+	install_pkgs_list="$(trim_pkgs_str "$1" | grep -v -F -x -f <(echo "$(paru -Q | cut -d ' ' -f 1)") || true)"
 	if [ ! "$install_pkgs_list" = "" ]; then
-		paru -S --needed $install_pkgs_list
+		paru -S --needed "$install_pkgs_list"
 	fi
+	prev_pkgs="$(cat "$DOTFILES_MODULE_PACKAGES_FILE")"
+
+	echo "$(trim_pkgs_str "$prev_pkgs$(echo -e "\n$(trim_pkgs_str "$1")")")" > $DOTFILES_MODULE_PACKAGES_FILE
 }
 export -f install_pkgs
 
@@ -141,9 +144,7 @@ config() {
 	fi
 	echo -e "\ninstalling module $DOTFILES_MODULE_NAME:"
 	cd "$DOTFILES_DIR/modules/$DOTFILES_MODULE_NAME"
-	pkgs="$(trim_pkgs_file ./packages)"
-	install_pkgs "$pkgs"
-	DOTFILES_MODULE_PACKAGES="$(trim_pkgs_str "$DOTFILES_MODULE_PACKAGES$(echo -e "\n$pkgs")")"
+	install_pkgs "$(trim_pkgs_file ./packages)"
 	chmod 755 ./install
 	./install "${@:2}"
 	if [ $? -eq 1 ]; then
