@@ -1,4 +1,147 @@
 #!/usr/bin/env sh
 set -e
 
+usage() {
+	cat <<EOF
+Example: config $DOTFILES_MODULE_NAME
+EOF
+}
+usage_err() {
+	[ "$1" ] && echo "$1" >&2
+	usage
+	exit 1
+}
+
+while [ $# -gt 0 ]; do
+	case $1 in
+		--proxy)
+			proxy=1
+			;;
+		--doh-https)
+			[ "$2" = "" ] && usage_err "Argument not specified"
+			doh_https="$2"
+			shift
+			;;
+		--doh-ipv4)
+			[ "$2" = "" ] && usage_err "Argument not specified"
+			doh="$2"
+			doh_ipv4="$2"
+			shift
+			;;
+		--doh-ipv4-alt)
+			[ "$2" = "" ] && usage_err "Argument not specified"
+			doh_ipv4_alt="$2"
+			shift
+			;;
+		*)
+			usage_err "Invalid option: $1"
+			;;
+	esac
+	shift
+done
+
+if [ "$proxy" = "1" ]; then
+	cmd install_pkgs v2rayn
+fi
+
+if ! [ "$doh_https" = "" ] || ! [ "$doh_ipv4" = "" ] || ! [ "$doh_ipv4_alt" = "" ]; then
+	[ "$doh_https" = "" ] && usage_err "No doh-https provided"
+	[ "$doh_ipv4" = "" ] && usage_err "No doh-ipv4 provided"
+	[ "$doh_ipv4_alt" = "" ] && usage_err "No doh-ipv4-alt provided"
+	cmd install_pkgs dns-over-https
+	cmd sudo install -D -m 644 "$(writetext <<EOF
+listen = [
+    "127.0.0.1:53",
+    "127.0.0.1:5380",
+    "[::1]:53",
+    "[::1]:5380",
+]
+
+[upstream]
+upstream_selector = "random"
+
+[[upstream.upstream_ietf]]
+    url = "$doh_https"
+    weight = 50
+
+[others]
+bootstrap = [
+    "$doh_ipv4:53",
+    "$doh_ipv4_alt:53",
+]
+passthrough = [
+    "captive.apple.com",
+    "connectivitycheck.gstatic.com",
+    "detectportal.firefox.com",
+    "msftconnecttest.com",
+    "nmcheck.gnome.org",
+    "pool.ntp.org",
+    "time.apple.com",
+    "time.asia.apple.com",
+    "time.euro.apple.com",
+    "time.nist.gov",
+    "time.windows.com",
+]
+timeout = 30
+no_cookies = true
+no_ecs = false
+no_ipv6 = false
+no_user_agent = false
+verbose = false
+insecure_tls_skip_verify = false
+EOF
+	)" /etc/dns-over-https/doh-client.conf
+	cmd sudo install -D -m 644 "$(writetext <<EOF
+listen = [
+    "127.0.0.1:8053",
+    "[::1]:8053",
+]
+local_addr = ""
+cert = ""
+key = ""
+path = "/dns-query"
+upstream = [
+    "udp:1.1.1.1:53",
+    "udp:1.0.0.1:53",
+    "udp:8.8.8.8:53",
+    "udp:8.8.4.4:53",
+]
+timeout = 10
+tries = 3
+verbose = false
+log_guessed_client_ip = false
+ecs_allow_non_global_ip = false
+ecs_use_precise_ip = false
+EOF
+	)" /etc/dns-over-https/doh-server.conf
+	cmd sudo install -D -m 644 "$(writetext <<EOF
+listen = [
+    "127.0.0.1:8053",
+    "[::1]:8053",
+]
+local_addr = ""
+cert = ""
+key = ""
+path = "/dns-query"
+upstream = [
+    "udp:1.1.1.1:53",
+    "udp:1.0.0.1:53",
+    "udp:8.8.8.8:53",
+    "udp:8.8.4.4:53",
+]
+timeout = 10
+tries = 3
+verbose = false
+log_guessed_client_ip = false
+ecs_allow_non_global_ip = false
+ecs_use_precise_ip = false
+EOF
+	)" /etc/dns-over-https/doh-server.conf
+	cmd sudo install -D -m 644 "$(writetext <<EOF
+[global-dns-domain-*]
+servers=127.0.0.1,::1
+EOF
+	)" /etc/NetworkManager/conf.d/doh.conf
+	cmd sudo systemctl enable doh-client.service
+fi
 cmd sudo systemctl enable NetworkManager.service

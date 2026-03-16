@@ -68,7 +68,7 @@ sp5100_tco
 "
 config earlyoom
 config pipewire
-config networkmanager
+config networkmanager --proxy --doh-https "https://dns.quad9.net/dns-query" --doh-ipv4 "9.9.9.9" --doh-ipv4-alt "149.112.112.112"
 config nethandlerm
 config ssh-agent
 config launch-windows
@@ -87,9 +87,9 @@ config sddm --nopasswd --autologin
 config scripts
 config konsole
 config yandex-disk
-config warp
 config desktop-fancontrol
 config virt
+
 
 # end
 print_orphan_packages

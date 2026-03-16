@@ -26,12 +26,10 @@ PlasmoidItem {
         }
     }
 
-    property var warpCheckCMD: `bash -c 'warp-cli status | grep Connected'`
     property var nethandlerCheckCMD: `bash -c 'systemctl is-active nethandler.service'`
     property var isWARPEnabled: false
     property var isNethandlerEnabled: true
     function updateStatus() {
-        executable.exec(warpCheckCMD)
         executable.exec(nethandlerCheckCMD)
     }
     Timer {
@@ -45,9 +43,6 @@ PlasmoidItem {
         engine: "executable"
         connectedSources: []
         onNewData: (source, data) => {
-            if (source == warpCheckCMD) {
-                isWARPEnabled = data["stdout"] == "" ? false : true
-            }
             if (source == nethandlerCheckCMD) {
                 isNethandlerEnabled = data["stdout"] == "active\n" ? true : false
             }
@@ -63,14 +58,6 @@ PlasmoidItem {
             anchors.fill: parent
             anchors.margins: 10
             MenuItem {
-                text: "Toggle WARP"
-                icon.name: "system-run"
-                onTriggered: {
-                    executable.exec(`bash -c '! [ "$(warp-cli status | grep Connected)" = "" ] && warp stop || warp start'`)
-                    updateStatusTimer.start()
-                }
-            }
-            MenuItem {
                 text: "Toggle Nethandler"
                 icon.name: "system-run"
                 onTriggered: {
@@ -82,21 +69,21 @@ PlasmoidItem {
                 text: "1920x1080@70"
                 icon.name: "system-run"
                 onTriggered: {
-                    executable.exec(`bash -c 'kscreen-doctor output.DP-3.mode.1920x1080@70'`)
+                    executable.exec(`bash -c 'kscreen-doctor output.HDMI-A-1.mode.1920x1080@70'`)
                 }
             }
             MenuItem {
                 text: "1600x900@75"
                 icon.name: "system-run"
                 onTriggered: {
-                    executable.exec(`bash -c 'kscreen-doctor output.DP-3.mode.1600x900@75'`)
+                    executable.exec(`bash -c 'kscreen-doctor output.HDMI-A-1.mode.1600x900@75'`)
                 }
             }
             MenuItem {
                 text: "1920x1080@60"
                 icon.name: "system-run"
                 onTriggered: {
-                    executable.exec(`bash -c 'kscreen-doctor output.DP-3.mode.1920x1080@60'`)
+                    executable.exec(`bash -c 'kscreen-doctor output.HDMI-A-1.mode.1920x1080@60'`)
                 }
             }
             MenuItem {
@@ -128,7 +115,7 @@ PlasmoidItem {
                 }
             }
             MenuItem {
-                text: "WARP: " + isWARPEnabled + ", " + "Nethandler: " + isNethandlerEnabled
+                text: "Nethandler: " + isNethandlerEnabled
                 icon.name: "system-run"
                 onTriggered: updateStatus()
             }
