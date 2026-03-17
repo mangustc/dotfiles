@@ -90,9 +90,11 @@ config fonts
 config yandex-disk
 config warp
 config launch-windows
+config zen-browser
 
 cmd install -D -m 644 ./modules/steam-session/steam.desktop ~/.local/share/applications/steam.desktop
 
+# late
 config plasma-LATE
 # end
 print_orphan_packages

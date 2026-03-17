@@ -83,8 +83,10 @@ config konsole
 config yandex-disk
 config desktop-fancontrol
 config virt
+config zen-browser
 
-
+# late
 config plasma-LATE
+
 # end
 print_orphan_packages
