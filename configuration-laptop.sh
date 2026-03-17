@@ -69,7 +69,7 @@ sp5100_tco
 config earlyoom
 config brightness
 config pipewire
-config networkmanager
+config networkmanager --proxy --doh-https "https://dns.quad9.net/dns-query" --doh-ipv4 "9.9.9.9" --doh-ipv4-alt "149.112.112.112"
 config nethandlerm
 config ssh-agent
 config dualsense
