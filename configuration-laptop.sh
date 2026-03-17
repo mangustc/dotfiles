@@ -89,6 +89,7 @@ config zellij
 config fonts
 config yandex-disk
 config warp
+config launch-windows
 
 cmd install -D -m 644 ./modules/steam-session/steam.desktop ~/.local/share/applications/steam.desktop
 

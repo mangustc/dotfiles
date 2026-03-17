@@ -22,7 +22,6 @@ gimp
 steam
 
 # programming
-android-studio
 dart
 compiler-rt
 clang
@@ -32,5 +31,3 @@ cmake
 ninja
 jdk21-openjdk
 go
-android-tools
-android-udev
