@@ -72,6 +72,7 @@ config pipewire
 config networkmanager
 config nethandlerm
 config ssh-agent
+config dualsense
 config ppd
 config plasma
 config neovim
