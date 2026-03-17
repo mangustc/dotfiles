@@ -91,5 +91,6 @@ config desktop-fancontrol
 config virt
 
 
+config plasma-LATE
 # end
 print_orphan_packages

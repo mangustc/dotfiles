@@ -1,0 +1,25 @@
+#!/usr/bin/env sh
+set -e
+
+cp -rf ./org.kde.globalapplet "$DOTFILES_MODULE_TEMP"
+cd "$DOTFILES_MODULE_TEMP"
+
+target="./org.kde.globalapplet/contents/ui/main.qml"
+tmpfile=$(mktemp) || exit 1
+
+for file in "./files"/*; do
+    [ -f "$file" ] || continue
+    cat "$file" >> "$tmpfile"
+    printf '\n' >> "$tmpfile"
+done
+
+sed "/\/\/ SED_MENU_ITEMS/ {
+    r $tmpfile
+    d
+}" "$target" > "$target.tmp" && mv "$target.tmp" "$target"
+rm -f "$tmpfile"
+
+if ! [ -d ~/.local/share/plasma/plasmoids/org.kde.globalapplet ]; then
+	cmd kpackagetool6 -t Plasma/Applet -i ./org.kde.globalapplet
+fi
+cmd kpackagetool6 -t Plasma/Applet -u ./org.kde.globalapplet

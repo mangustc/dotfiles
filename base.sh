@@ -34,6 +34,7 @@ fi
 export DOTFILES_SAVE_DIR="$DOTFILES_DIR/save/$(date +%Y-%m-%d_%H-%M-%S)"
 export DOTFILES_MODULE_NAME="$DOTFILES_HOST"
 export DOTFILES_MODULE_PACKAGES_FILE="$DOTFILES_SAVE_DIR/pkgs"
+export DOTFILES_MODULES_TEMP_DIR="$DOTFILES_SAVE_DIR/temp"
 export DOTFILES_SECRETS_DIR="$DOTFILES_DIR/secrets"
 mkdir -p "$DOTFILES_SAVE_DIR"
 touch "$DOTFILES_MODULE_PACKAGES_FILE"
@@ -134,14 +135,23 @@ install_pkgs() {
 }
 export -f install_pkgs
 
+add_module_temp() {
+	module_name="$1"
+	file="$2"
+	temp_dir="$DOTFILES_MODULES_TEMP_DIR/$module_name/files"
+	[ -d "$temp_dir" ] || mkdir -p "$temp_dir"
+	cp -rf "$2" "$temp_dir"
+}
+export -f add_module_temp
+
 # by module name, install a module and its packages. You can also pass arguments if possible by a module
 config() {
 	export DOTFILES_MODULE_NAME="$1"
 	! [ "$DOTFILES_SPECIFIC_MODULE" = "" ] && ! [ "$DOTFILES_MODULE_NAME" = "$DOTFILES_SPECIFIC_MODULE" ] && return 0
 	export DOTFILES_MODULE_SECRETS="$DOTFILES_SECRETS_DIR/$DOTFILES_MODULE_NAME"
-	if [ ! -d "$DOTFILES_MODULE_SECRETS" ]; then
-		mkdir -p "$DOTFILES_MODULE_SECRETS"
-	fi
+	export DOTFILES_MODULE_TEMP="$DOTFILES_MODULES_TEMP_DIR/$DOTFILES_MODULE_NAME"
+	[ -d "$DOTFILES_MODULE_SECRETS" ] || mkdir -p "$DOTFILES_MODULE_SECRETS"
+	[ -d "$DOTFILES_MODULE_TEMP" ] || mkdir -p "$DOTFILES_MODULE_TEMP"
 	echo -e "\ninstalling module $DOTFILES_MODULE_NAME:"
 	cd "$DOTFILES_DIR/modules/$DOTFILES_MODULE_NAME"
 	install_pkgs "$(trim_pkgs_file ./packages)"
