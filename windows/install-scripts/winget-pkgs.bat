@@ -10,3 +10,4 @@ winget install qBittorrent.qBittorrent --silent --accept-package-agreements --ac
 winget install Valve.Steam --silent --accept-package-agreements --accept-source-agreements
 winget install Discord.Discord --silent --accept-package-agreements --accept-source-agreements
 winget install JesseDuffield.lazygit --silent --accept-package-agreements --accept-source-agreements
+winget install 2dust.v2rayN --silent --accept-package-agreements --accept-source-agreements
