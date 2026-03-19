@@ -1,6 +1,33 @@
 #!/usr/bin/env sh
 set -e
 
+usage() {
+	cat <<EOF
+Example: config $DOTFILES_MODULE_NAME
+EOF
+}
+usage_err() {
+	[ "$1" ] && echo "$1" >&2
+	usage
+	exit 1
+}
+
+while [ $# -gt 0 ]; do
+	case $1 in
+		--output-name)
+			[ "$2" = "" ] && usage_err "Argument not specified"
+			output_name="$2"
+			shift
+			;;
+		*)
+			usage_err "Invalid option: $1"
+			;;
+	esac
+	shift
+done
+
+[ "$output_name" = "" ] && usage_err "Specify --output-name"
+
 cmd sudo install -D -m 644 "$(writetext <<'EOF'
 FILES=(/usr/lib/firmware/edid/v226hql.bin)
 EOF
@@ -8,27 +35,30 @@ EOF
 
 cmd sudo install -D -m 644 ./v226hql.bin /usr/lib/firmware/edid/v226hql.bin
 
-add_module_temp "plasma-LATE" "$(writetext <<'EOF'
+add_module_temp "plasma-LATE" "$(writetext <<EOF
             MenuItem {
                 text: "1920x1080@70"
                 icon.name: "system-run"
                 onTriggered: {
-                    executable.exec(`bash -c 'kscreen-doctor output.HDMI-A-1.mode.1920x1080@70'`)
+                    executable.exec(\`bash -c 'kscreen-doctor output.$output_name.mode.1920x1080@70'\`)
                 }
             }
             MenuItem {
                 text: "1600x900@75"
                 icon.name: "system-run"
                 onTriggered: {
-                    executable.exec(`bash -c 'kscreen-doctor output.HDMI-A-1.mode.1600x900@75'`)
+                    executable.exec(\`bash -c 'kscreen-doctor output.$output_name.mode.1600x900@75'\`)
                 }
             }
             MenuItem {
                 text: "1920x1080@60"
                 icon.name: "system-run"
                 onTriggered: {
-                    executable.exec(`bash -c 'kscreen-doctor output.HDMI-A-1.mode.1920x1080@60'`)
+                    executable.exec(\`bash -c 'kscreen-doctor output.$output_name.mode.1920x1080@60'\`)
                 }
             }
 EOF
 )"
+
+add_module_temp "boot-LATE" "$(writetext "drm.edid_firmware=$output_name:edid/v226hql.bin")"
+
