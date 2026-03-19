@@ -12,33 +12,7 @@ install_pkgs "$(trim_pkgs_file "./packages-$DOTFILES_HOST")"
 
 # systemd-boot
 config swap --size 16G
-config v226hql
-cmd sudo install -D -m 644 "$(writetext <<EOF
-timeout 0
-default arch.conf
-console-mode keep
-EOF
-)" /boot/loader/loader.conf
-cmd sudo install -D -m 644 "$(writetext <<EOF
-title Arch Linux
-linux /vmlinuz-linux
-initrd /initramfs-linux.img
-options root=LABEL=arch-root rw nowatchdog zswap.enabled=1 zswap.compressor=zstd drm.edid_firmware=HDMI-A-1:edid/v226hql.bin nvidia.NVreg_EnableGpuFirmware=0
-EOF
-)" /boot/loader/entries/arch.conf
-
-cmd sudo install -D -m 644 "$(writetext <<EOF
-ALL_kver="/boot/vmlinuz-linux"
-PRESETS=('default')
-default_image="/boot/initramfs-linux.img"
-EOF
-)" /etc/mkinitcpio.d/linux.preset
-
-cmd sudo install -D -m 644 "$(writetext <<EOF
-LABEL=arch-root     	/         	ext4      	rw,relatime	0 1
-LABEL=arch-boot     	/boot     	vfat      	rw,relatime,fmask=0022,dmask=0022,codepage=437,iocharset=ascii,shortname=mixed,utf8,errors=remount-ro	0 2
-EOF
-)" /etc/fstab
+config v226hql --output-name HDMI-A-1
 
 config sysctl --opts "
 net.ipv4.tcp_mtu_probing = true
@@ -84,9 +58,13 @@ config yandex-disk
 config desktop-fancontrol
 config virt
 config zen-browser
+config zswap
+
+add_module_temp "boot-LATE" "$(writetext "nvidia.NVreg_EnableGpuFirmware=0")"
 
 # late
 config plasma-LATE
+config boot-LATE
 
 # end
 print_orphan_packages

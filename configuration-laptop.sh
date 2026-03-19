@@ -12,38 +12,6 @@ install_pkgs "$(trim_pkgs_file "./packages-$DOTFILES_HOST")"
 
 # systemd-boot
 config swap --size 8G
-cmd sudo install -D -m 644 "$(writetext <<EOF
-timeout 0
-default arch.conf
-console-mode keep
-EOF
-)" /boot/loader/loader.conf
-cmd sudo install -D -m 644 "$(writetext <<EOF
-title Arch Linux
-linux /vmlinuz-linux
-initrd /initramfs-linux.img
-options root=LABEL=arch-root rw nowatchdog zswap.enabled=1 zswap.compressor=zstd
-EOF
-)" /boot/loader/entries/arch.conf
-
-cmd sudo install -D -m 644 "$(writetext <<EOF
-ALL_kver="/boot/vmlinuz-linux"
-PRESETS=('default')
-default_image="/boot/initramfs-linux.img"
-EOF
-)" /etc/mkinitcpio.d/linux.preset
-
-cmd sudo install -D -m 644 "$(writetext <<EOF
-[Login]
-HandlePowerKey=sleep
-EOF
-)" /etc/systemd/logind.conf
-
-cmd sudo install -D -m 644 "$(writetext <<EOF
-LABEL=arch-root     	/         	ext4      	rw,relatime	0 1
-LABEL=arch-boot     	/boot     	vfat      	rw,relatime,fmask=0022,dmask=0022,codepage=437,iocharset=ascii,shortname=mixed,utf8,errors=remount-ro	0 2
-EOF
-)" /etc/fstab
 
 config acpi_call
 config sysctl --opts "
@@ -91,10 +59,12 @@ config yandex-disk
 config warp
 config launch-windows
 config zen-browser
+config zswap
 
 cmd install -D -m 644 ./modules/steam-session/steam.desktop ~/.local/share/applications/steam.desktop
 
 # late
 config plasma-LATE
+config boot-LATE
 # end
 print_orphan_packages
