@@ -57,7 +57,7 @@ config konsole
 config yandex-disk
 config desktop-fancontrol
 config virt
-config zen-browser
+config zen-browser --search-engine
 config zswap
 config docker
 

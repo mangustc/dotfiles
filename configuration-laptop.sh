@@ -58,7 +58,7 @@ config fonts
 config yandex-disk
 config warp
 config launch-windows
-config zen-browser
+config zen-browser --search-engine
 config zswap
 config docker
 
