@@ -60,6 +60,7 @@ config warp
 config launch-windows
 config zen-browser
 config zswap
+config docker
 
 cmd install -D -m 644 ./modules/steam-session/steam.desktop ~/.local/share/applications/steam.desktop
 
