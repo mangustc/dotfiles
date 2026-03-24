@@ -59,6 +59,7 @@ config desktop-fancontrol
 config virt
 config zen-browser
 config zswap
+config docker
 
 add_module_temp "boot-LATE" "$(writetext "nvidia.NVreg_EnableGpuFirmware=0")"
 
