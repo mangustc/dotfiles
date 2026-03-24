@@ -12,8 +12,6 @@ usage_err() {
 	exit 1
 }
 
-kernel_name="linux"
-
 while [ $# -gt 0 ]; do
 	case $1 in
 		--kernel-name)
@@ -27,6 +25,8 @@ while [ $# -gt 0 ]; do
 	esac
 	shift
 done
+
+[ "$kernel_name" = "" ] && usage_err "Specify --kernel-name argument"
 
 cd "$DOTFILES_MODULE_TEMP"
 
