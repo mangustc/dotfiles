@@ -142,6 +142,16 @@ EOF
 servers=127.0.0.1,::1
 EOF
 	)" /etc/NetworkManager/conf.d/doh.conf
+	cmd sudo install -D -m 644 "$(writetext <<EOF
+[Unit]
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+RestartSec=5
+StartLimitBurst=5
+EOF
+	)" /etc/systemd/system/doh-client.service.d/override.conf
 	cmd sudo systemctl enable doh-client.service
 fi
 cmd sudo systemctl enable NetworkManager.service
