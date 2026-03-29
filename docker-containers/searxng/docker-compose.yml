@@ -1,0 +1,11 @@
+services:
+  searxng:
+    image: docker.io/searxng/searxng:latest
+    container_name: searxng
+    restart: unless-stopped
+    ports:
+      - "8888:8080"
+    volumes:
+      - ./config:/etc/searxng/
+      - ./data:/var/cache/searxng/
+
