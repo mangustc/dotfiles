@@ -148,8 +148,11 @@ After=network-online.target
 Wants=network-online.target
 
 [Service]
-RestartSec=5
-StartLimitBurst=5
+Restart=always
+RestartSec=5s
+
+StartLimitBurst=0
+TimeoutStartSec=infinity
 EOF
 	)" /etc/systemd/system/doh-client.service.d/override.conf
 	cmd sudo systemctl enable doh-client.service
