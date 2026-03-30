@@ -1,0 +1,28 @@
+services:
+  llama-server:
+    container_name: llama-server
+    image: ghcr.io/ggml-org/llama.cpp:server-cuda
+    volumes:
+      - ./models:/models
+    ports:
+      - "8033:8033"
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    command: >
+      --port 8033
+      --host 0.0.0.0
+      -m /models/Qwen3.5-9B-Q4_K_M.gguf
+      --mmproj /models/mmproj-Qwen3.5-9B-BF16.gguf
+      --ctx-size 4096
+      --n-gpu-layers 26
+      --temp 1.0
+      --top-p 0.95
+      --top-k 20
+      --presence-penalty 1.5
+      --repeat-penalty 1.0
+      --min-p 0.0
