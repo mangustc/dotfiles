@@ -30,3 +30,10 @@ EOF
 
 [ -f "$DOTFILES_MODULE_SECRETS/nethandler/hosts" ] && add_module_temp "hosts-LATE" "$DOTFILES_MODULE_SECRETS/nethandler/hosts"
 
+add_module_temp "sysctl-LATE" "$(writetext <<'EOF'
+net.netfilter.nf_conntrack_tcp_be_liberal=1
+EOF
+)"
+
+
+

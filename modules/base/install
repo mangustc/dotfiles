@@ -44,3 +44,13 @@ add_module_temp "hosts-LATE" "$(writetext <<'EOF'
 EOF
 )"
 
+add_module_temp "sysctl-LATE" "$(writetext <<'EOF'
+net.ipv4.tcp_fin_timeout=5
+kernel.split_lock_mitigate=0
+kernel.nmi_watchdog=0
+kernel.soft_watchdog=0
+kernel.watchdog=0
+vm.max_map_count=2147483642
+EOF
+)"
+

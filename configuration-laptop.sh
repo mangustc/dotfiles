@@ -14,14 +14,6 @@ install_pkgs "$(trim_pkgs_file "./packages-$DOTFILES_HOST")"
 config swap --size 8G
 
 config acpi_call
-config sysctl --opts "
-net.ipv4.tcp_fin_timeout = 5
-kernel.split_lock_mitigate = 0
-kernel.nmi_watchdog = 0
-kernel.soft_watchdog = 0
-kernel.watchdog = 0
-vm.max_map_count = 2147483642
-"
 config module-blacklist --modules "
 pcscpkr
 iTCO_wdt
@@ -61,5 +53,6 @@ cmd install -D -m 644 ./modules/steam-session/steam.desktop ~/.local/share/appli
 config plasma-LATE
 config boot-LATE --kernel-name linux
 config hosts-LATE
+config sysctl-LATE
 # end
 print_orphan_packages

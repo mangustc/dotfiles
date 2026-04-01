@@ -14,14 +14,6 @@ install_pkgs "$(trim_pkgs_file "./packages-$DOTFILES_HOST")"
 config swap --size 16G
 config v226hql --output-name HDMI-A-1
 
-config sysctl --opts "
-net.ipv4.tcp_fin_timeout = 5
-kernel.split_lock_mitigate = 0
-kernel.nmi_watchdog = 0
-kernel.soft_watchdog = 0
-kernel.watchdog = 0
-vm.max_map_count = 2147483642
-"
 config module-blacklist --modules "
 pcscpkr
 iTCO_wdt
@@ -60,6 +52,7 @@ add_module_temp "boot-LATE" "$(writetext "nvidia.NVreg_EnableGpuFirmware=0")"
 config plasma-LATE
 config boot-LATE --kernel-name linux
 config hosts-LATE
+config sysctl-LATE
 
 # end
 print_orphan_packages
