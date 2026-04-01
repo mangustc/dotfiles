@@ -53,6 +53,7 @@ cmd install -D -m 644 ./modules/steam-session/steam.desktop ~/.local/share/appli
 config plasma-LATE
 config boot-LATE --kernel-name linux
 config hosts-LATE
+config nftables-LATE
 config sysctl-LATE
 # end
 print_orphan_packages
