@@ -27,3 +27,6 @@ add_module_temp "plasma-LATE" "$(writetext <<'EOF'
             }
 EOF
 )"
+
+[ -f "$DOTFILES_MODULE_SECRETS/nethandler/hosts" ] && add_module_temp "hosts-LATE" "$DOTFILES_MODULE_SECRETS/nethandler/hosts"
+
