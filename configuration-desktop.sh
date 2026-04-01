@@ -59,6 +59,7 @@ add_module_temp "boot-LATE" "$(writetext "nvidia.NVreg_EnableGpuFirmware=0")"
 # late
 config plasma-LATE
 config boot-LATE --kernel-name linux
+config hosts-LATE
 
 # end
 print_orphan_packages

@@ -35,3 +35,12 @@ EOF
 )" /etc/profile.d/dotfiles.sh
 
 cmd sudo usermod -aG wheel,audio,video,input,tty,kvm,network "$(whoami)"
+
+cmd sudo timedatectl set-ntp true
+
+add_module_temp "hosts-LATE" "$(writetext <<'EOF'
+127.0.0.1        localhost
+::1              localhost
+EOF
+)"
+
