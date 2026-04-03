@@ -1,0 +1,30 @@
+#!/usr/bin/env sh
+set -e
+
+usage() {
+	cat <<EOF
+Example: config $DOTFILES_MODULE_NAME
+EOF
+}
+usage_err() {
+	[ "$1" ] && echo "$1" >&2
+	usage
+	exit 1
+}
+
+while [ $# -gt 0 ]; do
+	case $1 in
+		*)
+			usage_err "Invalid option: $1"
+			;;
+	esac
+	shift
+done
+
+cmd install -D -m 644 "$(writetext <<EOF
+{
+  "answerdiff": "all"
+}
+EOF
+)" ~/.config/yay/config.json
+

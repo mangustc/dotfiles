@@ -6,6 +6,7 @@ export DOTFILES_DIR="$(realpath "$(dirname "$0")")"
 cd "$DOTFILES_DIR"
 source ./base.sh
 config base
+config yay
 
 # config
 install_pkgs "$(trim_pkgs_file "./packages-$DOTFILES_HOST")"
@@ -30,7 +31,7 @@ config ppd
 config plasma
 config neovim
 config fish --zellij
-config archscripts --dotfiles "$DOTFILES_DIR" --host "$DOTFILES_HOST"
+config archscripts
 config git
 config bluetooth
 config flatpak --flatpaks "

@@ -6,7 +6,6 @@ lib32-nvidia-utils
 linux
 linux-firmware
 linux-headers
-paru
 sbctl
 
 # progs

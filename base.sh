@@ -36,6 +36,7 @@ export DOTFILES_MODULE_NAME="$DOTFILES_HOST"
 export DOTFILES_MODULE_PACKAGES_FILE="$DOTFILES_SAVE_DIR/pkgs"
 export DOTFILES_MODULES_TEMP_DIR="$DOTFILES_SAVE_DIR/temp"
 export DOTFILES_SECRETS_DIR="$DOTFILES_DIR/secrets"
+export DOTFILES_AUR_HELPER="$(basename "$(command -v yay || command -v paru)")"
 mkdir -p "$DOTFILES_SAVE_DIR"
 touch "$DOTFILES_MODULE_PACKAGES_FILE"
 
@@ -117,7 +118,7 @@ export -f trim_pkgs_file
 print_orphan_packages() {
 	! [ "$DOTFILES_SPECIFIC_MODULE" = "" ] && return 0
 	echo "Current orphan packages (not in modules, not in packages-$DOTFILES_HOST):"
-	grep -v -F -x -f <(echo -e "$(cat ./packages-$DOTFILES_HOST)\n$(cat "$DOTFILES_MODULE_PACKAGES_FILE")") <<< "$(paru -Qe | cut -d ' ' -f 1)"
+	grep -v -F -x -f <(echo -e "$(cat ./packages-$DOTFILES_HOST)\n$(cat "$DOTFILES_MODULE_PACKAGES_FILE")") <<< "$($DOTFILES_AUR_HELPER -Qe | cut -d ' ' -f 1)"
 	# echo "Current overlapping packages (between packages-$DOTFILES_HOST and modules):"
 	# comm -12 <(echo "$(trim_pkgs_str "$DOTFILES_MODULE_PACKAGES")") <(trim_pkgs_file ./packages-$DOTFILES_HOST)
 }
@@ -125,9 +126,9 @@ export -f print_orphan_packages
 
 # installes packages from a string of package names
 install_pkgs() {
-	install_pkgs_list="$(trim_pkgs_str "$1" | grep -v -F -x -f <(echo "$(paru -Q | cut -d ' ' -f 1)") || true)"
+	install_pkgs_list="$(trim_pkgs_str "$1" | grep -v -F -x -f <(echo "$($DOTFILES_AUR_HELPER -Q | cut -d ' ' -f 1)") || true)"
 	if [ ! "$install_pkgs_list" = "" ]; then
-		paru -S --needed "$install_pkgs_list"
+		$DOTFILES_AUR_HELPER -S --needed "$install_pkgs_list"
 	fi
 	prev_pkgs="$(cat "$DOTFILES_MODULE_PACKAGES_FILE")"
 

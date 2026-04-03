@@ -5,7 +5,7 @@ My collection of installer scripts with adjacent pacman/AUR package list for Arc
 ## prerequisites
 
 - Arch linux.
-- paru installed.
+- paru or yay installed.
 - internet connection.
 - partition table as follows: root partition labeled `arch-root`, boot partition labeled `arch-boot`.
 
@@ -21,7 +21,7 @@ Afterwards, if archscripts module is installed you can use `archupd` and `archco
 - modules/
   - some_module/
     - install (any executable, mainly shell scripts)
-    - packages (paru compatible package list)
+    - packages (pacman (with aur helpers) compatible package list)
   - ...
 - base.sh
 - configuration-HOST.sh
