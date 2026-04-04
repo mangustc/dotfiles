@@ -47,7 +47,7 @@ config zen-browser --search-engine
 config zswap
 config docker
 
-add_module_temp "boot-LATE" "$(writetext "nvidia.NVreg_EnableGpuFirmware=0")"
+# add_module_temp "boot-LATE" "$(writetext "nvidia.NVreg_EnableGpuFirmware=0")"
 
 # late
 config plasma-LATE
