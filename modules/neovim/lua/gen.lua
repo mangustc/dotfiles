@@ -18,73 +18,36 @@ end
 local PROMPTS = {
   {
     name = "Generate",
-    prompt = "# Prompt\n\n## Buffers\n\nUsing the following buffers as context:\n\n$text\n\nGenerate: $input",
+    prompt =
+    "# Prompt\n\n## Context Buffers\n\nThe following buffers are provided as read-only context. Do not modify or repeat them in your response:\n\n$text\n\n## Task\n\nGenerate content based on the context above. Only output what is explicitly requested. Do not add explanations, caveats, or content beyond the scope of the request.\n\nRequest: $input",
     replace = true,
   },
   {
     name = "Chat",
-    prompt = "Using the following buffers as context:\n---\n$text\n---\n$input",
+    prompt =
+    "# Prompt\n\n## Context Buffers\n\nThe following buffers are provided as read-only context. Do not modify or repeat them in your response:\n\n$text\n\n## Task\n\nRespond to the following message using the context above where relevant. If the context is not relevant, rely on your general knowledge. Be concise and direct.\n\n$input",
   },
   {
     name = "Summarize",
     prompt =
-    "Using the following buffers as context:\n---\n$text\n---\nSummarize this selection (if the selection is empty - summarize the buffers):\n```\n$selection\n```\n",
+    "# Prompt\n\n## Context Buffers\n\nThe following buffers are provided as read-only context:\n\n$text\n\n## Task\n\nSummarize the content below. If the selection is empty, summarize the buffers instead. Output only the summary: no introductions, meta-commentary, or repetition of the original text.\n\nSelection:\n```\n$selection\n```",
   },
   {
     name = "Ask",
     prompt =
-    "Using the following buffers as context:\n---\n$text\n---\nRegarding this selection (if the selection is empty - regarding the buffers):\n```\n$selection\n```\nAnswer the following: $input",
+    "# Prompt\n\n## Context Buffers\n\nThe following buffers are provided as read-only context:\n\n$text\n\n## Task\n\nUsing the selection below as the primary subject (or the buffers if the selection is empty), answer the question that follows. Limit your response to what is answerable from the provided context. If the answer cannot be determined from the context, say so explicitly.\n\nSelection:\n```\n$selection\n```\n\nQuestion: $input",
   },
   {
     name = "Change",
-    prompt = "Change the following text, $input, just output the final text without additional quotes around it:\n$text",
-    replace = true,
-  },
-  {
-    name = "Enhance Grammar Spelling",
     prompt =
-    "Modify the following text to improve grammar and spelling, just output the final text without additional quotes around it:\n$text",
+    "# Prompt\n\n## Context Buffers\n\nThe following buffers are provided as read-only context. Do not modify or repeat them:\n\n$text\n\n## Task\n\nRewrite the text below according to the instruction provided. \n\nRules you must follow:\n- Output only the rewritten text, nothing else\n- Do not wrap the output in quotes or code blocks\n- Do not add explanations, comments, or any text outside the rewrite\n- Do not change content that the instruction does not address\n\nInstruction: $input\n\nText to change:\n$selection",
     replace = true,
-  },
-  {
-    name = "Enhance Wording",
-    prompt =
-    "Modify the following text to use better wording, just output the final text without additional quotes around it:\n$text",
-    replace = true,
-  },
-  {
-    name = "Make Concise",
-    prompt =
-    "Modify the following text to make it as simple and concise as possible, just output the final text without additional quotes around it:\n$text",
-    replace = true,
-  },
-  {
-    name = "Make List",
-    prompt = "Render the following text as a markdown list:\n$text",
-    replace = true,
-  },
-  {
-    name = "Make Table",
-    prompt = "Render the following text as a markdown table:\n$text",
-    replace = true,
-  },
-  {
-    name = "Review Code",
-    prompt = "Review the following code and make concise suggestions:\n```$filetype\n$text\n```",
-  },
-  {
-    name = "Enhance Code",
-    prompt =
-    "Enhance the following code, only output the result in format ```$filetype\n...\n```:\n```$filetype\n$text\n```",
-    replace = true,
-    extract = "```$filetype\n(.-)```",
   },
   {
     name = "Change Code",
     prompt =
-    "Regarding the following code, $input, only output the result in format ```$filetype\n...\n```:\n```$filetype\n$text\n```",
+    "# Prompt\n\n## Context Buffers\n\nThe following buffers are provided as read-only context. Do not modify or repeat them:\n\n$text\n\n## Task\n\nModify the code below according to the instruction provided.\n\nRules you must follow:\n- Output only the modified code, nothing else\n- Preserve all code that is unaffected by the instruction exactly as-is\n- Do not wrap the output in markdown code fences or quotes\n- Do not include explanations, comments, or any non-code text\n- Do not invent changes beyond what the instruction specifies\n\nInstruction: $input\n\nCode to modify:\n```\n$selection\n```",
     replace = true,
-    extract = "```$filetype\n(.-)```",
   },
 }
 
