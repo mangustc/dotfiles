@@ -99,6 +99,8 @@ require("gitsigns").setup({
 	},
 })
 
+require("gen").setup({})
+
 require("todo-comments").setup({})
 
 require("nvim-autopairs").setup({})

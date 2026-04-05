@@ -1,8 +1,14 @@
 #!/usr/bin/env sh
 set -e
 
+
+cmd sudo rm -rf /root/.config/nvim || true
 cmd sudo install -D -m 755 ./init.lua /root/.config/nvim/init.lua
+cmd sudo cp -rf ./lua /root/.config/nvim
+
+cmd rm -rf ~/.config/nvim || true
 cmd install -D -m 755 ./init.lua ~/.config/nvim/init.lua
+cmd cp -rf ./lua ~/.config/nvim
 
 add_module_temp "env-LATE" "$(writetext "export EDITOR=\"nvim\"")"
 

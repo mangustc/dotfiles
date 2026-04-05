@@ -1,0 +1,28 @@
+#!/usr/bin/env sh
+set -e
+
+usage() {
+	cat <<EOF
+Example: config $DOTFILES_MODULE_NAME
+EOF
+}
+usage_err() {
+	[ "$1" ] && echo "$1" >&2
+	usage
+	exit 1
+}
+
+while [ $# -gt 0 ]; do
+	case $1 in
+		*)
+			usage_err "Invalid option: $1"
+			;;
+	esac
+	shift
+done
+
+cmd install -D -m 644 ./mcp.json ~/.lmstudio/mcp.json
+
+cmd install -D -m 644 "$DOTFILES_MODULE_SECRETS/permissions-store.json" ~/.lmstudio/.internal/permissions-store.json
+add_module_temp "env-LATE" "$(writetext "export LM_API_TOKEN=\"$(cat "$DOTFILES_MODULE_SECRETS/lm-api-token")\"")"
+
