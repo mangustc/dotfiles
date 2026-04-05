@@ -56,5 +56,7 @@ config boot-LATE --kernel-name linux
 config hosts-LATE
 config nftables-LATE
 config sysctl-LATE
+config env-LATE
+
 # end
 print_orphan_packages
