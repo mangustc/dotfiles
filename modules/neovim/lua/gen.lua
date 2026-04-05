@@ -249,7 +249,29 @@ local function do_replace(source_buf, sel_start, sel_end, response, extract_pat,
     local pat = extract_pat:gsub("%$filetype", filetype or "")
     text = response:match(pat) or response
   end
-  vim.api.nvim_buf_set_lines(source_buf, sel_start - 1, sel_end, false, vim.split(text, "\n"))
+  local start_mark    = vim.api.nvim_buf_get_mark(source_buf, "<")
+  local end_mark      = vim.api.nvim_buf_get_mark(source_buf, ">")
+  local scol          = start_mark[2]
+  local ecol          = end_mark[2]
+
+  -- If the selection covers entire lines (charwise full-line or linewise),
+  -- replace line-by-line. Otherwise splice within the line boundaries.
+  local lines         = vim.api.nvim_buf_get_lines(source_buf, sel_start - 1, sel_end, false)
+  local first         = lines[1] or ""
+  local last          = lines[#lines] or ""
+  local is_full_lines = (scol == 0 and ecol >= #last - 1) or ecol >= 2147483647
+
+  if is_full_lines or sel_start ~= sel_end then
+    vim.api.nvim_buf_set_lines(source_buf, sel_start - 1, sel_end, false, vim.split(text, "\n"))
+  else
+    -- Single-line partial selection: splice the replacement in
+    local before          = first:sub(1, scol)
+    local after           = last:sub(ecol + 2)
+    local new_lines       = vim.split(text, "\n")
+    new_lines[1]          = before .. new_lines[1]
+    new_lines[#new_lines] = new_lines[#new_lines] .. after
+    vim.api.nvim_buf_set_lines(source_buf, sel_start - 1, sel_end, false, new_lines)
+  end
 end
 
 local function send(prompt_def, user_input, source_buf, sel_start, sel_end)
@@ -310,7 +332,20 @@ local function send(prompt_def, user_input, source_buf, sel_start, sel_end)
 
         local parts = {}
         for _, item in ipairs(decoded.output or {}) do
-          if item.type == "message" then table.insert(parts, item.content or "") end
+          if item.type == "message" then
+            local content = item.content
+            if type(content) == "string" then
+              table.insert(parts, content)
+            elseif type(content) == "table" then
+              for _, block in ipairs(content) do
+                if type(block) == "table" and block.text then
+                  table.insert(parts, block.text)
+                elseif type(block) == "string" then
+                  table.insert(parts, block)
+                end
+              end
+            end
+          end
         end
         local response_text = table.concat(parts, "\n")
 
