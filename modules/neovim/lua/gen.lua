@@ -280,9 +280,9 @@ local function send(prompt_def, user_input, source_buf, sel_start, sel_end)
   local buf_text = build_text(source_buf, ctx_mode)
 
   local full_prompt = build_full_prompt(prompt_def.prompt, user_input, buf_text, filetype, sel_text)
-  local testbuf = vim.api.nvim_create_buf(true, true)
-  vim.api.nvim_buf_set_lines(testbuf, 0, -1, false, vim.split(full_prompt, "\n"))
-  vim.api.nvim_set_current_buf(testbuf)
+  -- local testbuf = vim.api.nvim_create_buf(true, true)
+  -- vim.api.nvim_buf_set_lines(testbuf, 0, -1, false, vim.split(full_prompt, "\n"))
+  -- vim.api.nvim_set_current_buf(testbuf)
 
   local model = get_model()
   local out_buf, out_win = open_float(model)
