@@ -285,9 +285,11 @@ local function send(prompt_def, user_input, source_buf, sel_start, sel_end)
   -- vim.api.nvim_set_current_buf(testbuf)
 
   local model = get_model()
-  local out_buf, out_win = open_float(model)
+  local out_buf = vim.api.nvim_create_buf(true, true)
   vim.bo[out_buf].filetype = "markdown"
-  set_lines(out_buf, { "*Waiting for response…*" })
+  -- vim.bo[out_buf].bufhidden = "wipe"
+  vim.api.nvim_buf_set_lines(out_buf, 0, -1, false, { "*Waiting for response…*" })
+  vim.api.nvim_set_current_buf(out_buf)
 
   local payload_tbl = { model = model, input = full_prompt }
   if online_search then
@@ -312,8 +314,12 @@ local function send(prompt_def, user_input, source_buf, sel_start, sel_end)
       vim.schedule(function()
         if not vim.api.nvim_buf_is_valid(out_buf) then return end
 
+        local function write(lines)
+          vim.api.nvim_buf_set_lines(out_buf, 0, -1, false, lines)
+        end
+
         if code ~= 0 then
-          set_lines(out_buf, { "# Error", "", ("curl exited with code %d"):format(code),
+          write({ "# Error", "", ("curl exited with code %d"):format(code),
             "", "```", table.concat(stderr_chunks, "\n"), "```" })
           return
         end
@@ -321,12 +327,11 @@ local function send(prompt_def, user_input, source_buf, sel_start, sel_end)
         local raw = table.concat(stdout_chunks, "\n")
         local ok, decoded = pcall(vim.fn.json_decode, raw)
         if not ok or not decoded then
-          set_lines(out_buf, { "# Parse Error", "", "Could not decode JSON.",
-            "", "```", raw, "```" })
+          write({ "# Parse Error", "", "Could not decode JSON.", "", "```", raw, "```" })
           return
         end
         if decoded.error then
-          set_lines(out_buf, { "# API Error", "", tostring(decoded.error.message or decoded.error) })
+          write({ "# API Error", "", tostring(decoded.error.message or decoded.error) })
           return
         end
 
@@ -353,10 +358,7 @@ local function send(prompt_def, user_input, source_buf, sel_start, sel_end)
           pcall(do_replace, source_buf, sel_start, sel_end, response_text, prompt_def.extract, filetype)
         end
 
-        set_lines(out_buf, vim.split(response_text .. "\n", "\n"))
-        if vim.api.nvim_win_is_valid(out_win) then
-          vim.api.nvim_win_set_cursor(out_win, { 1, 0 })
-        end
+        write(vim.split(response_text, "\n"))
       end)
     end,
   })
