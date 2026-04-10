@@ -152,6 +152,7 @@ end
 local CTX_MODES     = { "none", "current", "all" }
 local ctx_mode      = "current"
 local online_search = true
+local caveman_mode  = true
 local function picker_lines(selected)
   local lines = {}
   for i, p in ipairs(PROMPTS) do
@@ -162,13 +163,14 @@ local function picker_lines(selected)
 end
 
 local function picker_title()
-  return string.format(" Gen  [c]ontext:%s  [s]earch:%s ",
-    ctx_mode, online_search and "on" or "off")
+  return string.format(" Gen  [c]ontext:%s  [s]earch:%s  cave[m]an:%s ",
+    ctx_mode, online_search and "on" or "off", caveman_mode and "on" or "off")
 end
 
 local function open_picker(on_select)
   ctx_mode       = "current"
   online_search  = true
+  caveman_mode   = true
   local buf, win = open_float(picker_title(), M.config.win_width, M.config.win_height)
 
   local hl_ns    = vim.api.nvim_create_namespace("gen_picker_sel")
@@ -213,6 +215,10 @@ local function open_picker(on_select)
 
   map("s", function()
     online_search = not online_search; redraw()
+  end)
+
+  map("m", function()
+    caveman_mode = not caveman_mode; redraw()
   end)
 
   map("<CR>", function()
@@ -294,6 +300,10 @@ local function send(prompt_def, user_input, source_buf, sel_start, sel_end)
   local payload_tbl = { model = model, input = full_prompt }
   if online_search then
     payload_tbl.integrations = { { type = "plugin", id = "mcp/online-search" } }
+  end
+  if caveman_mode then
+    payload_tbl.system_prompt =
+    "Respond terse like smart caveman. All technical substance stay. Only fluff die.\n\nDefault: **full**. Switch: `/caveman lite|full|ultra`.\n\n## Rules\n\nDrop: articles (a/an/the), filler (just/really/basically/actually/simply), pleasantries (sure/certainly/of course/happy to), hedging. Fragments OK. Short synonyms (big not extensive, fix not \"implement a solution for\"). Technical terms exact. Code blocks unchanged. Errors quoted exact.\n\nPattern: `[thing] [action] [reason]. [next step].`\n\nNot: \"Sure! I'd be happy to help you with that. The issue you're experiencing is likely caused by...\"\nYes: \"Bug in auth middleware. Token expiry check use `<` not `<=`. Fix:\"\n\n## Intensity\n\n| Level | What change |\n|-------|------------|\n| **lite** | No filler/hedging. Keep articles + full sentences. Professional but tight |\n| **full** | Drop articles, fragments OK, short synonyms. Classic caveman |\n| **ultra** | Abbreviate (DB/auth/config/req/res/fn/impl), strip conjunctions, arrows for causality (X → Y), one word when one word enough |\n\nExample — \"Why React component re-render?\"\n- lite: \"Your component re-renders because you create a new object reference each render. Wrap it in `useMemo`.\"\n- full: \"New object ref each render. Inline object prop = new ref = re-render. Wrap in `useMemo`.\"\n- ultra: \"Inline obj prop → new ref → re-render. `useMemo`.\"\n\nExample — \"Explain database connection pooling.\"\n- lite: \"Connection pooling reuses open connections instead of creating new ones per request. Avoids repeated handshake overhead.\"\n- full: \"Pool reuse open DB connections. No new connection per request. Skip handshake overhead.\"\n- ultra: \"Pool = reuse DB conn. Skip handshake → fast under load.\"\n\n## Auto-Clarity\n\nDrop caveman for: security warnings, irreversible action confirmations, multi-step sequences where fragment order risks misread, user confused. Resume caveman after clear part done.\n\nExample — destructive op:\n> **Warning:** This will permanently delete all rows in the `users` table and cannot be undone.\n> ```sql\n> DROP TABLE users;\n> ```\n> Caveman resume. Verify backup exist first.\n\n## Boundaries\n\nCode/commits/PRs: write normal. \"stop caveman\" or \"normal mode\": revert. Level persist until changed or session end.\n"
   end
 
   local auth_header = M.config.api_token ~= ""
