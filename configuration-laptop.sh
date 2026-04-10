@@ -47,6 +47,7 @@ config launch-windows
 config zen-browser --search-engine
 config zswap
 config docker
+config lmstudio
 
 cmd install -D -m 644 ./modules/steam-session/steam.desktop ~/.local/share/applications/steam.desktop
 
