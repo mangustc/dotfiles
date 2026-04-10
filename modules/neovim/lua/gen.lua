@@ -297,7 +297,14 @@ local function send(prompt_def, user_input, source_buf, sel_start, sel_end)
   vim.api.nvim_buf_set_lines(out_buf, 0, -1, false, { "*Waiting for response…*" })
   vim.api.nvim_set_current_buf(out_buf)
 
-  local payload_tbl = { model = model, input = full_prompt }
+  vim.opt_local.wrap = true
+  vim.opt_local.linebreak = true
+  vim.opt_local.breakindent = true
+
+  local payload_tbl = {
+    model = model,
+    input = full_prompt,
+  }
   if online_search then
     payload_tbl.integrations = { { type = "plugin", id = "mcp/online-search" } }
   end
