@@ -41,7 +41,7 @@ while [ $# -gt 0 ]; do
 done
 
 if [ "$proxy" = "1" ]; then
-	cmd install_pkgs throne-bin
+	cmd install_pkgs throne-git
 fi
 
 if ! [ "$doh_https" = "" ] || ! [ "$doh_ipv4" = "" ] || ! [ "$doh_ipv4_alt" = "" ]; then
