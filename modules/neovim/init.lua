@@ -46,7 +46,7 @@ vim.opt.sidescrolloff = 10
 -- vim.opt.softtabstop = 2 -- soft tab stop not tabs on tab/backspace
 -- vim.opt.expandtab = true -- use spaces instead of tabs
 vim.opt.smartindent = true -- smart auto-indent
-vim.opt.autoindent = true -- copy indent from current line
+vim.opt.autoindent = true  -- copy indent from current line
 
 vim.opt.ignorecase = true
 vim.opt.smartcase = true
@@ -57,14 +57,14 @@ vim.opt.signcolumn = "yes"
 vim.opt.showmatch = true
 vim.opt.cmdheight = 1
 vim.opt.completeopt = "menuone,noinsert,noselect"
-vim.opt.showmode = false -- do not show the mode, instead have it in statusline
-vim.opt.pumheight = 10 -- popup menu height
-vim.opt.pumblend = 10 -- popup menu transparency
-vim.opt.winblend = 0 -- floating window transparency
-vim.opt.conceallevel = 0 -- do not hide markup
+vim.opt.showmode = false   -- do not show the mode, instead have it in statusline
+vim.opt.pumheight = 10     -- popup menu height
+vim.opt.pumblend = 10      -- popup menu transparency
+vim.opt.winblend = 0       -- floating window transparency
+vim.opt.conceallevel = 0   -- do not hide markup
 vim.opt.concealcursor = "" -- do not hide cursorline in markup
-vim.opt.lazyredraw = true -- do not redraw during macros
-vim.opt.synmaxcol = 300 -- syntax highlighting limit
+vim.opt.lazyredraw = true  -- do not redraw during macros
+vim.opt.synmaxcol = 300    -- syntax highlighting limit
 
 vim.opt.swapfile = false
 vim.opt.backup = false
@@ -76,6 +76,7 @@ vim.opt.timeoutlen = 500
 vim.opt.ttimeoutlen = 50
 vim.opt.autoread = true
 vim.opt.autowrite = false
+vim.opt.winborder = "single"
 
 vim.opt.list = true
 vim.opt.listchars = { tab = "» ", trail = "·", nbsp = "␣" }
@@ -322,8 +323,18 @@ local function lsp_on_attach(ev)
 			end, 50)
 		end, opts("Organize Imports"))
 	end
+	if client:supports_method("textDocument/signatureHelp", bufnr) then
+		vim.keymap.set("i", "<C-s>", vim.lsp.buf.signature_help, opts("Signature Help"))
+		vim.api.nvim_create_autocmd("CursorHoldI", {
+			buffer = bufnr,
+			callback = function()
+				vim.lsp.buf.signature_help({ silent = true })
+			end,
+		})
+	end
 end
 vim.api.nvim_create_autocmd("LspAttach", { group = augroup, callback = lsp_on_attach })
+vim.keymap.set("n", "<leader>lff", vim.lsp.buf.format, { desc = "Format buffer" })
 
 vim.cmd("set completeopt+=noselect")
 require("blink.cmp").setup({
@@ -338,6 +349,7 @@ require("blink.cmp").setup({
 	-- },
 	appearance = { nerd_font_variant = "mono" },
 	completion = {
+		documentation = { auto_show = true, auto_show_delay_ms = 300 },
 		ghost_text = { enabled = true },
 		menu = { auto_show = true }
 	},
@@ -352,8 +364,25 @@ require("blink.cmp").setup({
 		prebuilt_binaries = { download = true },
 	},
 })
+
 vim.lsp.config["*"] = {
 	capabilities = require("blink.cmp").get_lsp_capabilities(),
+}
+vim.diagnostic.config {
+	severity_sort = true,
+	virtual_text = {
+		source = 'if_many',
+		spacing = 2,
+		format = function(diagnostic)
+			local diagnostic_message = {
+				[vim.diagnostic.severity.ERROR] = diagnostic.message,
+				[vim.diagnostic.severity.WARN] = diagnostic.message,
+				[vim.diagnostic.severity.INFO] = diagnostic.message,
+				[vim.diagnostic.severity.HINT] = diagnostic.message,
+			}
+			return diagnostic_message[diagnostic.severity]
+		end,
+	},
 }
 
 vim.lsp.config("lua_ls", {
@@ -369,7 +398,6 @@ vim.lsp.config("bashls", {})
 vim.lsp.config("ts_ls", {})
 vim.lsp.config("gopls", {})
 vim.lsp.config("clangd", {})
-
 vim.lsp.enable({
 	"lua_ls",
 	"pyright",
