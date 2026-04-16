@@ -22,6 +22,7 @@ while [ $# -gt 0 ]; do
 done
 
 cmd install -D -m 644 ./mcp.json ~/.lmstudio/mcp.json
+cmd install -D -m 644 ./config-presets/caveman.preset.json ~/.lmstudio/config-presets/caveman.preset.json
 
 cmd install -D -m 644 "$DOTFILES_MODULE_SECRETS/permissions-store.json" ~/.lmstudio/.internal/permissions-store.json
 add_module_temp "env-LATE" "$(writetext "export LM_API_TOKEN=\"$(cat "$DOTFILES_MODULE_SECRETS/lm-api-token")\"")"
