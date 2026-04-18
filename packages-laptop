@@ -7,7 +7,6 @@ lib32-vulkan-radeon
 linux
 linux-firmware
 linux-headers
-paru
 sbctl
 
 # progs

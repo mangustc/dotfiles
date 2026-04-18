@@ -6,6 +6,7 @@ export DOTFILES_DIR="$(realpath "$(dirname "$0")")"
 cd "$DOTFILES_DIR"
 source ./base.sh
 config base
+config yay
 
 # config
 install_pkgs "$(trim_pkgs_file "./packages-$DOTFILES_HOST")"
@@ -14,14 +15,6 @@ install_pkgs "$(trim_pkgs_file "./packages-$DOTFILES_HOST")"
 config swap --size 8G
 
 config acpi_call
-config sysctl --opts "
-net.ipv4.tcp_fin_timeout = 5
-kernel.split_lock_mitigate = 0
-kernel.nmi_watchdog = 0
-kernel.soft_watchdog = 0
-kernel.watchdog = 0
-vm.max_map_count = 2147483642
-"
 config module-blacklist --modules "
 pcscpkr
 iTCO_wdt
@@ -38,7 +31,7 @@ config ppd
 config plasma
 config neovim
 config fish --zellij
-config archscripts --dotfiles "$DOTFILES_DIR" --host "$DOTFILES_HOST"
+config archscripts
 config git
 config bluetooth
 config flatpak --flatpaks "
@@ -54,6 +47,7 @@ config launch-windows
 config zen-browser --search-engine
 config zswap
 config docker
+config lmstudio
 
 cmd install -D -m 644 ./modules/steam-session/steam.desktop ~/.local/share/applications/steam.desktop
 
@@ -61,5 +55,9 @@ cmd install -D -m 644 ./modules/steam-session/steam.desktop ~/.local/share/appli
 config plasma-LATE
 config boot-LATE --kernel-name linux
 config hosts-LATE
+config nftables-LATE
+config sysctl-LATE
+config env-LATE
+
 # end
 print_orphan_packages

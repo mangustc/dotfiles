@@ -2,6 +2,8 @@
 
 cd "$(dirname "$0")"
 
-docker container stop degoog
+cd ./degoog
+docker compose stop
+cd ..
 
 ./start-containers.sh

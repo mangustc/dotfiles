@@ -1,0 +1,35 @@
+#!/usr/bin/env sh
+set -e
+
+usage() {
+	cat <<EOF
+Example: config $DOTFILES_MODULE_NAME
+EOF
+}
+usage_err() {
+	[ "$1" ] && echo "$1" >&2
+	usage
+	exit 1
+}
+
+while [ $# -gt 0 ]; do
+	case $1 in
+		*)
+			usage_err "Invalid option: $1"
+			;;
+	esac
+	shift
+done
+
+cd "$DOTFILES_MODULE_TEMP"
+
+target="/etc/profile.d/dotfiles.sh"
+tmpfile=$(writetext "") || exit 1
+for file in "./files"/*; do
+    [ -f "$file" ] || continue
+    cat "$file" >> "$tmpfile"
+    printf '\n' >> "$tmpfile"
+done
+
+cmd sudo install -D -m 755 "$tmpfile" "$target"
+

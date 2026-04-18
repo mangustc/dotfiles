@@ -6,7 +6,6 @@ lib32-nvidia-utils
 linux
 linux-firmware
 linux-headers
-paru
 sbctl
 
 # progs
@@ -17,7 +16,6 @@ gparted
 gimp
 libreoffice-still
 telegram-desktop
-lmstudio-bin
 
 # gaming
 steam

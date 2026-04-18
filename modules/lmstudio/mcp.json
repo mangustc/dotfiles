@@ -1,0 +1,14 @@
+{
+  "mcpServers": {
+    "online-search": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "mcp-searxng"
+      ],
+      "env": {
+        "SEARXNG_URL": "http://localhost:8888"
+      }
+    }
+  }
+}

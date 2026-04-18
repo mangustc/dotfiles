@@ -1,0 +1,50 @@
+#!/usr/bin/env sh
+set -e
+
+usage() {
+	cat <<EOF
+Example: config $DOTFILES_MODULE_NAME
+EOF
+}
+usage_err() {
+	[ "$1" ] && echo "$1" >&2
+	usage
+	exit 1
+}
+
+while [ $# -gt 0 ]; do
+	case $1 in
+		# --arga)
+		# 	arga=1
+		# 	;;
+		# --argb)
+		# 	[ "$2" = "" ] && usage_err "Argument not specified"
+		# 	argb="$2"
+		# 	shift
+		# 	;;
+		*)
+			usage_err "Invalid option: $1"
+			;;
+	esac
+	shift
+done
+
+# cd "$DOTFILES_MODULE_TEMP"
+#
+# target="./file"
+# tmpfile=$(writetext "") || exit 1
+# for file in "./files"/*; do
+#     [ -f "$file" ] || continue
+#     cat "$file" >> "$tmpfile"
+#     printf '\n' >> "$tmpfile"
+# done
+#
+# # replace string with text from tmpfile
+# sed "/\/\/ SED_LATE_RELPACE_ITEMS/ {
+#     r $tmpfile
+#     d
+# }" "$target" > "$target.tmp" && mv "$target.tmp" "$target"
+# rm -f "$tmpfile"
+# # OR replace the whole file with tmpfile
+# cmd sudo install -D -m 644 "$tmpfile" "$target"
+

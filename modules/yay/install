@@ -14,14 +14,6 @@ usage_err() {
 
 while [ $# -gt 0 ]; do
 	case $1 in
-		# --arga)
-		# 	arga=1
-		# 	;;
-		# --argb)
-		# 	[ "$2" = "" ] && usage_err "Argument not specified"
-		# 	argb="$2"
-		# 	shift
-		# 	;;
 		*)
 			usage_err "Invalid option: $1"
 			;;
@@ -29,4 +21,10 @@ while [ $# -gt 0 ]; do
 	shift
 done
 
+cmd install -D -m 644 "$(writetext <<EOF
+{
+  "answerdiff": "all"
+}
+EOF
+)" ~/.config/yay/config.json
 

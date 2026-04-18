@@ -6,6 +6,7 @@ export DOTFILES_DIR="$(realpath "$(dirname "$0")")"
 cd "$DOTFILES_DIR"
 source ./base.sh
 config base
+config yay
 
 # config
 install_pkgs "$(trim_pkgs_file "./packages-$DOTFILES_HOST")"
@@ -14,14 +15,6 @@ install_pkgs "$(trim_pkgs_file "./packages-$DOTFILES_HOST")"
 config swap --size 16G
 config v226hql --output-name HDMI-A-1
 
-config sysctl --opts "
-net.ipv4.tcp_fin_timeout = 5
-kernel.split_lock_mitigate = 0
-kernel.nmi_watchdog = 0
-kernel.soft_watchdog = 0
-kernel.watchdog = 0
-vm.max_map_count = 2147483642
-"
 config module-blacklist --modules "
 pcscpkr
 iTCO_wdt
@@ -40,7 +33,7 @@ config zellij
 config fish --zellij
 config dualsense
 config mangohud
-config archscripts --dotfiles "$DOTFILES_DIR" --host "$DOTFILES_HOST"
+config archscripts
 config git
 config flatpak --flatpaks "
 "
@@ -53,13 +46,17 @@ config virt
 config zen-browser --search-engine
 config zswap
 config docker
+config lmstudio
 
-add_module_temp "boot-LATE" "$(writetext "nvidia.NVreg_EnableGpuFirmware=0")"
+# add_module_temp "boot-LATE" "$(writetext "nvidia.NVreg_EnableGpuFirmware=0")"
 
 # late
 config plasma-LATE
 config boot-LATE --kernel-name linux
 config hosts-LATE
+config nftables-LATE
+config sysctl-LATE
+config env-LATE
 
 # end
 print_orphan_packages

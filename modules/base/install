@@ -18,7 +18,7 @@ ru_RU ISO-8859-5
 EOF
 )" /etc/locale.gen
 
-cmd sudo install -D -m 755 "$(writetext <<'EOF'
+add_module_temp "env-LATE" "$(writetext <<'EOF'
 export XDG_CACHE_HOME="$HOME/.cache";
 export XDG_CONFIG_HOME="$HOME/.config";
 export XDG_DATA_HOME="$HOME/.local/share";
@@ -32,7 +32,7 @@ export NPM_CONFIG_INIT_MODULE="$XDG_CONFIG_HOME/npm/config/npm-init.js";
 export NPM_CONFIG_CACHE="$XDG_CACHE_HOME/npm";
 export NPM_CONFIG_TMP="$XDG_RUNTIME_DIR/npm";
 EOF
-)" /etc/profile.d/dotfiles.sh
+)"
 
 cmd sudo usermod -aG wheel,audio,video,input,tty,kvm,network "$(whoami)"
 
@@ -41,6 +41,16 @@ cmd sudo timedatectl set-ntp true
 add_module_temp "hosts-LATE" "$(writetext <<'EOF'
 127.0.0.1        localhost
 ::1              localhost
+EOF
+)"
+
+add_module_temp "sysctl-LATE" "$(writetext <<'EOF'
+net.ipv4.tcp_fin_timeout=5
+kernel.split_lock_mitigate=0
+kernel.nmi_watchdog=0
+kernel.soft_watchdog=0
+kernel.watchdog=0
+vm.max_map_count=2147483642
 EOF
 )"
 
