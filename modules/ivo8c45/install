@@ -1,0 +1,57 @@
+#!/usr/bin/env sh
+set -e
+
+usage() {
+	cat <<EOF
+Example: config $DOTFILES_MODULE_NAME
+EOF
+}
+usage_err() {
+	[ "$1" ] && echo "$1" >&2
+	usage
+	exit 1
+}
+
+while [ $# -gt 0 ]; do
+	case $1 in
+		--output-name)
+			[ "$2" = "" ] && usage_err "Argument not specified"
+			output_name="$2"
+			shift
+			;;
+		*)
+			usage_err "Invalid option: $1"
+			;;
+	esac
+	shift
+done
+
+[ "$output_name" = "" ] && usage_err "Specify --output-name"
+
+cmd sudo install -D -m 644 "$(writetext <<'EOF'
+FILES=(/usr/lib/firmware/edid/ivo8c45.bin)
+EOF
+)" /etc/mkinitcpio.conf.d/ivo8c45.conf
+
+cmd sudo install -D -m 644 ./ivo8c45.bin /usr/lib/firmware/edid/ivo8c45.bin
+
+add_module_temp "plasma-LATE" "$(writetext <<EOF
+            MenuItem {
+                text: "2240x1400@75"
+                icon.name: "system-run"
+                onTriggered: {
+                    executable.exec(\`bash -c 'kscreen-doctor output.$output_name.mode.2240x1400@75 && kscreen-doctor output.$output_name.scale.1.25'\`)
+                }
+            }
+            MenuItem {
+                text: "2240x1400@60"
+                icon.name: "system-run"
+                onTriggered: {
+                    executable.exec(\`bash -c 'kscreen-doctor output.$output_name.mode.2240x1400@60 && kscreen-doctor output.$output_name.scale.1.25'\`)
+                }
+            }
+EOF
+)"
+
+add_module_temp "boot-LATE" "$(writetext "drm.edid_firmware=$output_name:edid/ivo8c45.bin")"
+

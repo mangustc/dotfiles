@@ -48,6 +48,7 @@ config zen-browser --search-engine
 config zswap
 config docker
 config discord
+config ivo8c45 --output-name eDP-1
 
 cmd install -D -m 644 ./modules/steam-session/steam.desktop ~/.local/share/applications/steam.desktop
 
