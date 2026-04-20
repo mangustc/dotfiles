@@ -37,17 +37,17 @@ cmd sudo install -D -m 644 ./v226hql.bin /usr/lib/firmware/edid/v226hql.bin
 
 add_module_temp "plasma-LATE" "$(writetext <<EOF
             MenuItem {
+                text: "1920x1080@76"
+                icon.name: "system-run"
+                onTriggered: {
+                    executable.exec(\`bash -c 'kscreen-doctor output.$output_name.mode.1920x1080@76 && kscreen-doctor output.$output_name.scale.1'\`)
+                }
+            }
+            MenuItem {
                 text: "1920x1080@70"
                 icon.name: "system-run"
                 onTriggered: {
                     executable.exec(\`bash -c 'kscreen-doctor output.$output_name.mode.1920x1080@70 && kscreen-doctor output.$output_name.scale.1'\`)
-                }
-            }
-            MenuItem {
-                text: "1600x900@75"
-                icon.name: "system-run"
-                onTriggered: {
-                    executable.exec(\`bash -c 'kscreen-doctor output.$output_name.mode.1600x900@75 && kscreen-doctor output.$output_name.scale.1'\`)
                 }
             }
             MenuItem {
