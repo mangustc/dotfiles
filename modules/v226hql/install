@@ -40,21 +40,21 @@ add_module_temp "plasma-LATE" "$(writetext <<EOF
                 text: "1920x1080@70"
                 icon.name: "system-run"
                 onTriggered: {
-                    executable.exec(\`bash -c 'kscreen-doctor output.$output_name.mode.1920x1080@70'\`)
+                    executable.exec(\`bash -c 'kscreen-doctor output.$output_name.mode.1920x1080@70 && kscreen-doctor output.$output_name.scale.1'\`)
                 }
             }
             MenuItem {
                 text: "1600x900@75"
                 icon.name: "system-run"
                 onTriggered: {
-                    executable.exec(\`bash -c 'kscreen-doctor output.$output_name.mode.1600x900@75'\`)
+                    executable.exec(\`bash -c 'kscreen-doctor output.$output_name.mode.1600x900@75 && kscreen-doctor output.$output_name.scale.1'\`)
                 }
             }
             MenuItem {
                 text: "1920x1080@60"
                 icon.name: "system-run"
                 onTriggered: {
-                    executable.exec(\`bash -c 'kscreen-doctor output.$output_name.mode.1920x1080@60'\`)
+                    executable.exec(\`bash -c 'kscreen-doctor output.$output_name.mode.1920x1080@60 && kscreen-doctor output.$output_name.scale.1'\`)
                 }
             }
 EOF
