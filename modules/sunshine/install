@@ -1,0 +1,39 @@
+#!/usr/bin/env sh
+set -e
+
+usage() {
+	cat <<EOF
+Example: config $DOTFILES_MODULE_NAME
+EOF
+}
+usage_err() {
+	[ "$1" ] && echo "$1" >&2
+	usage
+	exit 1
+}
+
+while [ $# -gt 0 ]; do
+	case $1 in
+		--cuda)
+			cuda=1
+			;;
+		*)
+			usage_err "Invalid option: $1"
+			;;
+	esac
+	shift
+done
+
+if [ "$cuda" = "1" ]; then
+	cmd install_pkgs cuda
+fi
+
+if $DOTFILES_AUR_HELPER -Qs sunshine-beta-bin > /dev/null ; then
+	echo -e "If you want to update, run: $DOTFILES_AUR_HELPER -R sunshine-beta-bin\nThen run the configuration again" >&2
+else
+	cd ./sunshine-beta-bin
+	makepkg -si
+fi
+
+cmd systemctl enable --user app-dev.lizardbyte.app.Sunshine.service
+
