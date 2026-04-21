@@ -39,6 +39,7 @@ kwriteconfig6 --file ~/.config/kwinrc --group Script-krohnkite --key threeColumn
 cmd install -D -m 755 ./applications/net.local.terminal.desktop ~/.local/share/applications/net.local.terminal.desktop
 cmd install -D -m 755 ./applications/convert-to-pdf.desktop ~/.local/share/applications/convert-to-pdf.desktop
 cmd install -D -m 755 ./applications/open-as-pdf.desktop ~/.local/share/applications/open-as-pdf.desktop
+cmd install -D -m 755 ./applications/revert-resolution.desktop ~/.local/share/applications/revert-resolution.desktop
 cmd install -D -m 600 ./kglobalshortcutsrc ~/.config/kglobalshortcutsrc
 cmd install -D -m 600 ./krunnerrc ~/.config/krunnerrc
 
