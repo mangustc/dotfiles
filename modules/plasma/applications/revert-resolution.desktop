@@ -1,0 +1,8 @@
+[Desktop Entry]
+Exec=revert-resolution
+Name=Revert Resolution
+NoDisplay=true
+StartupNotify=false
+Type=Application
+X-KDE-GlobalAccel-CommandShortcut=true
+

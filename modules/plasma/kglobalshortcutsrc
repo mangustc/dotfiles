@@ -386,17 +386,8 @@ switch to next activity=none,,Switch to Next Activity
 switch to previous activity=none,,Switch to Previous Activity
 toggle do not disturb=none,,Toggle do not disturb
 
-[services][net.local.chlayout-default.desktop]
-_launch=Meta+Ctrl+Alt+5
-
-[services][net.local.chlayout-gaming.desktop]
-_launch=Meta+Ctrl+Alt+6
-
-[services][net.local.choice-chres.desktop]
-_launch=Meta+Ctrl+Alt+2
-
-[services][net.local.terminal.desktop]
-_launch=Meta+Tab\tMeta+T
+[services][revert-resolution.desktop]
+_launch=Meta+Ctrl+Alt+1
 
 [services][org.kde.dolphin.desktop]
 _launch=none
