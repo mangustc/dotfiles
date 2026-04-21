@@ -28,12 +28,5 @@ if [ "$cuda" = "1" ]; then
 	cmd install_pkgs cuda
 fi
 
-if $DOTFILES_AUR_HELPER -Qs sunshine-beta-bin > /dev/null ; then
-	echo -e "If you want to update, run: $DOTFILES_AUR_HELPER -R sunshine-beta-bin\nThen run the configuration again" >&2
-else
-	cd ./sunshine-beta-bin
-	makepkg -si
-fi
-
 cmd systemctl enable --user app-dev.lizardbyte.app.Sunshine.service
 
