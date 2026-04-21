@@ -47,7 +47,7 @@ config zen-browser --search-engine
 config zswap
 config docker
 config lmstudio
-config sunshine
+config sunshine --cuda
 config discord
 
 # add_module_temp "boot-LATE" "$(writetext "nvidia.NVreg_EnableGpuFirmware=0")"
