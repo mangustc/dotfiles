@@ -36,11 +36,18 @@ default arch.conf
 console-mode keep
 EOF
 )" /boot/loader/loader.conf
+
+kernel_params="$(for f in ./files/*; do cat "$f"; echo " "; done | tr '\n' ' ')"
+
+# combine drm.edid_firmware
+values=$(echo "$kernel_params" | grep -o 'drm\.edid_firmware=[^ ]*' | cut -d= -f2- | tr '\n' ',' | sed 's/,$//')
+[ -n "$values" ] && kernel_params="drm.edid_firmware=${values} $(echo "$kernel_params" | sed 's/drm\.edid_firmware=[^ ]*//g')"
+
 cmd sudo install -D -m 644 "$(writetext <<EOF
 title Arch Linux
 linux /vmlinuz-$kernel_name
 initrd /initramfs-$kernel_name.img
-options root=LABEL=arch-root rw nowatchdog $(for f in ./files/*; do cat "$f"; echo " "; done | tr '\n' ' ')
+options root=LABEL=arch-root rw nowatchdog $kernel_params
 EOF
 )" /boot/loader/entries/arch.conf
 
