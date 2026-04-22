@@ -13,6 +13,7 @@ install_pkgs "$(trim_pkgs_file "./packages-$DOTFILES_HOST")"
 
 # systemd-boot
 config swap --size 16G
+config ivo8c45 --output-name DP-1 --headless
 config v226hql --output-name HDMI-A-1
 
 config module-blacklist --modules "

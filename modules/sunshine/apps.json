@@ -1,0 +1,41 @@
+{
+    "apps": [
+        {
+            "auto-detach": true,
+            "cmd": "",
+            "detached": [
+                "/home/ivan/dotfiles/modules/sunshine/sunshine-scripts/sunhsine-detached-dual.sh"
+            ],
+            "elevated": false,
+            "exclude-global-prep-cmd": false,
+            "exit-timeout": 5,
+            "image-path": "",
+            "name": "Dual",
+            "output": "",
+            "prep-cmd": [
+                {
+                    "do": "/home/ivan/dotfiles/modules/sunshine/sunshine-scripts/sunhsine-start-single.sh",
+                    "undo": "/home/ivan/dotfiles/modules/sunshine/sunshine-scripts/sunhsine-end.sh"
+                }
+            ],
+            "wait-all": true
+        },
+        {
+            "auto-detach": true,
+            "exclude-global-prep-cmd": false,
+            "exit-timeout": 5,
+            "image-path": "",
+            "name": "Single",
+            "prep-cmd": [
+                {
+                    "do": "/home/ivan/dotfiles/modules/sunshine/sunshine-scripts/sunhsine-start-single.sh",
+                    "undo": "/home/ivan/dotfiles/modules/sunshine/sunshine-scripts/sunhsine-end.sh"
+                }
+            ],
+            "wait-all": true
+        }
+    ],
+    "env": {
+        "PATH": "$(PATH):$(HOME)/.local/bin"
+    }
+}

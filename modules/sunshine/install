@@ -30,3 +30,49 @@ fi
 
 cmd systemctl enable --user app-dev.lizardbyte.app.Sunshine.service
 
+cmd install -D -m 644 ./sunshine.conf ~/.config/sunshine/sunshine.conf
+cmd install -D -m 644 "$(writetext <<EOF
+{
+    "apps": [
+        {
+            "auto-detach": true,
+            "cmd": "",
+            "detached": [
+                "$DOTFILES_DIR/modules/sunshine/sunshine-scripts/sunhsine-detached-dual.sh"
+            ],
+            "elevated": false,
+            "exclude-global-prep-cmd": false,
+            "exit-timeout": 5,
+            "image-path": "",
+            "name": "Dual",
+            "output": "",
+            "prep-cmd": [
+                {
+                    "do": "$DOTFILES_DIR/modules/sunshine/sunshine-scripts/sunhsine-start-single.sh",
+                    "undo": "$DOTFILES_DIR/modules/sunshine/sunshine-scripts/sunhsine-end.sh"
+                }
+            ],
+            "wait-all": true
+        },
+        {
+            "auto-detach": true,
+            "exclude-global-prep-cmd": false,
+            "exit-timeout": 5,
+            "image-path": "",
+            "name": "Single",
+            "prep-cmd": [
+                {
+                    "do": "$DOTFILES_DIR/modules/sunshine/sunshine-scripts/sunhsine-start-single.sh",
+                    "undo": "$DOTFILES_DIR/modules/sunshine/sunshine-scripts/sunhsine-end.sh"
+                }
+            ],
+            "wait-all": true
+        }
+    ],
+    "env": {
+        "PATH": "\$(PATH):\$(HOME)/.local/bin"
+    }
+}
+EOF
+)" ~/.config/sunshine/apps.json
+
