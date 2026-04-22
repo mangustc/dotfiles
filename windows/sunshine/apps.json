@@ -1,0 +1,44 @@
+{
+    "apps": [
+        {
+            "auto-detach": true,
+            "cmd": "",
+            "detached": [
+                "C:\\Users\\ivan\\dotfiles\\windows\\sunshine\\sunshine-detached-dual.bat"
+            ],
+            "elevated": false,
+            "exclude-global-prep-cmd": false,
+            "exit-timeout": 5,
+            "image-path": "",
+            "name": "Dual",
+            "output": "",
+            "prep-cmd": [
+                {
+                    "do": "C:\\Users\\ivan\\dotfiles\\windows\\sunshine\\sunshine-start-dual.bat",
+                    "elevated": false,
+                    "undo": "C:\\Users\\ivan\\dotfiles\\windows\\sunshine\\sunshine-end.bat"
+                }
+            ],
+            "wait-all": true
+        },
+        {
+            "auto-detach": true,
+            "cmd": "",
+            "elevated": false,
+            "exclude-global-prep-cmd": false,
+            "exit-timeout": 5,
+            "image-path": "",
+            "name": "Single",
+            "output": "",
+            "prep-cmd": [
+                {
+                    "do": "C:\\Users\\ivan\\dotfiles\\windows\\sunshine\\sunshine-start-single.bat",
+                    "elevated": false,
+                    "undo": "C:\\Users\\ivan\\dotfiles\\windows\\sunshine\\sunshine-end.bat"
+                }
+            ],
+            "wait-all": true
+        }
+    ],
+    "env": {}
+}
