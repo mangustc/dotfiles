@@ -19,6 +19,9 @@ while [ $# -gt 0 ]; do
 			output_name="$2"
 			shift
 			;;
+		--headless)
+			headless="1"
+			;;
 		*)
 			usage_err "Invalid option: $1"
 			;;
@@ -40,18 +43,22 @@ add_module_temp "plasma-LATE" "$(writetext <<EOF
                 text: "2240x1400@75"
                 icon.name: "system-run"
                 onTriggered: {
-                    executable.exec(\`bash -c 'kscreen-doctor output.$output_name.mode.2240x1400@75 && kscreen-doctor output.$output_name.scale.1.25'\`)
+                    executable.exec(\`bash -c 'kscreen-doctor output.$output_name.mode.2240x1400@75'\`)
                 }
             }
             MenuItem {
                 text: "2240x1400@60"
                 icon.name: "system-run"
                 onTriggered: {
-                    executable.exec(\`bash -c 'kscreen-doctor output.$output_name.mode.2240x1400@60 && kscreen-doctor output.$output_name.scale.1.25'\`)
+                    executable.exec(\`bash -c 'kscreen-doctor output.$output_name.mode.2240x1400@60'\`)
                 }
             }
 EOF
 )"
 
-add_module_temp "boot-LATE" "$(writetext "drm.edid_firmware=$output_name:edid/ivo8c45.bin")"
+if [ "$headless" = "1" ]; then
+	add_module_temp "boot-LATE" "$(writetext "drm.edid_firmware=$output_name:edid/ivo8c45.bin video=$output_name:e")"
+else
+	add_module_temp "boot-LATE" "$(writetext "drm.edid_firmware=$output_name:edid/ivo8c45.bin")"
+fi
 
