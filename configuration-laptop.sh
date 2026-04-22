@@ -42,7 +42,6 @@ config konsole
 config zellij
 config fonts
 config yandex-disk
-config warp
 config launch-windows
 config zen-browser --search-engine
 config zswap
