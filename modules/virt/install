@@ -16,6 +16,11 @@ usage_err() {
 
 while [ $# -gt 0 ]; do
 	case $1 in
+		--sunshine)
+			[ "$2" = "" ] && usage_err "Argument not specified"
+			sunshine="$2"
+			shift
+			;;
 		*)
 			usage_err "Invalid option: $1"
 			;;
@@ -88,6 +93,47 @@ modprobe nvidia
 systemctl start display-manager
 EOF
 )" /etc/libvirt/hooks/qemu.d/win-passthrough/release/end/stop.sh
+
+if ! [ "$sunshine" = "" ]; then
+	cmd sudo install -D -m 755 "$(writetext <<EOF
+#!/bin/bash
+
+VM_NAME="\$1"
+nohup bash -c '
+	nft -f /etc/nftables.conf
+
+	VM_NAME="'"\$VM_NAME"'"
+	VM_IP=""
+	for i in \$(seq 1 30); do
+		VM_IP="\$(virsh domifaddr "\$VM_NAME" | grep -oP "(\\d+\\.){3}\\d+" | head -1)"
+		[ -n "\$VM_IP" ] && break
+		sleep 2
+	done
+
+	nft add rule ip filter FORWARD ip daddr \$VM_IP tcp dport { 47984-47990, 48010 } accept
+	nft add rule ip filter FORWARD ip daddr \$VM_IP udp dport { 47998-48000 } accept
+
+	nft add table ip nat
+
+	nft add chain ip nat prerouting { type nat hook prerouting priority dstnat \\; policy accept \\; }
+	nft add rule ip nat prerouting iifname "$sunshine" tcp dport 47984-47990 dnat to \$VM_IP:47984-47990
+	nft add rule ip nat prerouting iifname "$sunshine" tcp dport 48010 dnat to \$VM_IP:48010
+	nft add rule ip nat prerouting iifname "$sunshine" udp dport 47998-48000 dnat to \$VM_IP:47998-48000
+
+	nft add chain ip nat postrouting { type nat hook postrouting priority srcnat \\; policy accept \\; }
+	nft add rule ip nat postrouting oifname "$sunshine" masquerade
+' >> /var/log/sunshine-hook.log 2>&1 &
+EOF
+	)" /etc/libvirt/hooks/qemu.d/win-passthrough/started/begin/sunshine.sh
+
+	cmd sudo install -D -m 755 "$(writetext <<EOF
+#!/bin/bash
+
+nft -f /etc/nftables.conf
+systemctl restart docker.service
+EOF
+	)" /etc/libvirt/hooks/qemu.d/win-passthrough/stopped/end/sunshine.sh
+fi
 
 cmd sudo install -D -m 755 ./virt /usr/local/bin/virt
 

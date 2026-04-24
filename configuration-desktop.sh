@@ -43,7 +43,7 @@ config scripts
 config konsole
 config yandex-disk
 config desktop-fancontrol
-config virt
+config virt --sunshine "enp4s0"
 config zen-browser --search-engine
 config zswap
 config docker
