@@ -50,7 +50,6 @@ config docker
 config lmstudio
 config sunshine --cuda
 config discord
-config steam
 
 # add_module_temp "boot-LATE" "$(writetext "nvidia.NVreg_EnableGpuFirmware=0")"
 
