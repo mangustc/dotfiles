@@ -1,3 +1,9 @@
 [user]
 	email = letalbark@gmail.com
 	name = Ivan Lifanov
+[init]
+	defaultBranch = main
+[core]
+	quotepath = false
+[pull]
+	rebase = true
