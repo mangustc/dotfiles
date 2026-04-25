@@ -4,3 +4,4 @@ edk2-ovmf
 virt-manager
 dnsmasq
 ebtables
+guestfs-tools
