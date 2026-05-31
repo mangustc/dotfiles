@@ -95,6 +95,7 @@ orphans="\$($DOTFILES_AUR_HELPER -Qdtq | xargs)"
 if [ ! "\$orphans" = "" ]; then
 	$DOTFILES_AUR_HELPER -Rs --noconfirm \$orphans
 fi
+sudo rm -vrf /var/cache/pacman/pkg/download-*
 yes | $DOTFILES_AUR_HELPER -Scc
 EOF
 
