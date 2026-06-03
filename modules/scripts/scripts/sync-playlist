@@ -1,0 +1,80 @@
+#!/usr/bin/env sh
+
+usage() {
+	cat <<EOF
+$(basename "$0") [--proxy] [--yt-dlp YT_DLP_EXECUTABLE_PATH] --playlist-url YOUTUBE_MUSIC_PLAYLIST_URL --output-dir OUTPUT_DIRECTORY_PATH [--cookies COOKIES_PATH] [--cookies-from-browser BROWSER_PATH] [--range RANGE]
+EOF
+}
+
+usage_err() {
+	[ "$1" ] && echo "$1" >&2
+	usage
+	exit 1
+}
+
+yt_dlp="yt-dlp"
+proxy=0
+
+while [ $# -gt 0 ]; do
+	case $1 in
+		--proxy)
+			proxy=1
+			;;
+		--yt-dlp)
+			[ -z "$2" ] && usage_err "Argument not specified"
+			yt_dlp="$2"
+			shift
+			;;
+		--playlist-url)
+			[ -z "$2" ] && usage_err "Argument not specified"
+			playlist_url="$2"
+			shift
+			;;
+		--output-dir)
+			[ -z "$2" ] && usage_err "Argument not specified"
+			output_dir="$2"
+			shift
+			;;
+		--cookies)
+			[ -z "$2" ] && usage_err "Argument not specified"
+			cookies="$2"
+			shift
+			;;
+		--cookies-from-browser)
+			[ -z "$2" ] && usage_err "Argument not specified"
+			cookies_from_browser="$2"
+			shift
+			;;
+		--range)
+			[ -z "$2" ] && usage_err "Argument not specified"
+			range="$2"
+			shift
+			;;
+		*)
+			usage_err "Invalid option: $1"
+			;;
+	esac
+	shift
+done
+
+[ -z "$output_dir" ] && usage_err "specify output-dir"
+[ -z "$playlist_url" ] && usage_err "specify playlist-url"
+
+mkdir -p "$output_dir"
+cd "$output_dir" || exit 1
+
+set -- -f bestaudio -x --audio-format opus
+
+[ -n "$cookies" ] && set -- "$@" --cookies "$cookies"
+[ -n "$cookies_from_browser" ] && set -- "$@" --cookies-from-browser "$cookies_from_browser"
+[ -n "$range" ] && set -- "$@" --playlist-items "$range"
+[ "$proxy" = "1" ] && set -- "$@" --proxy "http://127.0.0.1:2080"
+
+set -- "$@" \
+	--embed-thumbnail --embed-metadata --convert-thumbnails jpg \
+	--ppa "ThumbnailsConvertor+ffmpeg_o:-vf crop=ih:ih" \
+	-o "%(playlist_index)04d - %(artist,uploader)s - %(title)s.%(ext)s" \
+	"$playlist_url"
+
+"$yt_dlp" "$@"
+
