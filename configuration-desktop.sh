@@ -41,13 +41,11 @@ config flatpak --flatpaks "
 config sddm --nopasswd --autologin
 config scripts
 config konsole
-config yandex-disk
 config desktop-fancontrol
 config virt --sunshine "enp4s0"
 config zen-browser --search-engine
 config zswap
 config docker
-config lmstudio
 config sunshine --cuda
 config discord
 
