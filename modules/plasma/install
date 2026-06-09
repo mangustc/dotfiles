@@ -1,6 +1,58 @@
 #!/usr/bin/env sh
 set -e
 
+usage() {
+	cat <<EOF
+Example: config $DOTFILES_MODULE_NAME --nopasswd --autologin
+EOF
+}
+usage_err() {
+	if ! [ "$1" = "" ]; then
+		echo "$1" >&2
+	fi
+	usage
+	exit 1
+}
+
+while [ $# -gt 0 ]; do
+	case $1 in
+		--autologin)
+			autologin=true
+			;;
+		--nopasswd)
+			nopasswd=true
+			;;
+		*)
+			usage_err "Invalid option: $1"
+			;;
+	esac
+	shift
+done
+
+cmd sudo install -D -m 644 "$(writetext <<EOF
+$([ $autologin ] && cat <<EOF2
+[Autologin]
+User=$(whoami)
+Session=plasma.desktop
+EOF2
+)
+EOF
+)" /etc/plasmalogin.conf
+
+cmd sudo install -D -m 644 "$(writetext <<EOF
+#%PAM-1.0
+
+$([ $nopasswd ] && cat <<EOF2
+auth      sufficient    pam_succeed_if.so user = $(whoami)
+EOF2
+)
+auth       include      system-login
+account    include      system-login
+session    include      system-login
+password   include      system-login
+EOF
+)" /etc/pam.d/plasmalogin
+
 if ! [ -d ~/.local/share/kwin/scripts/karousel ]; then
 	cmd kpackagetool6 -t KWin/Script -i ./karousel.tar.gz
 fi
