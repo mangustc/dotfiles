@@ -48,8 +48,7 @@ config zswap
 config docker
 config sunshine --cuda
 config discord
-
-# add_module_temp "boot-LATE" "$(writetext "nvidia.NVreg_EnableGpuFirmware=0")"
+config proton-gaming
 
 # late
 config plasma-LATE
@@ -58,6 +57,11 @@ config hosts-LATE
 config nftables-LATE
 config sysctl-LATE
 config env-LATE
+
+add_module_temp "env-LATE" "$(writetext <<'EOF'
+export ANDROID_HOME="$HOME/Library/Android/sdk"
+EOF
+)"
 
 # end
 print_orphan_packages
