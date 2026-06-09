@@ -1,5 +1,0 @@
-#!/usr/bin/env sh
-set -e
-
-cmd rm -rf ~/.config/MangoHud
-cmd install -D -m 644 ./presets.conf ~/.config/MangoHud/presets.conf

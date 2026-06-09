@@ -1,12 +1,22 @@
 #!/usr/bin/env sh
 set -e
 
-cmd sudo install -D -m 644 ./pacman.conf /etc/pacman.conf
-
 cmd sudo ln -sf /usr/share/zoneinfo/Asia/Tomsk /etc/localtime
-cmd sudo install -D -m 644 "$(writetext "LANG=en_US.UTF-8")" /etc/locale.conf
+cmd sudo install -D -m 644 "$(writetext <<EOF
+LANG=en_US.UTF-8
+LC_ADDRESS=en_US.UTF-8
+LC_IDENTIFICATION=en_US.UTF-8
+LC_MEASUREMENT=en_US.UTF-8
+LC_MONETARY=en_US.UTF-8
+LC_NAME=en_US.UTF-8
+LC_NUMERIC=en_US.UTF-8
+LC_PAPER=en_US.UTF-8
+LC_TELEPHONE=en_US.UTF-8
+LC_TIME=en_US.UTF-8
+EOF
+)" /etc/locale.conf
 cmd sudo install -D -m 644 "$(writetext "KEYMAP=dvorak")" /etc/vconsole.conf
-cmd sudo install -D -m 644 "$(writetext "arch")" /etc/hostname
+cmd sudo install -D -m 644 "$(writetext "cachyos")" /etc/hostname
 cmd sudo install -D -m 644 "$(writetext <<EOF
 en_CA.UTF-8 UTF-8
 en_CA ISO-8859-1
@@ -36,8 +46,6 @@ EOF
 
 cmd sudo usermod -aG wheel,audio,video,input,tty,kvm,network "$(whoami)"
 
-cmd sudo timedatectl set-ntp true
-
 add_module_temp "hosts-LATE" "$(writetext <<'EOF'
 127.0.0.1        localhost
 ::1              localhost
@@ -45,12 +53,6 @@ EOF
 )"
 
 add_module_temp "sysctl-LATE" "$(writetext <<'EOF'
-net.ipv4.tcp_fin_timeout=5
-kernel.split_lock_mitigate=0
-kernel.nmi_watchdog=0
-kernel.soft_watchdog=0
-kernel.watchdog=0
-vm.max_map_count=2147483642
 EOF
 )"
 

@@ -47,7 +47,7 @@ cmd sudo install -D -m 644 "$(writetext <<EOF
 title $kernel_name
 linux /vmlinuz-$kernel_name
 initrd /initramfs-$kernel_name.img
-options root=LABEL=arch-root rw nowatchdog $kernel_params
+options root=LABEL=arch-root rw nowatchdog quiet splash $kernel_params
 EOF
 )" /boot/loader/entries/arch.conf
 

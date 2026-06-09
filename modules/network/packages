@@ -1,0 +1,14 @@
+throne-bin
+bind
+blocky
+ethtool
+inetutils
+iwd
+netctl
+networkmanager
+networkmanager-openvpn
+nss-mdns
+wpa_supplicant
+libnetfilter_queue
+nftables
+iptables

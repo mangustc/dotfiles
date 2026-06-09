@@ -9,17 +9,17 @@ source ./base.sh
 # config
 install_pkgs "$(trim_pkgs_file "./packages-$DOTFILES_HOST")"
 
-# systemd-boot
+config base
+config audio
+config network
 config ivo8c45 --output-name DP-1 --headless
 config v226hql --output-name HDMI-A-1
+config plasma --autologin --nopasswd
+config fish --zellij
 
-config nethandlerm
 config ssh-agent
 config launch-windows
-config plasma --autologin --nopasswd
 config neovim
-config zellij
-config fish --zellij
 config dualsense
 config archscripts
 config git
@@ -30,7 +30,11 @@ config zen-browser
 config sunshine --cuda
 config discord
 
-add_module_temp "boot-LATE" "$(writetext "zswap.enabled=0 quiet splash")"
+add_module_temp "boot-LATE" "$(writetext "zswap.enabled=0")"
+add_module_temp "env-LATE" "$(writetext <<'EOF'
+export ANDROID_HOME="$HOME/Library/Android/sdk"
+EOF
+)"
 
 # late
 config plasma-LATE
@@ -39,11 +43,6 @@ config hosts-LATE
 config nftables-LATE
 config sysctl-LATE
 config env-LATE
-
-add_module_temp "env-LATE" "$(writetext <<'EOF'
-export ANDROID_HOME="$HOME/Library/Android/sdk"
-EOF
-)"
 
 # end
 print_orphan_packages

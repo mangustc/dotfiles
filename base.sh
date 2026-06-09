@@ -118,9 +118,7 @@ export -f trim_pkgs_file
 print_orphan_packages() {
 	! [ "$DOTFILES_SPECIFIC_MODULE" = "" ] && return 0
 	echo "Current orphan packages (not in modules, not in packages-$DOTFILES_HOST):"
-	grep -v -F -x -f <(echo -e "$(cat ./packages-$DOTFILES_HOST)\n$(cat "$DOTFILES_MODULE_PACKAGES_FILE")") <<< "$($DOTFILES_AUR_HELPER -Qe | cut -d ' ' -f 1)"
-	# echo "Current overlapping packages (between packages-$DOTFILES_HOST and modules):"
-	# comm -12 <(echo "$(trim_pkgs_str "$DOTFILES_MODULE_PACKAGES")") <(trim_pkgs_file ./packages-$DOTFILES_HOST)
+	grep -v -F -x -f <(echo -e "$(cat ./packages-$DOTFILES_HOST)\n$file_contents") <<< "$($DOTFILES_AUR_HELPER -Qe | cut -d ' ' -f 1)"
 }
 export -f print_orphan_packages
 
