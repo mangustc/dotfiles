@@ -1,0 +1,101 @@
+#!/usr/bin/env sh
+set -e
+
+usage() {
+	cat <<EOF
+Example: config $DOTFILES_MODULE_NAME
+EOF
+}
+usage_err() {
+	[ "$1" ] && echo "$1" >&2
+	usage
+	exit 1
+}
+
+while [ $# -gt 0 ]; do
+	case $1 in
+		# --arga)
+		# 	arga=1
+		# 	;;
+		# --argb)
+		# 	[ "$2" = "" ] && usage_err "Argument not specified"
+		# 	argb="$2"
+		# 	shift
+		# 	;;
+		*)
+			usage_err "Invalid option: $1"
+			;;
+	esac
+	shift
+done
+
+cmd sudo install -D -m 644 ./blocky.yml /etc/blocky/blocky.yml
+cmd sudo systemctl enable blocky.service
+
+cmd sudo install -D -m 644 ./nethandler.service /etc/systemd/system/nethandler.service
+cmd sudo rm -rf /usr/local/share/nethandler
+cmd sudo cp -rf "$DOTFILES_MODULE_SECRETS/nethandler" /usr/local/share
+sudo chmod 755 /usr/local/share/nethandler/nethandler
+cmd sudo ln -sf /usr/local/share/nethandler/nethandler /usr/local/bin/nethandler
+cmd sudo systemctl daemon-reload
+cmd sudo systemctl enable nftables.service nethandler.service
+
+add_module_temp "plasma-LATE" "$(writetext <<'EOF'
+            MenuItem {
+                text: "Toggle Nethandler"
+                icon.name: "system-run"
+                onTriggered: {
+                    executable.exec(`bash -c 'systemctl is-active --quiet "nethandler.service" && systemctl stop nethandler.service || systemctl start nethandler.service'`)
+                    updateStatusTimer.start()
+                }
+            }
+            MenuItem {
+                text: "Nethandler: " + isNethandlerEnabled
+                icon.name: "system-run"
+                onTriggered: updateStatus()
+            }
+EOF
+)"
+
+[ -f "$DOTFILES_MODULE_SECRETS/nethandler/hosts" ] && add_module_temp "hosts-LATE" "$DOTFILES_MODULE_SECRETS/nethandler/hosts"
+
+add_module_temp "nftables-LATE" "$(writetext <<'EOF'
+table ip filter {
+        chain INPUT {
+                type filter hook input priority filter; policy accept;
+
+                # ignore local packets
+                ip daddr 127.0.0.1 counter accept
+                ip saddr 127.0.0.1 counter accept
+
+                ct original packets 1-6 meta mark & 0x40000000 != 0x40000000 counter queue flags bypass to 200
+        }
+
+        chain FORWARD {
+                type filter hook forward priority filter; policy accept;
+
+                # ignore local packets
+                ip daddr 127.0.0.1 counter accept
+                ip saddr 127.0.0.1 counter accept
+
+                ct original packets 1-6 meta mark & 0x40000000 != 0x40000000 counter queue flags bypass to 200
+        }
+
+        chain OUTPUT {
+                type filter hook output priority filter; policy accept;
+
+                # ignore local packets
+                ip daddr 127.0.0.1 counter accept
+                ip saddr 127.0.0.1 counter accept
+
+                ct original packets 1-6 meta mark & 0x40000000 != 0x40000000 counter queue flags bypass to 200
+	}
+}
+EOF
+)"
+
+cmd sudo install -D -m 644 "$(writetext <<'EOF'
+net.netfilter.nf_conntrack_tcp_be_liberal=1
+EOF
+)" /etc/sysctl.d/99-dotifles-network-nethandler.conf
+

@@ -1,12 +1,8 @@
 # system
 amd-ucode
-nvidia-open
-nvidia-utils
-lib32-nvidia-utils
 linux
 linux-firmware
 linux-headers
-sbctl
 
 # progs
 mpv
@@ -15,8 +11,6 @@ gparted
 gimp
 libreoffice-still
 strawberry
-umu-launcher
-steam-devices
 
 # programming
 # android-studio

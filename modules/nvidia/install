@@ -1,0 +1,67 @@
+#!/usr/bin/env sh
+set -e
+
+usage() {
+	cat <<EOF
+Example: config $DOTFILES_MODULE_NAME
+EOF
+}
+usage_err() {
+	[ "$1" ] && echo "$1" >&2
+	usage
+	exit 1
+}
+
+while [ $# -gt 0 ]; do
+	case $1 in
+		# --arga)
+		# 	arga=1
+		# 	;;
+		# --argb)
+		# 	[ "$2" = "" ] && usage_err "Argument not specified"
+		# 	argb="$2"
+		# 	shift
+		# 	;;
+		*)
+			usage_err "Invalid option: $1"
+			;;
+	esac
+	shift
+done
+
+cmd sudo install -D -m 644 "$(writetext <<'EOF'
+# NVreg_InitializeSystemMemoryAllocations=0 (Default 1) - Disables clearing
+# system memory allocation before using it for the GPU. Potentially improves
+# performance, but at the cost of increased security risks. Write "options
+# nvidia NVreg_InitializeSystemMemoryAllocations=1" in
+# /etc/modprobe.d/nvidia.conf, if you want to return the default value. Note:
+# It is possible to use more memory (?)
+#
+# NVreg_DynamicPowerManagement=0x02 - Enables the use of dynamic power
+# management for Turing generation mobile cards, allowing the dGPU to be
+# powered down during idle time.
+#
+#
+options nvidia NVreg_InitializeSystemMemoryAllocations=0 \
+    NVreg_DynamicPowerManagement=0x02
+EOF
+)" /etc/modprobe.d/dotfiles-nvidia.conf
+
+cmd sudo install -D -m 644 "$(writetext <<'EOF'
+# Enable runtime PM for NVIDIA VGA/3D controller devices on driver bind
+ACTION=="add|bind", SUBSYSTEM=="pci", DRIVERS=="nvidia", \
+    ATTR{vendor}=="0x10de", ATTR{class}=="0x03[0-9]*", \
+    TEST=="power/control", ATTR{power/control}="auto"
+
+# Disable runtime PM for NVIDIA VGA/3D controller devices on driver unbind
+ACTION=="remove|unbind", SUBSYSTEM=="pci", DRIVERS=="nvidia", \
+    ATTR{vendor}=="0x10de", ATTR{class}=="0x03[0-9]*", \
+    TEST=="power/control", ATTR{power/control}="on"
+EOF
+)" /etc/udev/rules.d/71-dotfiles-nvidia.conf
+
+cmd install -D -m 644 "$(writetext <<'EOF'
+__GL_SHADER_DISK_CACHE_SIZE=12000000000
+EOF
+)" ~/.config/environment.d/dotfiles-nvidia.conf
+

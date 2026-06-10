@@ -1,0 +1,25 @@
+upstreams:
+  groups:
+    default:
+      - "https://dns.quad9.net/dns-query"
+  strategy: strict
+  timeout: 5s
+  userAgent: "CachyOS/blocky"
+
+bootstrapDns:
+  - upstream: tcp-tls:dns.quad9.net
+    ips:
+      - "9.9.9.9"
+      - "149.112.112.112"
+      - "2620:fe::fe"
+      - "2620:fe::9"
+
+ports:
+  dns:
+    - 127.0.0.1:53
+    - "[::1]:53"
+
+caching:
+  minTime: 5m
+  maxTime: 30m
+  prefetching: true

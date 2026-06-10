@@ -5,63 +5,44 @@ export DOTFILES_HOST="desktop"
 export DOTFILES_DIR="$(realpath "$(dirname "$0")")"
 cd "$DOTFILES_DIR"
 source ./base.sh
+
 config base
-config yay
-
-# config
-install_pkgs "$(trim_pkgs_file "./packages-$DOTFILES_HOST")"
-
-# systemd-boot
-config swap --size 16G
+config network
+config audio
+config zram
 config ivo8c45 --output-name DP-1 --headless
 config v226hql --output-name HDMI-A-1
+config plasma --nopasswd --autologin
+config fonts
+config fish --zellij
+config nvidia
 
-config module-blacklist --modules "
-pcscpkr
-iTCO_wdt
-sp5100_tco
-"
-config earlyoom
-config pipewire
-config networkmanager --proxy --doh-https "https://dns.quad9.net/dns-query" --doh-ipv4 "9.9.9.9" --doh-ipv4-alt "149.112.112.112"
-config nethandlerm
+install_pkgs "$(trim_pkgs_file "./packages-$DOTFILES_HOST")"
+
 config ssh-agent
 config launch-windows
-config plasma
-config ppd
 config neovim
-config zellij
-config fish --zellij
 config dualsense
-config mangohud
 config archscripts
 config git
-config flatpak --flatpaks "
-"
-config sddm --nopasswd --autologin
 config scripts
 config konsole
-config desktop-fancontrol
 config virt --sunshine "enp4s0"
 config zen-browser --search-engine
-config zswap
 config docker
 config sunshine --cuda
 config discord
-config proton-gaming
+
+cmd sudo install -D -m 755 "$(writetext <<'EOF'
+export ANDROID_HOME="$HOME/Library/Android/sdk"
+EOF
+)" /etc/profile.d/dotfiles-android.sh
 
 # late
 config plasma-LATE
 config boot-LATE --kernel-name linux
 config hosts-LATE
 config nftables-LATE
-config sysctl-LATE
-config env-LATE
-
-add_module_temp "env-LATE" "$(writetext <<'EOF'
-export ANDROID_HOME="$HOME/Library/Android/sdk"
-EOF
-)"
 
 # end
 print_orphan_packages
