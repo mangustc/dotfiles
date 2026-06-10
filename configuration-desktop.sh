@@ -17,6 +17,7 @@ config v226hql --output-name HDMI-A-1
 config plasma --autologin --nopasswd
 config fish --zellij
 
+config gaming
 config ssh-agent
 config launch-windows
 config neovim

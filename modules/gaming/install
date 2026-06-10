@@ -1,0 +1,40 @@
+#!/usr/bin/env sh
+set -e
+
+usage() {
+	cat <<EOF
+Example: config $DOTFILES_MODULE_NAME
+EOF
+}
+usage_err() {
+	[ "$1" ] && echo "$1" >&2
+	usage
+	exit 1
+}
+
+while [ $# -gt 0 ]; do
+	case $1 in
+		# --arga)
+		# 	arga=1
+		# 	;;
+		# --argb)
+		# 	[ "$2" = "" ] && usage_err "Argument not specified"
+		# 	argb="$2"
+		# 	shift
+		# 	;;
+		*)
+			usage_err "Invalid option: $1"
+			;;
+	esac
+	shift
+done
+
+cmd sudo install -D -m 644 "$(writetext <<EOF
+# Increase Nvidia's shader cache size to 12GB
+__GL_SHADER_DISK_CACHE_SIZE=12000000000
+# Increase AMD's shader cache size to 12GB
+MESA_SHADER_CACHE_MAX_SIZE=12G
+EOF
+)" ~/.config/environment.d/gaming.conf
+
+
