@@ -128,7 +128,7 @@ export -f print_orphan_packages
 install_pkgs() {
 	install_pkgs_list="$(trim_pkgs_str "$1" | grep -v -F -x -f <(echo "$($DOTFILES_AUR_HELPER -Q | cut -d ' ' -f 1)") || true)"
 	if [ ! "$install_pkgs_list" = "" ]; then
-		$DOTFILES_AUR_HELPER -S --needed "$install_pkgs_list"
+		$DOTFILES_AUR_HELPER -S --needed $(echo "$install_pkgs_list" | xargs)
 	fi
 	prev_pkgs="$(cat "$DOTFILES_MODULE_PACKAGES_FILE")"
 

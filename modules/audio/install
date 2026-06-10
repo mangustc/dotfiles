@@ -29,7 +29,7 @@ while [ $# -gt 0 ]; do
 	shift
 done
 
-cmd sudo install -D -m 644 "$(writefile <<'EOF'
+cmd sudo install -D -m 644 "$(writetext <<'EOF'
 ACTION=="add", SUBSYSTEM=="sound", KERNEL=="card*", DRIVERS=="snd_hda_intel", TEST!="/run/udev/snd-hda-intel-powersave", \
     RUN+="/usr/bin/bash -c 'touch /run/udev/snd-hda-intel-powersave; \
         [[ $$(cat /sys/class/power_supply/BAT0/status 2>/dev/null) != \"Discharging\" ]] && \
@@ -47,12 +47,12 @@ SUBSYSTEM=="power_supply", ENV{POWER_SUPPLY_ONLINE}=="1", TEST=="/sys/module/snd
 EOF
 )" /etc/udev/rules.d/20-dotfiles-audio-pm.rules
 
-cmd sudo install -D -m 644 "$(writefile <<'EOF'
+cmd sudo install -D -m 644 "$(writetext <<'EOF'
 DEVPATH=="/devices/virtual/misc/cpu_dma_latency", OWNER="root", GROUP="audio", MODE="0660"
 EOF
 )" /etc/udev/rules.d/99-dotfiles-cpu-dma-latency.rules
 
-cmd sudo install -D -m 644 "$(writefile <<'EOF'
+cmd sudo install -D -m 644 "$(writetext <<'EOF'
 @audio - rtprio 99
 EOF
 )" /etc/security/limits.d/20-dotfiles-audio.conf

@@ -29,6 +29,8 @@ while [ $# -gt 0 ]; do
 	shift
 done
 
+cmd sudo systemctl enable NetworkManager.service
+
 cmd sudo install -D -m 644 ./blocky.yml /etc/blocky/blocky.yml
 cmd sudo systemctl enable blocky.service
 
