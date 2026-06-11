@@ -32,6 +32,7 @@ config zen-browser --search-engine
 config docker
 config sunshine --cuda
 config discord
+config gaming
 
 cmd sudo install -D -m 755 "$(writetext <<'EOF'
 export ANDROID_HOME="$HOME/Library/Android/sdk"
