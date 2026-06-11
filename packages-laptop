@@ -1,30 +1,7 @@
-# system
 amd-ucode
-mesa
-vulkan-radeon
-lib32-mesa
-lib32-vulkan-radeon
 linux
 linux-firmware
 linux-headers
 sbctl
-
-# progs
-mpv
-obsidian
-qbittorrent
-gparted
-libreoffice-still
-gimp
-steam
-
-# programming
-dart
-compiler-rt
-clang
-cppdap
-rhash
-cmake
-ninja
-jdk21-openjdk
-go
+paru
+moonlight-qt

@@ -1,16 +1,7 @@
-# system
 amd-ucode
 linux
 linux-firmware
 linux-headers
-
-# progs
-mpv
-qbittorrent
-gparted
-gimp
-libreoffice-still
 strawberry
-
-# programming
-# android-studio
+android-studio
+paru
