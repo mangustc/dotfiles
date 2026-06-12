@@ -14,9 +14,9 @@ usage_err() {
 
 while [ $# -gt 0 ]; do
 	case $1 in
-		# --arga)
-		# 	arga=1
-		# 	;;
+		--rebar)
+			rebar=1
+			;;
 		# --argb)
 		# 	[ "$2" = "" ] && usage_err "Argument not specified"
 		# 	argb="$2"
@@ -28,6 +28,11 @@ while [ $# -gt 0 ]; do
 	esac
 	shift
 done
+
+[ "$rebar" = "1" ] && cmd sudo install -D -m 644 "$(writetext <<'EOF'
+options nvidia NVreg_EnableResizableBar=1
+EOF
+)" /etc/modprobe.d/dotfiles-nvidia-rebar.conf
 
 cmd sudo install -D -m 644 "$(writetext <<'EOF'
 # NVreg_InitializeSystemMemoryAllocations=0 (Default 1) - Disables clearing

@@ -15,7 +15,7 @@ config v226hql --output-name HDMI-A-1
 config plasma --nopasswd --autologin
 config fonts
 config fish --zellij
-config nvidia
+config nvidia --rebar
 
 install_pkgs "$(trim_pkgs_file "./packages-$DOTFILES_HOST")"
 
