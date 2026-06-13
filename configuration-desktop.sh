@@ -28,7 +28,7 @@ config git
 config scripts
 config konsole
 config virt --sunshine "enp4s0"
-config zen-browser --search-engine
+config zen-browser
 config sunshine --cuda
 config discord
 config gaming
