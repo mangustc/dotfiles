@@ -27,12 +27,13 @@ passwd ivan
 
 bootctl install
 
+cp -rf "$(dirname "$0")/../../dotfiles" /home/ivan
+chown -R ivan /home/ivan/dotfiles
 cd /home/ivan
-sudo -u ivan git clone https://github.com/mangustc/dotfiles
 sudo -u ivan mkdir git
 cd ./git
-sudo -u ivan git clone https://aur.archlinux.org/yay.git
-cd yay
+sudo -u ivan git clone https://aur.archlinux.org/paru-git.git
+cd ./paru-git
 sudo -u ivan makepkg -si
 
 cd /home/ivan/dotfiles
