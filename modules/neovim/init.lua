@@ -416,6 +416,7 @@ vim.lsp.config("bashls", {})
 vim.lsp.config("ts_ls", {})
 vim.lsp.config("gopls", {})
 vim.lsp.config("clangd", {})
+vim.lsp.config("rust-analyzer", {})
 vim.lsp.enable({
 	"lua_ls",
 	"pyright",
@@ -423,4 +424,5 @@ vim.lsp.enable({
 	"ts_ls",
 	"gopls",
 	"clangd",
+	"rust-analyzer",
 })
