@@ -34,9 +34,12 @@ config discord
 config gaming
 
 cmd sudo install -D -m 755 "$(writetext <<'EOF'
-export ANDROID_HOME="$HOME/Library/Android/sdk"
+export JAVA_HOME=/opt/android-studio/jbr
+export ANDROID_HOME="$HOME/Android/Sdk"
+export NDK_HOME="$ANDROID_HOME/ndk/$(ls -1 $ANDROID_HOME/ndk)"
+export PATH="$HOME/.local/share/cargo/bin:$PATH"
 EOF
-)" /etc/profile.d/dotfiles-android.sh
+)" /etc/profile.d/dotfiles-extra.sh
 
 # late
 config plasma-LATE
