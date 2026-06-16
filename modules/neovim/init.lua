@@ -25,6 +25,7 @@ vim.pack.add({
 	},
 	"https://github.com/L3MON4D3/LuaSnip",
 	"https://github.com/stevearc/conform.nvim",
+	"https://github.com/NMAC427/guess-indent.nvim",
 })
 
 -- PRETTY MUCH DEFAULTS
@@ -158,6 +159,7 @@ vim.api.nvim_create_autocmd({ "WinEnter", "BufEnter", "WinLeave", "BufLeave" }, 
 
 -- PLUGIN CONFIGS
 
+require('guess-indent').setup({})
 require("gen").setup({})
 
 vim.g.loaded_netrw = 1
@@ -333,6 +335,10 @@ local function lsp_on_attach(ev)
 end
 vim.api.nvim_create_autocmd("LspAttach", { group = augroup, callback = lsp_on_attach })
 require("conform").setup({
+	format_on_save = {
+		lsp_format = "fallback",
+		timeout_ms = 500,
+	},
 	formatters_by_ft = {
 		javascript = { "prettier" },
 		typescript = { "prettier" },
@@ -411,12 +417,6 @@ vim.lsp.config("lua_ls", {
 		},
 	},
 })
-vim.lsp.config("pyright", {})
-vim.lsp.config("bashls", {})
-vim.lsp.config("ts_ls", {})
-vim.lsp.config("gopls", {})
-vim.lsp.config("clangd", {})
-vim.lsp.config("rust-analyzer", {})
 vim.lsp.enable({
 	"lua_ls",
 	"pyright",
@@ -424,5 +424,5 @@ vim.lsp.enable({
 	"ts_ls",
 	"gopls",
 	"clangd",
-	"rust-analyzer",
+	"rust_analyzer",
 })
