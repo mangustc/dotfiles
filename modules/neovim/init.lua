@@ -24,6 +24,7 @@ vim.pack.add({
 		version = vim.version.range("1.*"),
 	},
 	"https://github.com/L3MON4D3/LuaSnip",
+	"https://github.com/stevearc/conform.nvim",
 })
 
 -- PRETTY MUCH DEFAULTS
@@ -331,7 +332,27 @@ local function lsp_on_attach(ev)
 	end
 end
 vim.api.nvim_create_autocmd("LspAttach", { group = augroup, callback = lsp_on_attach })
-vim.keymap.set("n", "<leader>lff", vim.lsp.buf.format, { desc = "Format buffer" })
+require("conform").setup({
+	formatters_by_ft = {
+		javascript = { "prettier" },
+		typescript = { "prettier" },
+		javascriptreact = { "prettier" },
+		typescriptreact = { "prettier" },
+		vue = { "prettier" },
+		css = { "prettier" },
+		html = { "prettier" },
+		json = { "prettier" },
+		yaml = { "prettier" },
+		markdown = { "prettier" },
+	},
+})
+vim.keymap.set("n", "<leader>lff", function()
+	require("conform").format({
+		lsp_format = "fallback",
+		async = false,
+		timeout_ms = 1000,
+	})
+end, { desc = "Format buffer" })
 
 vim.cmd("set completeopt+=noselect")
 require("blink.cmp").setup({
