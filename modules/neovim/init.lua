@@ -422,6 +422,7 @@ vim.lsp.enable({
 	"pyright",
 	"bashls",
 	"ts_ls",
+	"cssls",
 	"gopls",
 	"clangd",
 	"rust_analyzer",
