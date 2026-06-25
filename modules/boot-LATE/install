@@ -57,9 +57,3 @@ PRESETS=('default')
 default_image="/boot/initramfs-$kernel_name.img"
 EOF
 )" /etc/mkinitcpio.d/$kernel_name.preset
-
-cmd sudo install -D -m 644 "$(writetext <<EOF
-LABEL=arch-root     	/         	ext4      	rw,relatime	0 1
-LABEL=arch-boot     	/boot     	vfat      	rw,relatime,fmask=0022,dmask=0022,codepage=437,iocharset=ascii,shortname=mixed,utf8,errors=remount-ro	0 2
-EOF
-)" /etc/fstab

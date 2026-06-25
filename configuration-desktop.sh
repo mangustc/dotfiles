@@ -47,5 +47,12 @@ config boot-LATE --kernel-name linux
 config hosts-LATE
 config nftables-LATE
 
+cmd sudo install -D -m 644 "$(writetext <<EOF
+LABEL=arch-root     	/         	ext4      	rw,relatime	0 1
+LABEL=arch-boot     	/boot     	vfat      	rw,relatime,fmask=0022,dmask=0022,codepage=437,iocharset=ascii,shortname=mixed,utf8,errors=remount-ro	0 2
+LABEL=arch-stuff   /mnt/arch-stuff   ext4   rw,relatime,nofail,X-mount.mkdir   0   2
+EOF
+)" /etc/fstab
+
 # end
 print_orphan_packages
