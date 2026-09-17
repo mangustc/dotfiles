@@ -72,9 +72,9 @@ systemctl --user -M $(whoami)@ stop plasma*
 
 modprobe -r nvidia_drm nvidia_modeset nvidia_uvm nvidia snd_hda_intel
 
-virsh nodedev-detach pci_0000_05_00_0
-virsh nodedev-detach pci_0000_05_00_1
-virsh nodedev-detach pci_0000_07_00_4
+virsh nodedev-detach pci_0000_06_00_0
+virsh nodedev-detach pci_0000_06_00_1
+virsh nodedev-detach pci_0000_08_00_4
 
 modprobe vfio-pci
 
@@ -96,9 +96,9 @@ command -v powerprofilectl >/dev/null 2>&1 && powerprofilectl set balanced || tr
 
 modprobe -r vfio-pci
 
-virsh nodedev-reattach pci_0000_05_00_0
-virsh nodedev-reattach pci_0000_05_00_1
-virsh nodedev-reattach pci_0000_07_00_4
+virsh nodedev-reattach pci_0000_06_00_0
+virsh nodedev-reattach pci_0000_06_00_1
+virsh nodedev-reattach pci_0000_08_00_4
 
 modprobe nvidia_drm
 modprobe nvidia_modeset
