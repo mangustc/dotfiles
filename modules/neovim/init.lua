@@ -350,6 +350,7 @@ require("conform").setup({
 		json = { "prettier" },
 		yaml = { "prettier" },
 		markdown = { "prettier" },
+		python = { "ruff_fix", "ruff_format" },
 	},
 })
 vim.keymap.set("n", "<leader>lff", function()
@@ -419,11 +420,11 @@ vim.lsp.config("lua_ls", {
 })
 vim.lsp.enable({
 	"lua_ls",
-	"pyright",
 	"bashls",
 	"ts_ls",
 	"cssls",
 	"gopls",
 	"clangd",
 	"rust_analyzer",
+	"pylsp",
 })
