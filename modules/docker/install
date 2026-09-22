@@ -22,4 +22,3 @@ while [ $# -gt 0 ]; do
 done
 
 cmd sudo systemctl enable docker.service
-cmd sudo usermod -aG docker $USER
