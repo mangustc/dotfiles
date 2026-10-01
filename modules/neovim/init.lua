@@ -160,7 +160,6 @@ vim.api.nvim_create_autocmd({ "WinEnter", "BufEnter", "WinLeave", "BufLeave" }, 
 -- PLUGIN CONFIGS
 
 require('guess-indent').setup({})
-require("gen").setup({})
 
 vim.g.loaded_netrw = 1
 vim.g.loaded_netrwPlugin = 1
