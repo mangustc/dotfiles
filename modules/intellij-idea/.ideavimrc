@@ -1,0 +1,115 @@
+"" ============================================================================
+"" IDEA VIM PLUGINS & EXTENSIONS
+"" ============================================================================
+" Highlight copied text (replaces vim.highlight.on_yank)
+set highlightedyank
+
+" Which-key popup (requires the 'Which-Key' plugin from IntelliJ Marketplace)
+set which-key
+set timeoutlen=500
+
+" Use IntelliJ's smart joining (syntax & comment aware)
+set ideajoin
+
+"" ============================================================================
+"" GENERAL SETTINGS & DEFAULTS
+"" ============================================================================
+let mapleader = " "
+let maplocalleader = " "
+
+set number
+set relativenumber
+set scrolloff=10
+set sidescrolloff=10
+
+set smartindent
+set autoindent
+
+set ignorecase
+set smartcase
+set hlsearch
+set incsearch
+
+set showmatch
+set noshowmode
+
+"" ============================================================================
+"" KEYMAPS: MOVEMENTS & SEARCH
+"" ============================================================================
+" Center screen on page jumps and search navigation
+nnoremap <C-d> <C-d>zz
+nnoremap <C-u> <C-u>zz
+nnoremap n nzz
+nnoremap N Nzz
+
+" Clear search highlight on Escape
+nnoremap <Esc> :nohlsearch<CR>
+
+"" ============================================================================
+"" KEYMAPS: MACROS
+"" ============================================================================
+" 'Q' starts recording into register 'a'.
+" Press 'q' while recording to stop (Vim's default stop trigger).
+" 'q' in normal mode executes register 'a'.
+nnoremap Q qa
+nnoremap q @a
+
+"" ============================================================================
+"" KEYMAPS: SYSTEM CLIPBOARD
+"" ============================================================================
+nnoremap <leader>y "+y
+vnoremap <leader>y "+y
+nnoremap <leader>Y "+Y
+nnoremap <leader>yy "+yy
+nnoremap <leader>d "_d
+vnoremap <leader>d "_d
+
+"" ============================================================================
+"" KEYMAPS: EDITOR TABS (BUFFERS)
+"" ============================================================================
+nmap <C-j> <Action>(NextTab)
+nmap <C-k> <Action>(PreviousTab)
+nmap <C-x> <Action>(CloseContent)
+
+"" ============================================================================
+"" KEYMAPS: FILE NAVIGATION & SEARCH (nvim-tree & fzf-lua)
+"" ============================================================================
+" Open Project tree
+nmap <leader>pt <Action>(ActivateProjectToolWindow)
+
+" Reveal current file in Project tree
+nmap <leader>pc <Action>(SelectInProjectView)
+
+" Search files (Find file)
+nmap <leader>f <Action>(GotoFile)
+
+" Live grep (Find in files / Find in path)
+nmap <leader>g <Action>(FindInPath)
+
+"" ============================================================================
+"" KEYMAPS: LSP / CODE INTELLIGENCE
+"" ============================================================================
+" Diagnostics navigation
+nmap gnd <Action>(GotoNextError)
+nmap gpd <Action>(GotoPreviousError)
+nmap <leader>ld <Action>(ShowErrorDescription)
+nmap <leader>lD <Action>(ShowErrorDescription)
+
+" LSP navigation
+nmap gd <Action>(GotoDeclaration)
+nmap <leader>lfd <Action>(GotoDeclaration)
+nmap <leader>lfr <Action>(FindUsages)
+nmap <leader>lft <Action>(GotoTypeDeclaration)
+nmap <leader>lfs <Action>(FileStructurePopup)
+nmap <leader>lfw <Action>(GotoSymbol)
+nmap <leader>lfi <Action>(GotoImplementation)
+
+" Code Actions & Refactoring
+nmap <leader>lca <Action>(ShowIntentionActions)
+nmap <leader>lrn <Action>(RenameElement)
+nmap <leader>loi <Action>(OptimizeImports)
+nmap <leader>lff <Action>(ReformatCode)
+
+" Documentation & Signature help
+nmap K <Action>(ShowHoverInfo)
+imap <C-s> <Action>(ParameterInfo)

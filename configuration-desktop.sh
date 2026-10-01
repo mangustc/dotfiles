@@ -33,6 +33,7 @@ config zen-browser
 config sunshine --cuda
 config discord
 config gaming
+config intellij-idea
 
 cmd sudo install -D -m 755 "$(writetext <<'EOF'
 export JAVA_HOME=/opt/android-studio/jbr

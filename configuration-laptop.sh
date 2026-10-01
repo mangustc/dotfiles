@@ -34,6 +34,7 @@ config launch-windows
 config zen-browser
 config docker
 config discord
+config intellij-idea
 
 # late
 config plasma-LATE
