@@ -4,7 +4,7 @@ if [ "$1" = "default" ]; then
 	if ([ ! "$KDE_SESSION_UID" == "" ] || [ "$XDG_CURRENT_DESKTOP" == "KDE" ]) && ([ ! "$WAYLAND_DISPLAY" == "" ] || [ "$XDG_SESSION_TYPE" == "wayland" ]); then
 		kwriteconfig6 --file ~/.config/kxkbrc --group Layout --key LayoutList "us,ru"
 		kwriteconfig6 --file ~/.config/kxkbrc --group Layout --key VariantList "dvorak,"
-		kwriteconfig6 --file ~/.config/kxkbrc --group Layout --key Options "terminate:ctrl_alt_bksp,grp:caps_toggle"
+		kwriteconfig6 --file ~/.config/kxkbrc --group Layout --key Options "terminate:ctrl_alt_bksp,ctrl:swap_lalt_lctl,caps:escape_shifted_capslock,grp:toggle"
 		kwriteconfig6 --file ~/.config/kxkbrc --group Layout --key ResetOldOptions "true"
 		kwriteconfig6 --file ~/.config/kxkbrc --group Layout --key Use "true"
 		# # this was removed for some reason
