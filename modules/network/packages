@@ -1,7 +1,6 @@
-throne-bin
 bind
-blocky
 networkmanager
 libnetfilter_queue
 nftables
 iptables
+clash-verge-rev-bin
