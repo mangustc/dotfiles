@@ -31,6 +31,9 @@ done
 
 cmd sudo systemctl enable NetworkManager.service
 
+cmd sudo install -D -m 644 ./blocky.yml /etc/blocky/blocky.yml
+cmd sudo systemctl enable blocky.service
+
 cmd sudo install -D -m 644 ./nethandler.service /etc/systemd/system/nethandler.service
 cmd sudo rm -rf /usr/local/share/nethandler
 cmd sudo cp -rf "$DOTFILES_MODULE_SECRETS/nethandler" /usr/local/share
