@@ -34,6 +34,7 @@ config sunshine --cuda
 config discord
 config gaming
 config intellij-idea
+config telegram
 
 cmd sudo install -D -m 755 "$(writetext <<'EOF'
 export JAVA_HOME=/opt/android-studio/jbr

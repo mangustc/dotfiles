@@ -1,0 +1,48 @@
+#!/usr/bin/env sh
+set -e
+
+usage() {
+	cat <<EOF
+Example: config $DOTFILES_MODULE_NAME
+EOF
+}
+usage_err() {
+	[ "$1" ] && echo "$1" >&2
+	usage
+	exit 1
+}
+
+while [ $# -gt 0 ]; do
+	case $1 in
+		# --arga)
+		# 	arga=1
+		# 	;;
+		# --argb)
+		# 	[ "$2" = "" ] && usage_err "Argument not specified"
+		# 	argb="$2"
+		# 	shift
+		# 	;;
+		*)
+			usage_err "Invalid option: $1"
+			;;
+	esac
+	shift
+done
+
+cmd sudo install -D -m 644 "$(writetext <<'EOF'
+[Unit]
+Description=Local MTProto proxy server for partial bypassing of Telegram loading
+After=graphical-session.target
+PartOf=graphical-session.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/tg-ws-proxy
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=default.target
+EOF
+)" /etc/systemd/user/tg-ws-proxy.service
+cmd systemctl enable --user tg-ws-proxy.service

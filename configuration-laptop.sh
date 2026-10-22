@@ -35,6 +35,7 @@ config zen-browser
 config docker
 config discord
 config intellij-idea
+config telegram
 
 # late
 config plasma-LATE
