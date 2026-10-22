@@ -31,8 +31,25 @@ done
 
 cmd sudo systemctl enable NetworkManager.service
 
-cmd sudo install -D -m 644 ./blocky.yml /etc/blocky/blocky.yml
-cmd sudo systemctl enable blocky.service
+cmd sudo systemctl enable doh-client.service
+cmd sudo install -D -m 644 ./doh-client.conf /etc/dns-over-https/doh-client.conf
+cmd sudo install -D -m 644 "$(writetext <<'EOF'
+[global-dns-domain-*]
+servers=127.0.0.1,::1
+EOF
+)" /etc/NetworkManager/conf.d/dns-servers.conf
+cmd sudo install -D -m 644 "$(writetext <<'EOF'
+[Unit]
+After=network-online.target
+Wants=network-online.target
+StartLimitIntervalSec=0
+
+[Service]
+Restart=on-failure
+RestartSec=3s
+EOF
+)" /etc/systemd/system/doh-client.service.d/override.conf
+cmd sudo systemctl enable NetworkManager-wait-online.service
 
 cmd sudo install -D -m 644 ./nethandler.service /etc/systemd/system/nethandler.service
 cmd sudo rm -rf /usr/local/share/nethandler

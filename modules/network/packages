@@ -4,3 +4,4 @@ libnetfilter_queue
 nftables
 iptables
 clash-verge-rev-bin
+dns-over-https
