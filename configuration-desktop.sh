@@ -10,7 +10,6 @@ config base
 config network
 config audio
 config zram
-config ivo8c45 --output-name DP-2 --headless
 config v226hql --output-name HDMI-A-1
 config lgtv --output-name DP-1
 config plasma --nopasswd --autologin
@@ -28,9 +27,8 @@ config archscripts
 config git
 config scripts
 config konsole
-config virt --sunshine "enp4s0"
+config virt
 config zen-browser
-config sunshine --cuda
 config discord
 config gaming
 config intellij-idea
