@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 set -e
 
 usage() {
@@ -33,7 +33,7 @@ while [ $# -gt 0 ]; do
 done
 
 newscript flatpak-update << EOF
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 
 echo "Adding flathub repo if not exists"
 flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo

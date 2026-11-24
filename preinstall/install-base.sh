@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 
 cp ./pacman.conf /etc/pacman.conf
 pacman -Syu --needed sudo git base-devel

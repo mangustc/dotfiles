@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 
 if [ "$(whoami)" = "root" ]; then
 	>2& echo "run this script as user"
