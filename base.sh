@@ -124,14 +124,15 @@ export -f print_orphan_packages
 
 # installes packages from a string of package names
 install_pkgs() {
-	local pkgs_list prev_pkgs
-	pkgs_list="$(trim_pkgs_str "$1" | grep -v -F -x -f <(echo "$($DOTFILES_AUR_HELPER -Q | cut -d ' ' -f 1)") || true)"
-	if [ ! "$pkgs_list" = "" ]; then
-		$DOTFILES_AUR_HELPER -S --needed $(echo "$pkgs_list" | xargs)
+	local -a pkgs
+	local prev_pkgs
+	mapfile -t pkgs < <(trim_pkgs_str "$1" | grep -v -F -x -f <($DOTFILES_AUR_HELPER -Q | cut -d ' ' -f 1) || true)
+	if (( ${#pkgs[@]} > 0 )); then
+		"$DOTFILES_AUR_HELPER" -S --needed "${pkgs[@]}"
 	fi
 	prev_pkgs="$(cat "$DOTFILES_MODULE_PACKAGES_FILE")"
 
-	echo "$(trim_pkgs_str "$prev_pkgs$(echo -e "\n$(trim_pkgs_str "$1")")")" > "$DOTFILES_MODULE_PACKAGES_FILE"
+	trim_pkgs_str "$prev_pkgs"$'\n'"$1" > "$DOTFILES_MODULE_PACKAGES_FILE"
 }
 export -f install_pkgs
 

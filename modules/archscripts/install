@@ -91,9 +91,9 @@ EOF
 newscript archclean <<EOF
 #!/usr/bin/env bash
 
-orphans="\$($DOTFILES_AUR_HELPER -Qdtq | xargs)"
-if [ ! "\$orphans" = "" ]; then
-	$DOTFILES_AUR_HELPER -Rs --noconfirm \$orphans
+mapfile -t orphans < <($DOTFILES_AUR_HELPER -Qdtq)
+if (( \${#orphans[@]} > 0 )); then
+	$DOTFILES_AUR_HELPER -Rs --noconfirm "\${orphans[@]}"
 fi
 sudo rm -vrf /var/cache/pacman/pkg/download-*
 yes | $DOTFILES_AUR_HELPER -Scc

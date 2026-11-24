@@ -17,13 +17,13 @@ usage_err() {
 	exit 1
 }
 
+flatpaks=()
 while [ $# -gt 0 ]; do
 	case $1 in
 		--flatpaks)
-			if ! [ "$2" = "" ]; then
-				flatpaks="$(rm_empty "$2" | xargs)"
-				shift
-			fi
+			[ $# -lt 2 ] && usage_err "Argument not specified"
+			mapfile -t flatpaks < <(rm_empty "$2")
+			shift
 			;;
 		*)
 			usage_err "Invalid option: $1"
@@ -35,20 +35,22 @@ done
 newscript flatpak-update << EOF
 #!/usr/bin/env bash
 
+flatpaks=(${flatpaks[*]@Q})
+
 echo "Adding flathub repo if not exists"
 flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
-installedFlatpaks=\$(flatpak list --app --columns=application)
+mapfile -t installedFlatpaks < <(flatpak list --app --columns=application)
 
-for installed in \$installedFlatpaks; do
-	if ! echo $flatpaks | grep -q \$installed; then
-		echo \"Removing \$installed\"
-		flatpak uninstall -y --noninteractive \$installed
+for installed in "\${installedFlatpaks[@]}"; do
+	if (( \${#flatpaks[@]} == 0 )) || ! printf '%s\n' "\${flatpaks[@]}" | grep -Fxq -- "\$installed"; then
+		echo "Removing \$installed"
+		flatpak uninstall -y --noninteractive "\$installed"
 	fi
 done
 
-for app in $flatpaks; do
+for app in "\${flatpaks[@]}"; do
 	echo "Installing \$app"
-	flatpak install -y flathub \$app
+	flatpak install -y flathub "\$app"
 done
 
 echo "Removing unused apps and updating"
