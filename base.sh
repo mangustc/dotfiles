@@ -48,13 +48,9 @@ export -f errcho
 
 # prints command to log
 cmd() {
-	echo "cmd ($DOTFILES_MODULE_NAME): $@" | tee -a "$DOTFILES_SAVE_DIR/log"
+	printf 'cmd (%s): %s\n' "$DOTFILES_MODULE_NAME" "$*" | tee -a "$DOTFILES_SAVE_DIR/log"
 	"$@" 2>&1 | tee -a "$DOTFILES_SAVE_DIR/log"
-
-	cmd_output="$("$@")"
-	cmd_status="$?"
-	echo "$cmd_output" | sed '${/^$/d;}' | tee -a "$DOTFILES_SAVE_DIR/log"
-	return $cmd_status
+	return "${PIPESTATUS[0]}"
 }
 export -f cmd
 
