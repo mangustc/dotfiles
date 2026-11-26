@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 if [ "$(whoami)" = "root" ]; then
-	>2& echo "run this script as user"
+	>&2 echo "run this script as user"
 	exit 1
 fi
 
