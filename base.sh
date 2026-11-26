@@ -43,6 +43,22 @@ export DOTFILES_MODULES_TEMP_DIR="$DOTFILES_SAVE_DIR/temp"
 export DOTFILES_SECRETS_DIR="$DOTFILES_DIR/secrets"
 export DOTFILES_AUR_HELPER="$(basename "$(command -v yay || command -v paru)")"
 export DOTFILES_WRITETEXT_DIR="$(mktemp -d /tmp/dotfiles-writetext.XXXXXXXXXX)"
+
+cleanup() {
+	[ -n "$DOTFILES_SUDO_KEEPALIVE_PID" ] && kill "$DOTFILES_SUDO_KEEPALIVE_PID" 2>/dev/null || true
+	[ -n "$DOTFILES_WRITETEXT_DIR" ] && rm -rf "$DOTFILES_WRITETEXT_DIR"
+}
+trap cleanup EXIT
+
+sudo -v || exit 1
+(
+	while kill -0 "$$" 2>/dev/null; do
+		sleep 60
+		sudo -n true || exit
+	done
+) </dev/null >/dev/null 2>&1 &
+DOTFILES_SUDO_KEEPALIVE_PID=$!
+
 mkdir -p "$DOTFILES_SAVE_DIR"
 touch "$DOTFILES_MODULE_PACKAGES_FILE"
 
@@ -175,6 +191,5 @@ config() {
 	cd "$DOTFILES_DIR"
 }
 
-trap '[ -n "$DOTFILES_WRITETEXT_DIR" ] && rm -rf "$DOTFILES_WRITETEXT_DIR"' EXIT
 trap "echo 'Interrupt signal received. Exiting...' | tee -a '$DOTFILES_SAVE_DIR/log'; exit" SIGINT
 
