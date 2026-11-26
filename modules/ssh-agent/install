@@ -2,7 +2,7 @@
 set -e
 
 cmd sudo install -D -m 644 ./ssh-agent.service /etc/systemd/user/ssh-agent.service
-cmd sudo systemctl daemon-reload
+cmd systemctl --user daemon-reload
 cmd systemctl --user enable ssh-agent.service
 
 cmd sudo install -D -m 755 "$(writetext <<'EOF'
@@ -10,17 +10,14 @@ export SSH_AUTH_SOCK="$XDG_RUNTIME_DIR/ssh-agent.sock"
 EOF
 )" /etc/profile.d/dotfiles-ssh-agent.sh
 
-set +e
-cmd rm -rf ~/.ssh
-cmd mkdir ~/.ssh
-cmd chmod 700 ~/.ssh
-set -e
+cmd install -d -m 700 ~/.ssh
 
-for file in $DOTFILES_MODULE_SECRETS/.ssh/*; do
+for file in "$DOTFILES_MODULE_SECRETS/.ssh"/*; do
 	[ -f "$file" ] || continue
 	base=$(basename "$file")
-	cmd cp "$file" ~/.ssh/
-	if [[ "$base" == *.pub ]]; then chmod 644 ~/.ssh/"$base"
-	elif [[ "$base" == known_hosts ]]; then chmod 644 ~/.ssh/"$base"
-	else chmod 600 ~/.ssh/"$base"; fi
+	if [[ "$base" == *.pub || "$base" == known_hosts ]]; then
+		cmd install -m 644 "$file" ~/.ssh/"$base"
+	else
+		cmd install -m 600 "$file" ~/.ssh/"$base"
+	fi
 done
