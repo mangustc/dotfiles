@@ -15,6 +15,11 @@ while [ $# -gt 0 ]; do
 	case $1 in
 		--module|-m)
 			[ "$2" = "" ] && usage_err "Argument not specified"
+			case "$2" in
+				*-LATE)
+					usage_err "Cannot run *-LATE module ($2) standalone"
+					;;
+			esac
 			export DOTFILES_SPECIFIC_MODULE="$2"
 			shift
 			;;
