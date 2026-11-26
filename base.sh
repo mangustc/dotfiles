@@ -105,7 +105,7 @@ export -f rm_empty
 
 # remove comments, remove empty lines, remove duplicate strings, sort. string or fil
 trim_pkgs_str() {
-	echo "$1" | sed '/^#/d' | awk 'NF' | uniq | sort
+	echo "$1" | sed '/^#/d' | awk 'NF' | sort -u
 }
 trim_pkgs_file() {
 	trim_pkgs_str "$(cat "$1")"
