@@ -24,7 +24,6 @@ config brightness
 config ssh-agent
 config dualsense
 config neovim
-config fish --zellij
 config archscripts
 config git
 config bluetooth
