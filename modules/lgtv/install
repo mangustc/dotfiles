@@ -29,7 +29,7 @@ done
 [ "$output_name" = "" ] && usage_err "Specify --output-name"
 
 cmd sudo install -D -m 644 "$(writetext <<'EOF'
-FILES=(/usr/lib/firmware/edid/lgtv.bin)
+FILES+=(/usr/lib/firmware/edid/lgtv.bin)
 EOF
 )" /etc/mkinitcpio.conf.d/lgtv.conf
 
