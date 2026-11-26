@@ -77,8 +77,18 @@ EOF
 
 newscript archexport <<EOF
 #!/usr/bin/env bash
+set -euo pipefail
 
-echo "\$($DOTFILES_AUR_HELPER -Qe | cut -d ' ' -f 1)" > $dotfiles/packages-$host
+module_pkgs="\$(
+	awk '/^[[:space:]]*config[[:space:]]+/ {print \$2}' "$dotfiles/configuration-$host.sh" \
+		| sort -u \
+		| while read -r mod; do
+			[ -f "$dotfiles/modules/\$mod/packages" ] && cat "$dotfiles/modules/\$mod/packages"
+		done \
+		| sed '/^#/d' | awk 'NF' | sort -u
+)"
+
+{ $DOTFILES_AUR_HELPER -Qe | cut -d ' ' -f 1 | grep -v -F -x -f <(printf '%s\n' "\$module_pkgs" | awk 'NF') || true; } > "$dotfiles/packages-$host"
 EOF
 
 newscript archgit <<EOF
