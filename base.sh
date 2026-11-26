@@ -37,6 +37,7 @@ export DOTFILES_MODULE_PACKAGES_FILE="$DOTFILES_SAVE_DIR/pkgs"
 export DOTFILES_MODULES_TEMP_DIR="$DOTFILES_SAVE_DIR/temp"
 export DOTFILES_SECRETS_DIR="$DOTFILES_DIR/secrets"
 export DOTFILES_AUR_HELPER="$(basename "$(command -v yay || command -v paru)")"
+export DOTFILES_WRITETEXT_DIR="$(mktemp -d /tmp/dotfiles-writetext.XXXXXXXXXX)"
 mkdir -p "$DOTFILES_SAVE_DIR"
 touch "$DOTFILES_MODULE_PACKAGES_FILE"
 
@@ -58,7 +59,7 @@ export -f cmd
 writetext() {
 	local content="$1"
 	local tmp
-	tmp="$(mktemp "/tmp/writetext.XXXXXXXXXXXXX")" || return 1
+	tmp="$(mktemp "${DOTFILES_WRITETEXT_DIR:-/tmp}/writetext.XXXXXXXXXXXXX")" || return 1
 
 	if [ "$content" = "" ]; then
 		if read -t 0; then
@@ -166,5 +167,6 @@ config() {
 	cd "$DOTFILES_DIR"
 }
 
+trap '[ -n "$DOTFILES_WRITETEXT_DIR" ] && rm -rf "$DOTFILES_WRITETEXT_DIR"' EXIT
 trap "echo 'Interrupt signal received. Exiting...' | tee -a '$DOTFILES_SAVE_DIR/log'; exit" SIGINT
 
