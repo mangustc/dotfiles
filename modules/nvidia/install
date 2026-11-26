@@ -63,7 +63,7 @@ ACTION=="remove|unbind", SUBSYSTEM=="pci", DRIVERS=="nvidia", \
     ATTR{vendor}=="0x10de", ATTR{class}=="0x03[0-9]*", \
     TEST=="power/control", ATTR{power/control}="on"
 EOF
-)" /etc/udev/rules.d/71-dotfiles-nvidia.conf
+)" /etc/udev/rules.d/71-dotfiles-nvidia.rules
 
 cmd install -D -m 644 "$(writetext <<'EOF'
 __GL_SHADER_DISK_CACHE_SIZE=12000000000
