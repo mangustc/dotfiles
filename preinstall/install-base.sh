@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-cp ./pacman.conf /etc/pacman.conf
+cp "$(dirname "$0")/../modules/base/pacman.conf" /etc/pacman.conf
 pacman -Syu --needed sudo git base-devel
 
 ln -sf /usr/share/zoneinfo/Asia/Tomsk /etc/localtime
