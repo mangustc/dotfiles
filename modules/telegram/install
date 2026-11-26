@@ -45,4 +45,5 @@ RestartSec=5
 WantedBy=default.target
 EOF
 )" /etc/systemd/user/tg-ws-proxy.service
+cmd systemctl --user daemon-reload
 cmd systemctl enable --user tg-ws-proxy.service
