@@ -159,7 +159,7 @@ config() {
 	install_pkgs "$(trim_pkgs_file ./packages)"
 	chmod 755 ./install
 	./install "${@:2}"
-	if [ $? -eq 1 ]; then
+	if [ $? -ne 0 ]; then
 		echo -e "FAILED TO INSTALL MODULE $DOTFILES_MODULE_NAME"
 	else
 		echo -e "successfully installed module $DOTFILES_MODULE_NAME"
