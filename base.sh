@@ -162,8 +162,11 @@ config() {
 	echo -e "\ninstalling module $DOTFILES_MODULE_NAME:"
 	cd "$DOTFILES_DIR/modules/$DOTFILES_MODULE_NAME"
 	install_pkgs "$(trim_pkgs_file ./packages)"
-	chmod 755 ./install
-	./install "${@:2}"
+	if [ -x ./install ]; then
+		./install "${@:2}"
+	else
+		bash ./install "${@:2}"
+	fi
 	if [ $? -ne 0 ]; then
 		echo -e "FAILED TO INSTALL MODULE $DOTFILES_MODULE_NAME"
 	else
