@@ -72,6 +72,7 @@ if [ "\$upgrade" = 1 ]; then
 	sudo bootctl update
 	sudo hwclock --systohc
 	command -v sbctl >/dev/null 2>&1 && sudo sbctl sign-all
+	command -v pacdiff >/dev/null 2>&1 && sudo pacdiff -o
 fi
 EOF
 
