@@ -64,7 +64,11 @@ done
 [ "\$upgrade" = 1 ] && $DOTFILES_AUR_HELPER -Syu
 
 cd $dotfiles
-[ "\$module" = "" ] && ./configuration-$host.sh || ./configuration-$host.sh --module \$module
+if [ "\$module" = "" ]; then
+	./configuration-$host.sh
+else
+	./configuration-$host.sh --module "\$module"
+fi
 
 if [ "\$upgrade" = 1 ]; then
 	sudo mkinitcpio -P
