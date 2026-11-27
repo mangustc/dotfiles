@@ -15,7 +15,7 @@ PillRow {
     ]
 
     function queryProfile() {
-        exec("bash -c 'kreadconfig6 --file \"$HOME/.config/kxkbrc\" --group Layout --key VariantList'", (exitCode, stdout) => {
+        exec("kreadconfig6 --file kxkbrc --group Layout --key VariantList", (exitCode, stdout) => {
             const variant = stdout.trim();
             if (variant.startsWith("dvorak")) {
                 keyboardRow.activeValue = "default";

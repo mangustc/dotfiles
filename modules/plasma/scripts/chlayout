@@ -1,30 +1,31 @@
 #!/usr/bin/env bash
 
+notify_kxkb() {
+	gdbus emit --session \
+		--object-path /kxkbrc \
+		--signal org.kde.kconfig.notify.ConfigChanged \
+		"{'Layout': @aay [[0x4c, 0x61, 0x79, 0x6f, 0x75, 0x74, 0x4c, 0x69, 0x73, 0x74], [0x56, 0x61, 0x72, 0x69, 0x61, 0x6e, 0x74, 0x4c, 0x69, 0x73, 0x74], [0x4f, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x73]]}" >/dev/null
+}
+
 if [ "$1" = "default" ]; then
 	if ([ ! "$KDE_SESSION_UID" == "" ] || [ "$XDG_CURRENT_DESKTOP" == "KDE" ]) && ([ ! "$WAYLAND_DISPLAY" == "" ] || [ "$XDG_SESSION_TYPE" == "wayland" ]); then
-		kwriteconfig6 --file ~/.config/kxkbrc --group Layout --key LayoutList "us,ru"
-		kwriteconfig6 --file ~/.config/kxkbrc --group Layout --key VariantList "dvorak,"
-		kwriteconfig6 --file ~/.config/kxkbrc --group Layout --key Options "terminate:ctrl_alt_bksp,ctrl:swap_lalt_lctl,caps:escape_shifted_capslock,grp:toggle"
-		kwriteconfig6 --file ~/.config/kxkbrc --group Layout --key ResetOldOptions "true"
-		kwriteconfig6 --file ~/.config/kxkbrc --group Layout --key Use "true"
-		# # this was removed for some reason
-		# dbus-send --session --type=signal --dest=org.kde.keyboard /Layouts org.kde.keyboard.reloadConfig
-		# TODO: Maybe find a way to apply keyboard settings automatically
-		exec systemsettings kcm_keyboard
+		kwriteconfig6 --file kxkbrc --group Layout --key LayoutList "us,ru"
+		kwriteconfig6 --file kxkbrc --group Layout --key VariantList "dvorak,"
+		kwriteconfig6 --file kxkbrc --group Layout --key Options "terminate:ctrl_alt_bksp,ctrl:swap_lalt_lctl,caps:escape_shifted_capslock,grp:toggle"
+		kwriteconfig6 --file kxkbrc --group Layout --key ResetOldOptions "true"
+		kwriteconfig6 --file kxkbrc --group Layout --key Use "true"
+		notify_kxkb
 	else
 		setxkbmap -layout us,ru -variant dvorak, -option "grp:caps_toggle" -option "terminate:ctrl_alt_bksp"
 	fi
 elif [ "$1" = "gaming" ]; then
 	if ([ ! "$KDE_SESSION_UID" == "" ] || [ "$XDG_CURRENT_DESKTOP" == "KDE" ]) && ([ ! "$WAYLAND_DISPLAY" == "" ] || [ "$XDG_SESSION_TYPE" == "wayland" ]); then
-		kwriteconfig6 --file ~/.config/kxkbrc --group Layout --key LayoutList "us,ru"
-		kwriteconfig6 --file ~/.config/kxkbrc --group Layout --key VariantList ","
-		kwriteconfig6 --file ~/.config/kxkbrc --group Layout --key Options "terminate:ctrl_alt_bksp,grp:caps_toggle"
-		kwriteconfig6 --file ~/.config/kxkbrc --group Layout --key ResetOldOptions "true"
-		kwriteconfig6 --file ~/.config/kxkbrc --group Layout --key Use "true"
-		# # this was removed for some reason
-		# dbus-send --session --type=signal --dest=org.kde.keyboard /Layouts org.kde.keyboard.reloadConfig
-		# TODO: Maybe find a way to apply keyboard settings automatically
-		exec systemsettings kcm_keyboard
+		kwriteconfig6 --file kxkbrc --group Layout --key LayoutList "us,ru"
+		kwriteconfig6 --file kxkbrc --group Layout --key VariantList ","
+		kwriteconfig6 --file kxkbrc --group Layout --key Options "terminate:ctrl_alt_bksp,grp:caps_toggle"
+		kwriteconfig6 --file kxkbrc --group Layout --key ResetOldOptions "true"
+		kwriteconfig6 --file kxkbrc --group Layout --key Use "true"
+		notify_kxkb
 	else
 		setxkbmap -layout us -option "terminate:ctrl_alt_bksp"
 	fi
@@ -32,4 +33,3 @@ else
 	echo "Unknown option: [$1]" >&2
 	exit 1
 fi
-
