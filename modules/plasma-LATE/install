@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 set -e
 
 cp -rf ./org.kde.globalapplet "$DOTFILES_MODULE_TEMP"

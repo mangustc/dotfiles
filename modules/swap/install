@@ -1,4 +1,4 @@
-#!/usr/bin/env -S sh
+#!/usr/bin/env bash
 set -e
 
 usage() {

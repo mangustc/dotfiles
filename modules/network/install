@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 set -e
 
 usage() {
@@ -116,5 +116,5 @@ EOF
 cmd sudo install -D -m 644 "$(writetext <<'EOF'
 net.netfilter.nf_conntrack_tcp_be_liberal=1
 EOF
-)" /etc/sysctl.d/99-dotifles-network-nethandler.conf
+)" /etc/sysctl.d/99-dotfiles-network-nethandler.conf
 

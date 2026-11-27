@@ -3,5 +3,5 @@ libvirt
 edk2-ovmf
 virt-manager
 dnsmasq
-ebtables
+iptables
 guestfs-tools

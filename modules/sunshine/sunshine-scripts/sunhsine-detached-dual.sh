@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 
 sleep 3
 kscreen-doctor output.HDMI-A-1.enable

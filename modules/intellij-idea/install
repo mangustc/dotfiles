@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 set -e
 
 usage() {
@@ -21,4 +21,4 @@ while [ $# -gt 0 ]; do
 	shift
 done
 
-cmd sudo install -D -m 644 ./.ideavimrc ~/.ideavimrc
+cmd install -D -m 644 ./.ideavimrc ~/.ideavimrc

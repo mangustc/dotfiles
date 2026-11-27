@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 set -e
 
 usage() {
@@ -37,7 +37,7 @@ console-mode keep
 EOF
 )" /boot/loader/loader.conf
 
-kernel_params="$(for f in ./files/*; do cat "$f"; echo " "; done | tr '\n' ' ')"
+kernel_params="$(for f in ./files/*; do [ -f "$f" ] || continue; cat "$f"; echo " "; done | tr '\n' ' ')"
 
 # combine drm.edid_firmware
 values=$(echo "$kernel_params" | grep -o 'drm\.edid_firmware=[^ ]*' | cut -d= -f2- | tr '\n' ',' | sed 's/,$//')

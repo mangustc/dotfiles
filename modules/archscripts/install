@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 set -e
 
 usage() {
@@ -26,14 +26,14 @@ dotfiles="$DOTFILES_DIR"
 host="$DOTFILES_HOST"
 
 newscript archconf <<EOF
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 
 cd $dotfiles
 exec \$EDITOR ./configuration-$host.sh
 EOF
 
 newscript archupd <<EOF
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 
 usage() {
 	echo "Example: \$(basename \$0) [--upgrade|-u] [--module|-m MODULE_NAME]"
@@ -64,7 +64,11 @@ done
 [ "\$upgrade" = 1 ] && $DOTFILES_AUR_HELPER -Syu
 
 cd $dotfiles
-[ "\$module" = "" ] && ./configuration-$host.sh || ./configuration-$host.sh --module \$module
+if [ "\$module" = "" ]; then
+	./configuration-$host.sh
+else
+	./configuration-$host.sh --module "\$module"
+fi
 
 if [ "\$upgrade" = 1 ]; then
 	sudo mkinitcpio -P
@@ -72,35 +76,46 @@ if [ "\$upgrade" = 1 ]; then
 	sudo bootctl update
 	sudo hwclock --systohc
 	command -v sbctl >/dev/null 2>&1 && sudo sbctl sign-all
+	command -v pacdiff >/dev/null 2>&1 && sudo pacdiff -o
 fi
 EOF
 
 newscript archexport <<EOF
-#!/usr/bin/env sh
+#!/usr/bin/env bash
+set -euo pipefail
 
-echo "\$($DOTFILES_AUR_HELPER -Qe | cut -d ' ' -f 1)" > $dotfiles/packages-$host
+module_pkgs="\$(
+	awk '/^[[:space:]]*config[[:space:]]+/ {print \$2}' "$dotfiles/configuration-$host.sh" \
+		| sort -u \
+		| while read -r mod; do
+			[ -f "$dotfiles/modules/\$mod/packages" ] && cat "$dotfiles/modules/\$mod/packages"
+		done \
+		| sed '/^#/d' | awk 'NF' | sort -u
+)"
+
+{ $DOTFILES_AUR_HELPER -Qe | cut -d ' ' -f 1 | grep -v -F -x -f <(printf '%s\n' "\$module_pkgs" | awk 'NF') || true; } > "$dotfiles/packages-$host"
 EOF
 
 newscript archgit <<EOF
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 
 cd $dotfiles
 lazygit
 EOF
 
 newscript archclean <<EOF
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 
-orphans="\$($DOTFILES_AUR_HELPER -Qdtq | xargs)"
-if [ ! "\$orphans" = "" ]; then
-	$DOTFILES_AUR_HELPER -Rs --noconfirm \$orphans
+mapfile -t orphans < <($DOTFILES_AUR_HELPER -Qdtq)
+if (( \${#orphans[@]} > 0 )); then
+	$DOTFILES_AUR_HELPER -Rs --noconfirm "\${orphans[@]}"
 fi
 sudo rm -vrf /var/cache/pacman/pkg/download-*
 yes | $DOTFILES_AUR_HELPER -Scc
 EOF
 
 newscript archedit <<EOF
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 
 if [ "\$EDITOR" = "" ]; then
 	EDITOR="nvim"
@@ -111,7 +126,7 @@ command="\$(whereis "\$1" | cut -d " " -f 2)"
 EOF
 
 newscript archsync <<'EOF'
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 
 rate-mirrors arch | sudo tee /etc/pacman.d/mirrorlist
 EOF

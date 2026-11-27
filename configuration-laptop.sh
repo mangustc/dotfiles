@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 
 # prepare
 export DOTFILES_HOST="laptop"
@@ -24,7 +24,6 @@ config brightness
 config ssh-agent
 config dualsense
 config neovim
-config fish --zellij
 config archscripts
 config git
 config bluetooth

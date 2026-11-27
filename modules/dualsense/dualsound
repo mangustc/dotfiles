@@ -1,8 +1,8 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 
 dualsense_name="alsa_output.usb-Sony_Interactive_Entertainment_DualSense_Wireless_Controller-00.analog-surround-40"
 if [ "$1" == "toggle" ]; then
-	if [ "$(pw-link -l | xargs | grep "playback.surround_40_output:output_FL |-> $dualsense_name:playback_FL |-> $dualsense_name:playback_RL")" == "" ]; then
+	if ! pw-link -l | tr '[:space:]' ' ' | tr -s ' ' | grep -Fq "playback.surround_40_output:output_FL |-> $dualsense_name:playback_FL |-> $dualsense_name:playback_RL"; then
 		echo "activating"
 		pw-link playback.surround_40_output:output_FL $dualsense_name:playback_RL
 		pw-link playback.surround_40_output:output_FR $dualsense_name:playback_RR

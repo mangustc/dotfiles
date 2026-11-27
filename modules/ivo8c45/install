@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 set -e
 
 usage() {
@@ -32,7 +32,7 @@ done
 [ "$output_name" = "" ] && usage_err "Specify --output-name"
 
 cmd sudo install -D -m 644 "$(writetext <<'EOF'
-FILES=(/usr/lib/firmware/edid/ivo8c45.bin)
+FILES+=(/usr/lib/firmware/edid/ivo8c45.bin)
 EOF
 )" /etc/mkinitcpio.conf.d/ivo8c45.conf
 
