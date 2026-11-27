@@ -131,3 +131,56 @@ newscript archsync <<'EOF'
 rate-mirrors arch | sudo tee /etc/pacman.d/mirrorlist
 EOF
 
+newscript dotgit <<EOF
+#!/usr/bin/env bash
+
+exec lazygit -p "$dotfiles" "\$@"
+EOF
+
+newscript clashgit <<EOF
+#!/usr/bin/env bash
+
+clash_dir="$dotfiles/secrets/clash-config"
+if [ ! -d "\$clash_dir/.git" ]; then
+	echo "Error: clash-config repo not found at \$clash_dir" >&2
+	exit 1
+fi
+exec lazygit -p "\$clash_dir" "\$@"
+EOF
+
+newscript clashsync <<EOF
+#!/usr/bin/env bash
+set -euo pipefail
+
+clash_dir="$dotfiles/secrets/clash-config"
+if [ ! -d "\$clash_dir/.git" ]; then
+	echo "Error: clash-config repo not found at \$clash_dir" >&2
+	exit 1
+fi
+
+cd "\$clash_dir"
+
+if [ -e "\$(git rev-parse --git-path rebase-merge)" ] || [ -e "\$(git rev-parse --git-path rebase-apply)" ]; then
+	echo "Error: rebase already in progress in \$clash_dir - resolve with 'clashgit'." >&2
+	exit 1
+fi
+
+msg="\${1:-sync}"
+
+if [ -n "\$(git status --porcelain)" ]; then
+	git add -A
+	git commit -m "\$msg"
+fi
+
+if ! git pull --rebase; then
+	echo "Error: pull --rebase failed - run 'clashgit' to resolve." >&2
+	exit 1
+fi
+
+if [ "\$(git rev-list --count @{u}..HEAD)" -gt 0 ]; then
+	git push
+else
+	echo "clash-config is already in sync."
+fi
+EOF
+
