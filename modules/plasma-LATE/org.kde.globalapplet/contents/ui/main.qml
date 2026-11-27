@@ -60,13 +60,16 @@ PlasmoidItem {
         id: commandRunner
     }
 
+    Plasmoid.icon: "diag_component-symbolic"
+
     compactRepresentation: Item {
-        width: Kirigami.Units.iconSizes.smallMedium
-        height: Kirigami.Units.iconSizes.smallMedium
+        implicitWidth: Kirigami.Units.iconSizes.smallMedium
+        implicitHeight: Kirigami.Units.iconSizes.smallMedium
 
         Kirigami.Icon {
-            source: "diag_component"
-            active: root.expanded
+            anchors.fill: parent
+            source: "diag_component-symbolic"
+            active: mouseArea.containsMouse || root.expanded
         }
 
         MouseArea {
