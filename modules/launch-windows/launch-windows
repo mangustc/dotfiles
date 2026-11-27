@@ -23,4 +23,10 @@ while [ $# -gt 0 ]; do
 	shift
 done
 
-efibootmgr -n $(efibootmgr | grep Windows | cut -c 5-8) && systemctl reboot
+bootnum="$(efibootmgr | grep -oP '^Boot\K[0-9A-Fa-f]{4}(?=.*Windows)' | head -n1 || true)"
+if [ -z "$bootnum" ]; then
+	echo "Error: Windows EFI boot entry not found" >&2
+	exit 1
+fi
+
+efibootmgr -n "$bootnum" && systemctl reboot
