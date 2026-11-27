@@ -60,19 +60,21 @@ cmd sudo systemctl daemon-reload
 cmd sudo systemctl enable nftables.service nethandler.service
 
 add_module_temp "plasma-LATE" "$(writetext <<'EOF'
-            MenuItem {
-                text: "Toggle Nethandler"
-                icon.name: "system-run"
-                onTriggered: {
-                    executable.exec(`bash -c 'systemctl is-active --quiet "nethandler.service" && systemctl stop nethandler.service || systemctl start nethandler.service'`)
-                    updateStatusTimer.start()
-                }
-            }
-            MenuItem {
-                text: "Nethandler: " + isNethandlerEnabled
-                icon.name: "system-run"
-                onTriggered: updateStatus()
-            }
+                    PlasmaComponents3.ItemDelegate {
+                        Layout.fillWidth: true
+                        text: "Toggle Nethandler"
+                        icon.name: "system-run"
+                        onClicked: {
+                            executable.exec(`bash -c 'systemctl is-active --quiet "nethandler.service" && systemctl stop nethandler.service || systemctl start nethandler.service'`)
+                            updateStatusTimer.start()
+                        }
+                    }
+                    PlasmaComponents3.ItemDelegate {
+                        Layout.fillWidth: true
+                        text: "Nethandler: " + isNethandlerEnabled
+                        icon.name: "system-run"
+                        onClicked: updateStatus()
+                    }
 EOF
 )"
 

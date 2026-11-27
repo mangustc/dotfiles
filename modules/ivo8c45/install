@@ -39,20 +39,22 @@ EOF
 cmd sudo install -D -m 644 ./ivo8c45.bin /usr/lib/firmware/edid/ivo8c45.bin
 
 add_module_temp "plasma-LATE" "$(writetext <<EOF
-            MenuItem {
-                text: "2240x1400@75"
-                icon.name: "system-run"
-                onTriggered: {
-                    executable.exec(\`bash -c 'kscreen-doctor output.$output_name.mode.2240x1400@75'\`)
-                }
-            }
-            MenuItem {
-                text: "2240x1400@60"
-                icon.name: "system-run"
-                onTriggered: {
-                    executable.exec(\`bash -c 'kscreen-doctor output.$output_name.mode.2240x1400@60'\`)
-                }
-            }
+                    PlasmaComponents3.ItemDelegate {
+                        Layout.fillWidth: true
+                        text: "2240x1400@75"
+                        icon.name: "system-run"
+                        onClicked: {
+                            executable.exec(\`bash -c 'kscreen-doctor output.$output_name.mode.2240x1400@75'\`)
+                        }
+                    }
+                    PlasmaComponents3.ItemDelegate {
+                        Layout.fillWidth: true
+                        text: "2240x1400@60"
+                        icon.name: "system-run"
+                        onClicked: {
+                            executable.exec(\`bash -c 'kscreen-doctor output.$output_name.mode.2240x1400@60'\`)
+                        }
+                    }
 EOF
 )"
 

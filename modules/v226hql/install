@@ -41,27 +41,30 @@ kscreen-doctor output.$output_name.enable output.$output_name.mode.1920x1080@76
 EOF
 
 add_module_temp "plasma-LATE" "$(writetext <<EOF
-            MenuItem {
-                text: "V226HQL 1920x1080@76"
-                icon.name: "system-run"
-                onTriggered: {
-                    executable.exec(\`bash -c 'kscreen-doctor output.$output_name.mode.1920x1080@76'\`)
-                }
-            }
-            MenuItem {
-                text: "V226HQL 1920x1080@70"
-                icon.name: "system-run"
-                onTriggered: {
-                    executable.exec(\`bash -c 'kscreen-doctor output.$output_name.mode.1920x1080@70'\`)
-                }
-            }
-            MenuItem {
-                text: "V226HQL 1920x1080@60"
-                icon.name: "system-run"
-                onTriggered: {
-                    executable.exec(\`bash -c 'kscreen-doctor output.$output_name.mode.1920x1080@60'\`)
-                }
-            }
+                    PlasmaComponents3.ItemDelegate {
+                        Layout.fillWidth: true
+                        text: "V226HQL 1920x1080@76"
+                        icon.name: "system-run"
+                        onClicked: {
+                            executable.exec(\`bash -c 'kscreen-doctor output.$output_name.mode.1920x1080@76'\`)
+                        }
+                    }
+                    PlasmaComponents3.ItemDelegate {
+                        Layout.fillWidth: true
+                        text: "V226HQL 1920x1080@70"
+                        icon.name: "system-run"
+                        onClicked: {
+                            executable.exec(\`bash -c 'kscreen-doctor output.$output_name.mode.1920x1080@70'\`)
+                        }
+                    }
+                    PlasmaComponents3.ItemDelegate {
+                        Layout.fillWidth: true
+                        text: "V226HQL 1920x1080@60"
+                        icon.name: "system-run"
+                        onClicked: {
+                            executable.exec(\`bash -c 'kscreen-doctor output.$output_name.mode.1920x1080@60'\`)
+                        }
+                    }
 EOF
 )"
 

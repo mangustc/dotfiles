@@ -4,20 +4,22 @@ set -e
 cmd sudo find ./scripts -type f -exec sh -c 'install -D -m 755 "$1" "/usr/local/bin/$(basename "$1")"' _ {} \;
 
 add_module_temp "plasma-LATE" "$(writetext <<'EOF'
-            MenuItem {
-                text: "chlayout default"
-                icon.name: "system-run"
-                onTriggered: {
-                    executable.exec(`bash -c 'chlayout default'`)
-                }
-            }
-            MenuItem {
-                text: "chlayout gaming"
-                icon.name: "system-run"
-                onTriggered: {
-                    executable.exec(`bash -c 'chlayout gaming'`)
-                }
-            }
+                    PlasmaComponents3.ItemDelegate {
+                        Layout.fillWidth: true
+                        text: "chlayout default"
+                        icon.name: "system-run"
+                        onClicked: {
+                            executable.exec(`bash -c 'chlayout default'`)
+                        }
+                    }
+                    PlasmaComponents3.ItemDelegate {
+                        Layout.fillWidth: true
+                        text: "chlayout gaming"
+                        icon.name: "system-run"
+                        onClicked: {
+                            executable.exec(`bash -c 'chlayout gaming'`)
+                        }
+                    }
 EOF
 )"
 

@@ -36,27 +36,30 @@ EOF
 cmd sudo install -D -m 644 ./lgtv.bin /usr/lib/firmware/edid/lgtv.bin
 
 add_module_temp "plasma-LATE" "$(writetext <<EOF
-            MenuItem {
-                text: "lgtv 1920x1080@68"
-                icon.name: "system-run"
-                onTriggered: {
-                    executable.exec(\`bash -c 'kscreen-doctor output.$output_name.mode.1920x1080@68'\`)
-                }
-            }
-            MenuItem {
-                text: "lgtv 1920x1080@60"
-                icon.name: "system-run"
-                onTriggered: {
-                    executable.exec(\`bash -c 'kscreen-doctor output.$output_name.mode.1920x1080@60'\`)
-                }
-            }
-            MenuItem {
-                text: "lgtv 1920x1080@30"
-                icon.name: "system-run"
-                onTriggered: {
-                    executable.exec(\`bash -c 'kscreen-doctor output.$output_name.mode.1920x1080@30'\`)
-                }
-            }
+                    PlasmaComponents3.ItemDelegate {
+                        Layout.fillWidth: true
+                        text: "lgtv 1920x1080@68"
+                        icon.name: "system-run"
+                        onClicked: {
+                            executable.exec(\`bash -c 'kscreen-doctor output.$output_name.mode.1920x1080@68'\`)
+                        }
+                    }
+                    PlasmaComponents3.ItemDelegate {
+                        Layout.fillWidth: true
+                        text: "lgtv 1920x1080@60"
+                        icon.name: "system-run"
+                        onClicked: {
+                            executable.exec(\`bash -c 'kscreen-doctor output.$output_name.mode.1920x1080@60'\`)
+                        }
+                    }
+                    PlasmaComponents3.ItemDelegate {
+                        Layout.fillWidth: true
+                        text: "lgtv 1920x1080@30"
+                        icon.name: "system-run"
+                        onClicked: {
+                            executable.exec(\`bash -c 'kscreen-doctor output.$output_name.mode.1920x1080@30'\`)
+                        }
+                    }
 EOF
 )"
 
