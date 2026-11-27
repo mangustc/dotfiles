@@ -13,7 +13,12 @@ My collection of installer scripts with adjacent pacman/AUR package list for Arc
 
 run `configuration-HOST.sh`.
 
-Afterwards, if archscripts module is installed you can use `archupd` and `archconf`.
+Afterwards, if archscripts module is installed you can use `archupd`, `archconf`, `dotgit`, `clashgit`, and `clashsync`.
+
+## windows
+
+1. Run `windows\bootstrap-admin.bat` once on a fresh Windows install (requests Administrator once to enable Developer Mode, start `ssh-agent`, set UTC clock, unlock CPU boost, configure DNS/pagefile, and copy Zen Browser `policies.json`).
+2. Run `windows\configuration-windows.bat` (`windows\configuration-windows.ps1`) without Administrator privileges to install WinGet packages from `windows\packages-windows`, copy standalone configs (`.gitconfig`, GitHub CLI, Neovim), and populate `%USERPROFILE%\win\bin` (`winupd`, `wingit`, `winconf`, `dotgit`, `clashgit`, `clashsync`, `chres`, `pgen`).
 
 ## structure
 

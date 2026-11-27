@@ -1,0 +1,22 @@
+# Core & CLI
+Git.Git
+GitHub.cli
+JesseDuffield.lazygit
+Microsoft.PowerToys
+Microsoft.VCRedist.2015+.x64
+Microsoft.VCRedist.2015+.x86
+
+# Neovim & toolchain
+Neovim.Neovim
+tree-sitter.tree-sitter-cli
+junegunn.fzf
+BurntSushi.ripgrep.MSVC
+sharkdp.fd
+zig.zig
+
+# Desktop apps
+Zen-Team.Zen-Browser
+KDE.Okular
+qBittorrent.qBittorrent
+Valve.Steam
+Discord.Discord
