@@ -41,29 +41,64 @@ kscreen-doctor output.$output_name.enable output.$output_name.mode.1920x1080@76
 EOF
 
 add_module_temp "plasma-LATE" "$(writetext <<EOF
-            MenuItem {
-                text: "V226HQL 1920x1080@76"
-                icon.name: "system-run"
-                onTriggered: {
-                    executable.exec(\`bash -c 'kscreen-doctor output.$output_name.mode.1920x1080@76'\`)
-                }
+PillRow {
+    id: displayRow
+    section: "Displays"
+    text: "V226HQL"
+    subtitle: "$output_name · 1920×1080"
+    iconName: "video-display"
+    options: [
+        { label: "76 Hz", value: "1920x1080@76" },
+        { label: "70 Hz", value: "1920x1080@70" },
+        { label: "60 Hz", value: "1920x1080@60" }
+    ]
+
+    function queryDisplay() {
+        exec("kscreen-doctor -j", (exitCode, stdout) => {
+            displayRow.busy = false;
+            if (exitCode !== 0 || !stdout) {
+                return;
             }
-            MenuItem {
-                text: "V226HQL 1920x1080@70"
-                icon.name: "system-run"
-                onTriggered: {
-                    executable.exec(\`bash -c 'kscreen-doctor output.$output_name.mode.1920x1080@70'\`)
+            try {
+                const jsonStart = stdout.indexOf("{");
+                const data = JSON.parse(jsonStart >= 0 ? stdout.slice(jsonStart) : stdout);
+                const outputs = data.outputs || [];
+                const out = outputs.find(o => o.name === "$output_name");
+                if (!out || out.connected === false) {
+                    displayRow.shown = false;
+                    return;
                 }
-            }
-            MenuItem {
-                text: "V226HQL 1920x1080@60"
-                icon.name: "system-run"
-                onTriggered: {
-                    executable.exec(\`bash -c 'kscreen-doctor output.$output_name.mode.1920x1080@60'\`)
+                displayRow.shown = true;
+                displayRow.dimmed = out.enabled === false;
+                if (out.enabled === false) {
+                    displayRow.activeValue = "";
+                    return;
                 }
+                const modes = out.modes || [];
+                const cur = modes.find(m => String(m.id) === String(out.currentModeId));
+                if (cur) {
+                    const rawRate = cur.refreshRate > 1000 ? cur.refreshRate / 1000 : cur.refreshRate;
+                    const hz = Math.round(rawRate);
+                    const computed = cur.size ? (cur.size.width + "x" + cur.size.height + "@" + hz) : "";
+                    const match = displayRow.options.find(opt => opt.value === cur.name || opt.value === computed);
+                    displayRow.activeValue = match ? match.value : computed;
+                }
+            } catch (e) {
             }
+        });
+    }
+
+    onRefresh: queryDisplay()
+
+    onSelected: value => {
+        displayRow.busy = true;
+        exec("bash -c 'kscreen-doctor output.$output_name.mode." + value + "'", () => {
+            displayRow.queryDisplay();
+        });
+    }
+}
 EOF
-)"
+)" 30
 
 add_module_temp "boot-LATE" "$(writetext "drm.edid_firmware=$output_name:edid/v226hql.bin")"
 

@@ -39,22 +39,63 @@ EOF
 cmd sudo install -D -m 644 ./ivo8c45.bin /usr/lib/firmware/edid/ivo8c45.bin
 
 add_module_temp "plasma-LATE" "$(writetext <<EOF
-            MenuItem {
-                text: "2240x1400@75"
-                icon.name: "system-run"
-                onTriggered: {
-                    executable.exec(\`bash -c 'kscreen-doctor output.$output_name.mode.2240x1400@75'\`)
-                }
+PillRow {
+    id: displayRow
+    section: "Displays"
+    text: "IVO8C45"
+    subtitle: "$output_name · 2240×1400"
+    iconName: "video-display"
+    options: [
+        { label: "75 Hz", value: "2240x1400@75" },
+        { label: "60 Hz", value: "2240x1400@60" }
+    ]
+
+    function queryDisplay() {
+        exec("kscreen-doctor -j", (exitCode, stdout) => {
+            displayRow.busy = false;
+            if (exitCode !== 0 || !stdout) {
+                return;
             }
-            MenuItem {
-                text: "2240x1400@60"
-                icon.name: "system-run"
-                onTriggered: {
-                    executable.exec(\`bash -c 'kscreen-doctor output.$output_name.mode.2240x1400@60'\`)
+            try {
+                const jsonStart = stdout.indexOf("{");
+                const data = JSON.parse(jsonStart >= 0 ? stdout.slice(jsonStart) : stdout);
+                const outputs = data.outputs || [];
+                const out = outputs.find(o => o.name === "$output_name");
+                if (!out || out.connected === false) {
+                    displayRow.shown = false;
+                    return;
                 }
+                displayRow.shown = true;
+                displayRow.dimmed = out.enabled === false;
+                if (out.enabled === false) {
+                    displayRow.activeValue = "";
+                    return;
+                }
+                const modes = out.modes || [];
+                const cur = modes.find(m => String(m.id) === String(out.currentModeId));
+                if (cur) {
+                    const rawRate = cur.refreshRate > 1000 ? cur.refreshRate / 1000 : cur.refreshRate;
+                    const hz = Math.round(rawRate);
+                    const computed = cur.size ? (cur.size.width + "x" + cur.size.height + "@" + hz) : "";
+                    const match = displayRow.options.find(opt => opt.value === cur.name || opt.value === computed);
+                    displayRow.activeValue = match ? match.value : computed;
+                }
+            } catch (e) {
             }
+        });
+    }
+
+    onRefresh: queryDisplay()
+
+    onSelected: value => {
+        displayRow.busy = true;
+        exec("bash -c 'kscreen-doctor output.$output_name.mode." + value + "'", () => {
+            displayRow.queryDisplay();
+        });
+    }
+}
 EOF
-)"
+)" 30
 
 if [ "$headless" = "1" ]; then
 	add_module_temp "boot-LATE" "$(writetext "drm.edid_firmware=$output_name:edid/ivo8c45.bin video=$output_name:e")"

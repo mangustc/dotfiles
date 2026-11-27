@@ -34,13 +34,16 @@ EOF
 )" /etc/polkit-1/rules.d/10-launch-windows.rules
 
 add_module_temp "plasma-LATE" "$(writetext <<'EOF'
-            MenuItem {
-                text: "Reboot to Windows"
-                icon.name: "system-run"
-                onTriggered: {
-                    executable.exec(`bash -c 'pkexec launch-windows'`)
-                }
-            }
+ActionRow {
+    section: "System Actions"
+    text: "Reboot to Windows"
+    iconName: "system-reboot"
+    requireConfirmation: true
+    closeOnTrigger: true
+    onTriggered: {
+        exec("bash -c 'pkexec launch-windows'");
+    }
+}
 EOF
-)"
+)" 90
 
