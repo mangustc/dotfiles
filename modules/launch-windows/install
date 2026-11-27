@@ -38,6 +38,7 @@ ActionRow {
     section: "System Actions"
     text: "Reboot to Windows"
     iconName: "system-reboot"
+    requireConfirmation: true
     closeOnTrigger: true
     onTriggered: {
         exec("bash -c 'pkexec launch-windows'");

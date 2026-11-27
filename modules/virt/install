@@ -158,6 +158,7 @@ ActionRow {
     section: "System Actions"
     text: "Start a VM"
     iconName: "computer"
+    requireConfirmation: true
     closeOnTrigger: true
     onTriggered: {
         exec("bash -c 'virsh start win-passthrough'");
