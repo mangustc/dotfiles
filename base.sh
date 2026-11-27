@@ -161,9 +161,22 @@ export -f install_pkgs
 add_module_temp() {
 	local module_name="$1"
 	local file="$2"
+	local order_or_name="$3"
 	local temp_dir="$DOTFILES_MODULES_TEMP_DIR/$module_name/files"
 	[ -d "$temp_dir" ] || mkdir -p "$temp_dir"
-	cp -rf "$file" "$temp_dir"
+	if [[ "$order_or_name" =~ ^[0-9]+$ ]]; then
+		local idx=1
+		local target="$temp_dir/${order_or_name}-${DOTFILES_MODULE_NAME:-item}-${idx}"
+		while [ -e "$target" ]; do
+			idx=$((idx + 1))
+			target="$temp_dir/${order_or_name}-${DOTFILES_MODULE_NAME:-item}-${idx}"
+		done
+		cp -rf "$file" "$target"
+	elif [ -n "$order_or_name" ]; then
+		cp -rf "$file" "$temp_dir/$order_or_name"
+	else
+		cp -rf "$file" "$temp_dir"
+	fi
 }
 export -f add_module_temp
 

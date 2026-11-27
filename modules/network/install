@@ -60,23 +60,32 @@ cmd sudo systemctl daemon-reload
 cmd sudo systemctl enable nftables.service nethandler.service
 
 add_module_temp "plasma-LATE" "$(writetext <<'EOF'
-                    PlasmaComponents3.ItemDelegate {
-                        Layout.fillWidth: true
-                        text: "Toggle Nethandler"
-                        icon.name: "system-run"
-                        onClicked: {
-                            executable.exec(`bash -c 'systemctl is-active --quiet "nethandler.service" && systemctl stop nethandler.service || systemctl start nethandler.service'`)
-                            updateStatusTimer.start()
-                        }
-                    }
-                    PlasmaComponents3.ItemDelegate {
-                        Layout.fillWidth: true
-                        text: "Nethandler: " + isNethandlerEnabled
-                        icon.name: "system-run"
-                        onClicked: updateStatus()
-                    }
+ToggleRow {
+    id: nethandlerRow
+    section: "Toggles"
+    text: "Nethandler"
+    iconName: "network-vpn"
+    checked: false
+    busy: false
+
+    function queryStatus() {
+        exec("systemctl is-active nethandler.service", (exitCode, stdout) => {
+            nethandlerRow.checked = stdout.trim() === "active";
+            nethandlerRow.busy = false;
+        });
+    }
+
+    onRefresh: queryStatus()
+
+    onToggled: {
+        nethandlerRow.busy = true;
+        exec("bash -c 'if systemctl is-active --quiet nethandler.service; then systemctl stop nethandler.service; else systemctl start nethandler.service; fi'", () => {
+            nethandlerRow.queryStatus();
+        });
+    }
+}
 EOF
-)"
+)" 10
 
 [ -f "$DOTFILES_MODULE_SECRETS/nethandler/hosts" ] && add_module_temp "hosts-LATE" "$DOTFILES_MODULE_SECRETS/nethandler/hosts"
 

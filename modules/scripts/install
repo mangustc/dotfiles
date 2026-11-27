@@ -4,22 +4,37 @@ set -e
 cmd sudo find ./scripts -type f -exec sh -c 'install -D -m 755 "$1" "/usr/local/bin/$(basename "$1")"' _ {} \;
 
 add_module_temp "plasma-LATE" "$(writetext <<'EOF'
-                    PlasmaComponents3.ItemDelegate {
-                        Layout.fillWidth: true
-                        text: "chlayout default"
-                        icon.name: "system-run"
-                        onClicked: {
-                            executable.exec(`bash -c 'chlayout default'`)
-                        }
-                    }
-                    PlasmaComponents3.ItemDelegate {
-                        Layout.fillWidth: true
-                        text: "chlayout gaming"
-                        icon.name: "system-run"
-                        onClicked: {
-                            executable.exec(`bash -c 'chlayout gaming'`)
-                        }
-                    }
+PillRow {
+    id: keyboardRow
+    section: "Toggles"
+    text: "Keyboard"
+    iconName: "input-keyboard"
+    options: [
+        { label: "Default", value: "default" },
+        { label: "Gaming", value: "gaming" }
+    ]
+
+    function queryProfile() {
+        exec("bash -c 'kreadconfig6 --file \"$HOME/.config/kxkbrc\" --group Layout --key VariantList'", (exitCode, stdout) => {
+            const variant = stdout.trim();
+            if (variant.startsWith("dvorak")) {
+                keyboardRow.activeValue = "default";
+            } else if (variant.length > 0) {
+                keyboardRow.activeValue = "gaming";
+            }
+            keyboardRow.busy = false;
+        });
+    }
+
+    onRefresh: queryProfile()
+
+    onSelected: value => {
+        keyboardRow.busy = true;
+        exec("bash -c 'chlayout " + value + "'", () => {
+            keyboardRow.queryProfile();
+        });
+    }
+}
 EOF
-)"
+)" 20
 
