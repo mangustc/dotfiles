@@ -161,7 +161,7 @@ ActionRow {
     requireConfirmation: true
     closeOnTrigger: true
     onTriggered: {
-        exec("bash -c 'virsh start win-passthrough'");
+        exec("bash -c 'virsh -c qemu:///system start win-passthrough'");
     }
 }
 EOF
